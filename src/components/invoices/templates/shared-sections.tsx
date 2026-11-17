@@ -7,7 +7,7 @@ export const CompanyInfo = ({ company, vis, styles }: any) => {
     return (
         <View style={styles.companyContainer || {}}>
             {vis.showLogo !== false && vis.logo !== false && company?.logoUrl && (
-                <Image src={company.logoUrl} style={styles.logo || { width: 80, height: 80, objectFit: 'contain', marginBottom: 10 }} />
+                <Image src={company.logoUrl} style={styles.logo || { width: 60, height: 60, objectFit: 'contain', marginBottom: 6 }} />
             )}
             {company?.name && <Text style={styles.companyName}>{company.name}</Text>}
             {vis.showCompanyAddress !== false && company?.address && <Text style={styles.textNormal}>{company.address}</Text>}
@@ -43,7 +43,7 @@ export const ClientInfo = ({ client, vis, styles }: any) => {
             {vis.showClientPhone !== false && vis.clientPhone !== false && client.phone && <Text style={styles.textNormal}>{client.phone}</Text>}
             
             {vis.showBillingAddress !== false && vis.billingAddress !== false && client.address && (
-                <View style={{ marginTop: 4 }}>
+                <View style={{ marginTop: 2 }}>
                     <Text style={styles.textNormal}>{client.address}</Text>
                     {client.city && (
                         <Text style={styles.textNormal}>
@@ -55,8 +55,8 @@ export const ClientInfo = ({ client, vis, styles }: any) => {
             )}
             
             {vis.showShippingAddress !== false && vis.shippingAddress !== false && client.shippingAddress && (
-                <View style={{ marginTop: 8 }}>
-                    <Text style={styles.textBold}>Shipping Address:</Text>
+                <View style={{ marginTop: 4 }}>
+                    <Text style={styles.textBold}>Ship To:</Text>
                     <Text style={styles.textNormal}>{client.shippingAddress}</Text>
                     {client.shippingCity && (
                         <Text style={styles.textNormal}>
@@ -144,9 +144,9 @@ export const InvoiceTermsAndNotes = ({ data, vis, styles }: any) => {
     if (!shouldShowNotes && !shouldShowTerms) return null;
     
     return (
-        <View style={styles.termsContainer || { marginTop: 20 }} wrap={false}>
+        <View style={styles.termsContainer || { marginTop: 10 }} wrap={false}>
             {shouldShowNotes && (
-                <View style={styles.notesBlock || { marginBottom: 12 }}>
+                <View style={styles.notesBlock || { marginBottom: 6 }}>
                     <Text style={styles.sectionTitle}>Notes</Text>
                     <Text style={styles.textNormal}>{data.notes}</Text>
                 </View>
@@ -168,17 +168,17 @@ export const InvoiceSignatures = ({ company, vis, styles }: any) => {
     if (!shouldShowSignature && !shouldShowSeal) return null;
     
     return (
-        <View style={styles.signatureContainer || { flexDirection: 'row', justifyContent: 'space-between', marginTop: 40 }} wrap={false}>
-            <View style={styles.sealBlock || { width: 150, alignItems: 'center' }}>
-                {shouldShowSeal && company?.sealUrl && <Image src={company.sealUrl} style={styles.sealImage || { width: 80, height: 80, objectFit: 'contain' }} />}
+        <View style={styles.signatureContainer || { flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 }} wrap={false}>
+            <View style={styles.sealBlock || { width: 120, alignItems: 'center' }}>
+                {shouldShowSeal && company?.sealUrl && <Image src={company.sealUrl} style={styles.sealImage || { width: 60, height: 60, objectFit: 'contain' }} />}
             </View>
-            <View style={styles.signatureBlock || { width: 200, alignItems: 'center' }}>
+            <View style={styles.signatureBlock || { width: 160, alignItems: 'center' }}>
                 {shouldShowSignature && company?.signatureUrl ? (
-                    <Image src={company.signatureUrl} style={styles.signatureImage || { width: 120, height: 60, objectFit: 'contain', marginBottom: 5 }} />
+                    <Image src={company.signatureUrl} style={styles.signatureImage || { width: 100, height: 45, objectFit: 'contain', marginBottom: 4 }} />
                 ) : (
-                    shouldShowSignature ? <View style={{ height: 60, marginBottom: 5 }} /> : null
+                    shouldShowSignature ? <View style={{ height: 45, marginBottom: 4 }} /> : null
                 )}
-                {shouldShowSignature && <Text style={styles.signatureText || { borderTop: '1px solid #000', paddingTop: 4, width: '100%', textAlign: 'center' }}>Authorized Signature</Text>}
+                {shouldShowSignature && <Text style={styles.signatureText || { borderTop: '1px solid #000', paddingTop: 3, width: '100%', textAlign: 'center', fontSize: 8 }}>Authorized Signature</Text>}
             </View>
         </View>
     );
@@ -187,7 +187,7 @@ export const InvoiceSignatures = ({ company, vis, styles }: any) => {
 export const InvoiceFooter = ({ company, vis, styles }: any) => {
     if (vis.showFooter === false || vis.footer === false) return null;
     return (
-        <View style={styles.footerContainer || { position: 'absolute', bottom: 30, left: 40, right: 40, textAlign: 'center' }} fixed>
+        <View style={styles.footerContainer || { position: 'absolute', bottom: 25, left: 40, right: 40, textAlign: 'center' }} fixed>
             <Text style={styles.footerText}>{company?.name} • Generated by DocuFlow</Text>
         </View>
     );
@@ -210,10 +210,10 @@ export const InvoiceTable = ({ data, vis, styles }: any) => {
                 <Text style={[styles.thText, { flex: 1.5, textAlign: 'right' }]}>Amount</Text>
             </View>
             {data.items?.map((item: any, i: number) => (
-                <View style={styles.tableRow} key={i}>
-                    <View style={{ flex: 4, paddingRight: 8 }}>
+                <View style={styles.tableRow} key={i} wrap={false}>
+                    <View style={{ flex: 4, paddingRight: 6 }}>
                         <Text style={styles.tdTextBold || styles.tdText}>{item.name || item.description}</Text>
-                        {item.name && item.description && <Text style={[styles.tdText, { fontSize: (styles.tdText?.fontSize || 10) - 2, color: '#64748b' }]}>{item.description}</Text>}
+                        {item.name && item.description && <Text style={[styles.tdText, { fontSize: (styles.tdText?.fontSize || 9) - 2, color: '#94a3b8' }]}>{item.description}</Text>}
                     </View>
                     {hasHsn && <Text style={[styles.tdText, { flex: 1.5 }]}>{item.hsnSac || '-'}</Text>}
                     <Text style={[styles.tdText, { flex: 1, textAlign: 'right' }]}>{item.quantity}</Text>

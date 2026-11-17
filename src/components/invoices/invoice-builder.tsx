@@ -49,7 +49,7 @@ export function InvoiceBuilder({ clients, company, initialData }: InvoiceBuilder
       status: "DRAFT",
       issueDate: new Date(),
       dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
-      template: "minimal",
+      template: "classic",
       items: [{ description: "", quantity: 1, unit: "Item", unitPrice: 0 }],
       notes: company?.defaultNotes || "",
       terms: company?.defaultTerms || "",

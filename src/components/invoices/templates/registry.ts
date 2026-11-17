@@ -33,14 +33,14 @@ export const INVOICE_TEMPLATES = [
         id: "minimal",
         name: "Minimal",
         description: "Clean whitespace with strong typography",
-        component: CreativeTemplate,
+        component: MinimalTemplate,
         thumbnail: "/templates/template-3.jpg"
     },
     {
         id: "minimal-premium",
         name: "Minimal Premium",
         description: "Extremely minimalist and premium layout like Stripe/Vercel",
-        component: CreativeTemplate,
+        component: MinimalPremiumTemplate,
         thumbnail: "/templates/template-3.jpg"
     },
     {

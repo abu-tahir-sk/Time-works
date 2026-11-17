@@ -11,35 +11,35 @@ export function ModernTemplate({ data, company, clients, totals, ds }: any) {
     const vis = ds.visibility;
 
     const styles = StyleSheet.create({
-        page: { padding: 0, fontFamily: getFontFamily(ds.typography.fontFamily), backgroundColor: '#ffffff' },
-        logo: { width: ds.layout.logoSize || 80, height: 'auto', objectFit: 'contain', marginBottom: 10 },
-        topBanner: { backgroundColor: colors.primary, padding: 40, color: '#ffffff', flexDirection: 'row', justifyContent: 'space-between' },
-        companyCol: { flex: 1, paddingRight: 20 },
+        page: { padding: 0, fontFamily: getFontFamily(ds.typography.fontFamily), backgroundColor: '#ffffff', paddingBottom: 0 },
+        logo: { width: Math.min(ds.layout.logoSize || 60, 60), height: 'auto', objectFit: 'contain', marginBottom: 6 },
+        topBanner: { backgroundColor: colors.primary, paddingVertical: 24, paddingHorizontal: 36, color: '#ffffff', flexDirection: 'row', justifyContent: 'space-between' },
+        companyCol: { flex: 1, paddingRight: 16 },
         invoiceMetaCol: { flex: 1, alignItems: 'flex-end' },
-        companyName: { fontSize: sizes.sectionHeading, color: '#ffffff', fontWeight: 'bold', marginBottom: 4 },
-        textNormal: { fontSize: sizes.bodyText, color: '#e2e8f0', marginBottom: 2 },
-        invoiceTitle: { fontSize: sizes.invoiceTitle + 8, fontWeight: 'bold', color: '#ffffff', textTransform: 'uppercase', marginBottom: 10 },
-        metaGrid: { flexDirection: 'row', justifyContent: 'flex-end', marginBottom: 4, width: '100%' },
-        metaLabel: { width: 80, color: '#e2e8f0', fontSize: sizes.bodyText, textAlign: 'right', paddingRight: 10 },
-        metaValue: { width: 100, fontWeight: 'bold', color: '#ffffff', textAlign: 'right', fontSize: sizes.bodyText },
-        contentWrapper: { padding: 40 },
-        infoRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 30, paddingBottom: 20, borderBottom: `2px solid ${colors.tableHeader}` },
-        billToCol: { flex: 1, paddingRight: 20 },
-        paymentCol: { flex: 1, paddingLeft: 20 },
-        sectionTitle: { fontSize: sizes.sectionHeading, color: colors.secondary, marginBottom: 4, textTransform: 'uppercase' },
-        textBold: { fontSize: sizes.bodyText, color: colors.primary, fontWeight: 'bold', marginBottom: 2 },
-        table: { width: '100%', marginBottom: 30 },
-        tableHeader: { flexDirection: 'row', paddingVertical: 10, borderBottom: `1px solid ${colors.secondary}` },
-        thText: { color: colors.secondary, fontSize: sizes.tableText, textTransform: 'uppercase' },
-        tableRow: { flexDirection: 'row', paddingVertical: 12, borderBottom: `1px solid ${colors.tableHeader}` },
-        tdText: { fontSize: sizes.tableText, color: colors.tableText },
-        tdTextBold: { fontSize: sizes.tableText, color: colors.tableText, fontWeight: 'bold' },
-        summaryContainer: { flexDirection: 'row', justifyContent: 'flex-end', width: '100%', marginBottom: 30 },
-        summaryBox: { alignSelf: 'flex-end', width: 280, backgroundColor: colors.tableHeader, padding: 20, borderRadius: 8, marginTop: 20 },
-        summaryRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 6 },
-        grandTotalRow: { flexDirection: 'row', justifyContent: 'space-between', paddingTop: 12, marginTop: 6, borderTop: `1px solid ${colors.secondary}` },
-        grandTotalText: { fontSize: sizes.totalAmount, color: colors.totalAmount, fontWeight: 'bold' },
-        footerText: { fontSize: sizes.footerText, color: colors.footer }
+        companyName: { fontSize: Math.min(sizes.sectionHeading, 11), color: '#ffffff', fontWeight: 'bold', marginBottom: 3 },
+        textNormal: { fontSize: Math.min(sizes.bodyText, 9), color: '#e2e8f0', marginBottom: 2, lineHeight: 1.4 },
+        invoiceTitle: { fontSize: Math.min(sizes.invoiceTitle + 2, 26), fontWeight: 'bold', color: '#ffffff', textTransform: 'uppercase', marginBottom: 8 },
+        metaGrid: { flexDirection: 'row', justifyContent: 'flex-end', marginBottom: 3, width: '100%' },
+        metaLabel: { width: 70, color: '#e2e8f0', fontSize: Math.min(sizes.bodyText, 9), textAlign: 'right', paddingRight: 8 },
+        metaValue: { width: 90, fontWeight: 'bold', color: '#ffffff', textAlign: 'right', fontSize: Math.min(sizes.bodyText, 9) },
+        contentWrapper: { padding: 36, paddingBottom: 55 },
+        infoRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20, paddingBottom: 14, borderBottom: `1.5pt solid ${colors.tableHeader}` },
+        billToCol: { flex: 1, paddingRight: 16 },
+        paymentCol: { flex: 1, paddingLeft: 16 },
+        sectionTitle: { fontSize: Math.min(sizes.sectionHeading, 10), color: colors.secondary, marginBottom: 4, textTransform: 'uppercase' },
+        textBold: { fontSize: Math.min(sizes.bodyText, 9), color: colors.primary, fontWeight: 'bold', marginBottom: 2 },
+        table: { width: '100%', marginBottom: 16 },
+        tableHeader: { flexDirection: 'row', paddingVertical: 7, borderBottom: `0.5pt solid ${colors.secondary}` },
+        thText: { color: colors.secondary, fontSize: Math.min(sizes.tableText, 9), textTransform: 'uppercase' },
+        tableRow: { flexDirection: 'row', paddingVertical: 7, borderBottom: `0.5pt solid ${colors.tableHeader}` },
+        tdText: { fontSize: Math.min(sizes.tableText, 9), color: colors.tableText },
+        tdTextBold: { fontSize: Math.min(sizes.tableText, 9), color: colors.tableText, fontWeight: 'bold' },
+        summaryContainer: { flexDirection: 'row', justifyContent: 'flex-end', width: '100%', marginBottom: 14 },
+        summaryBox: { alignSelf: 'flex-end', width: 240, backgroundColor: colors.tableHeader, padding: 14, borderRadius: 6 },
+        summaryRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 4 },
+        grandTotalRow: { flexDirection: 'row', justifyContent: 'space-between', paddingTop: 8, marginTop: 4, borderTop: `0.5pt solid ${colors.secondary}` },
+        grandTotalText: { fontSize: Math.min(sizes.totalAmount, 14), color: colors.totalAmount, fontWeight: 'bold' },
+        footerText: { fontSize: Math.min(sizes.footerText, 8), color: colors.footer, textAlign: 'center' },
     });
 
     return (
@@ -73,7 +73,10 @@ export function ModernTemplate({ data, company, clients, totals, ds }: any) {
 
                 <InvoiceTermsAndNotes data={data} vis={vis} styles={{...styles, textNormal: { ...styles.textNormal, color: colors.primary }}} />
                 <InvoiceSignatures company={company} vis={vis} styles={styles} />
-                <InvoiceFooter company={company} vis={vis} styles={styles} />
+
+                <View style={{ position: 'absolute', bottom: 25, left: 36, right: 36, paddingTop: 10 }} >
+                    <InvoiceFooter company={company} vis={vis} styles={styles} />
+                </View>
             </View>
         </Page>
     );

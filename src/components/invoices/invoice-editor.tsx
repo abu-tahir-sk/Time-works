@@ -6,13 +6,12 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
-import { CalendarIcon, Plus, Trash2, User, FileText, List, CreditCard, AlignLeft, Paintbrush } from "lucide-react"
+import { CalendarIcon, Plus, Trash2, User, FileText, List, CreditCard, AlignLeft } from "lucide-react"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Calendar } from "@/components/ui/calendar"
 import { format } from "date-fns"
 import { cn } from "@/lib/utils"
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
-import { DesignSettingsForm } from "./design-settings"
 import { AddClientModal } from "./add-client-modal"
 
 interface InvoiceEditorProps {
@@ -353,16 +352,6 @@ export function InvoiceEditor({ form, clients, onAddClient }: InvoiceEditorProps
                   </FormItem>
                 )}
               />
-            </AccordionContent>
-          </AccordionItem>
-
-          {/* DESIGN SECTION */}
-          <AccordionItem value="design" className="bg-card border rounded-lg px-4 border-b-0 shadow-sm">
-            <AccordionTrigger className="hover:no-underline py-4">
-              <SectionHeader icon={Paintbrush} title="Design Settings" description="Customize PDF aesthetics" />
-            </AccordionTrigger>
-            <AccordionContent className="pb-4 pt-2">
-              <DesignSettingsForm />
             </AccordionContent>
           </AccordionItem>
 

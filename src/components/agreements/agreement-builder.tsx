@@ -1,0 +1,486 @@
+"use client"
+
+import { useMemo, useState } from "react"
+import { useRouter } from "next/navigation"
+import { toast } from "sonner"
+import {
+    FileText,
+    Loader2,
+    Plus,
+    RefreshCw,
+} from "lucide-react"
+import { PDFViewer, PDFDownloadLink } from "@react-pdf/renderer"
+
+import { AgreementPdf } from "./agreement-pdf"
+import {
+    AGREEMENT_TYPES,
+    DEFAULT_CLAUSES_BY_TYPE,
+    type AgreementFormValues,
+    type AgreementType,
+} from "@/lib/agreements/schema"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
+import { Card, CardContent } from "@/components/ui/card"
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
+
+interface AgreementBuilderProps {
+    clients: any[]
+    company: any
+}
+
+export function AgreementBuilder({ clients, company }: AgreementBuilderProps) {
+    const router = useRouter()
+    const [previewReady, setPreviewReady] = useState(false)
+    const [data, setData] = useState<AgreementFormValues>(() => ({
+        title: "Service Agreement",
+        agreementNumber: `AGR-${new Date().getFullYear()}-${Math.floor(
+            1000 + Math.random() * 9000
+        )}`,
+        type: "SERVICE_AGREEMENT",
+        clientId: "",
+        clientName: "",
+        clientEmail: "",
+        clientAddress: "",
+        clientCompany: "",
+        effectiveDate: new Date().toISOString().slice(0, 10),
+        expiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
+            .toISOString()
+            .slice(0, 10),
+        value: "",
+        currency: "INR",
+        paymentTerms: "Net 30",
+        scope: "",
+        clauses: DEFAULT_CLAUSES_BY_TYPE.SERVICE_AGREEMENT,
+        notes: "",
+        companyDetails: {
+            name: company?.name || "",
+            address: company?.address || "",
+            email: company?.email || "",
+            phone: company?.phone || "",
+            taxId: company?.taxId || "",
+            logoUrl: company?.logoUrl || "",
+        },
+    }))
+
+    const set = <K extends keyof AgreementFormValues>(
+        key: K,
+        value: AgreementFormValues[K]
+    ) => setData((prev) => ({ ...prev, [key]: value }))
+
+    const setCompanyDetail = (
+        key: keyof AgreementFormValues["companyDetails"],
+        value: string
+    ) =>
+        setData((prev) => ({
+            ...prev,
+            companyDetails: { ...prev.companyDetails, [key]: value },
+        }))
+
+    const handleClientChange = (clientId: string) => {
+        const client = clients.find((c) => c.id === clientId)
+        if (!client) {
+            set("clientId", "")
+            return
+        }
+        setData((prev) => ({
+            ...prev,
+            clientId,
+            clientName: client.name || prev.clientName,
+            clientEmail: client.email || prev.clientEmail,
+            clientAddress: client.address || prev.clientAddress,
+            clientCompany: client.company || prev.clientCompany,
+        }))
+    }
+
+    const handleTypeChange = (type: AgreementType) => {
+        set("type", type)
+        if (type !== "CUSTOM") {
+            setData((prev) => ({
+                ...prev,
+                type,
+                clauses: DEFAULT_CLAUSES_BY_TYPE[type],
+            }))
+        }
+    }
+
+    const fileName = useMemo(
+        () =>
+            `${data.agreementNumber}-${data.title
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, "-")
+                .replace(/^-|-$/g, "")}.pdf`,
+        [data.agreementNumber, data.title]
+    )
+
+    return (
+        <div className="flex h-full flex-col md:flex-row overflow-hidden bg-background">
+            {/* Left: form */}
+            <div className="w-full md:w-1/2 flex-col overflow-y-auto border-r bg-background">
+                <div className="flex items-center justify-between p-4 border-b sticky top-0 bg-background/95 backdrop-blur z-10">
+                    <div>
+                        <h2 className="text-lg font-semibold tracking-tight">
+                            Create Agreement
+                        </h2>
+                        <p className="text-xs text-muted-foreground">
+                            Draft a professional agreement and download it as a PDF
+                        </p>
+                    </div>
+                    <div className="flex gap-2">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => router.push("/dashboard/agreements")}
+                        >
+                            Cancel
+                        </Button>
+                        <Button size="sm" onClick={() => setPreviewReady(true)}>
+                            <FileText className="h-4 w-4" />
+                            Generate PDF
+                        </Button>
+                    </div>
+                </div>
+
+                <div className="space-y-6 p-4 md:p-6">
+                    {/* Agreement basics */}
+                    <Card>
+                        <CardContent className="space-y-4 p-4 md:p-5">
+                            <p className="text-sm font-semibold">Agreement Details</p>
+                            <div className="grid gap-4 sm:grid-cols-2">
+                                <div className="space-y-2">
+                                    <Label>Agreement title</Label>
+                                    <Input
+                                        value={data.title}
+                                        onChange={(e) => set("title", e.target.value)}
+                                        placeholder="Service Agreement"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Agreement number</Label>
+                                    <Input
+                                        value={data.agreementNumber}
+                                        onChange={(e) =>
+                                            set("agreementNumber", e.target.value)
+                                        }
+                                    />
+                                </div>
+                                <div className="space-y-2 sm:col-span-2">
+                                    <Label>Agreement type</Label>
+                                    <Select
+                                        value={data.type}
+                                        onValueChange={(v: string | null) =>
+                                            handleTypeChange(
+                                                (v ?? "SERVICE_AGREEMENT") as AgreementType
+                                            )
+                                        }
+                                    >
+                                        <SelectTrigger className="w-full">
+                                            <SelectValue placeholder="Select type" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {AGREEMENT_TYPES.map((type) => (
+                                                <SelectItem key={type.value} value={type.value}>
+                                                    {type.label}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    <p className="text-xs text-muted-foreground">
+                                        Choosing a type loads standard clauses — you can edit
+                                        them below.
+                                    </p>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    {/* Client */}
+                    <Card>
+                        <CardContent className="space-y-4 p-4 md:p-5">
+                            <div className="flex items-center justify-between">
+                                <p className="text-sm font-semibold">Client</p>
+                                {data.clientId ? (
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() =>
+                                            setData((prev) => ({
+                                                ...prev,
+                                                clientId: "",
+                                            }))
+                                        }
+                                    >
+                                        <RefreshCw className="h-3.5 w-3.5" />
+                                        Enter manually
+                                    </Button>
+                                ) : null}
+                            </div>
+                            {clients.length > 0 && !data.clientId ? (
+                                <div className="space-y-2">
+                                    <Label>Select an existing client</Label>
+                                    <Select
+                                        value=""
+                                        onValueChange={(v: string | null) =>
+                                            v && handleClientChange(v)
+                                        }
+                                    >
+                                        <SelectTrigger className="w-full">
+                                            <SelectValue placeholder="Choose a client…" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {clients.map((client) => (
+                                                <SelectItem key={client.id} value={client.id}>
+                                                    {client.name}
+                                                    {client.company ? ` — ${client.company}` : ""}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            ) : null}
+                            <div className="grid gap-4 sm:grid-cols-2">
+                                <div className="space-y-2">
+                                    <Label>Contact name *</Label>
+                                    <Input
+                                        value={data.clientName}
+                                        onChange={(e) => set("clientName", e.target.value)}
+                                        placeholder="Jane Doe"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Company</Label>
+                                    <Input
+                                        value={data.clientCompany}
+                                        onChange={(e) => set("clientCompany", e.target.value)}
+                                        placeholder="Acme Corp"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Email</Label>
+                                    <Input
+                                        type="email"
+                                        value={data.clientEmail}
+                                        onChange={(e) => set("clientEmail", e.target.value)}
+                                        placeholder="jane@acme.com"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Address</Label>
+                                    <Input
+                                        value={data.clientAddress}
+                                        onChange={(e) => set("clientAddress", e.target.value)}
+                                        placeholder="City, State"
+                                    />
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    {/* Terms */}
+                    <Card>
+                        <CardContent className="space-y-4 p-4 md:p-5">
+                            <p className="text-sm font-semibold">Terms &amp; Value</p>
+                            <div className="grid gap-4 sm:grid-cols-2">
+                                <div className="space-y-2">
+                                    <Label>Effective date *</Label>
+                                    <Input
+                                        type="date"
+                                        value={data.effectiveDate}
+                                        onChange={(e) => set("effectiveDate", e.target.value)}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Expiry date *</Label>
+                                    <Input
+                                        type="date"
+                                        value={data.expiryDate}
+                                        onChange={(e) => set("expiryDate", e.target.value)}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Agreement value</Label>
+                                    <Input
+                                        type="number"
+                                        min="0"
+                                        value={data.value}
+                                        onChange={(e) => set("value", e.target.value)}
+                                        placeholder="500000"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Currency</Label>
+                                    <Select
+                                        value={data.currency}
+                                        onValueChange={(v: string | null) =>
+                                            set("currency", v ?? "INR")
+                                        }
+                                    >
+                                        <SelectTrigger className="w-full">
+                                            <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="INR">INR (₹)</SelectItem>
+                                            <SelectItem value="USD">USD ($)</SelectItem>
+                                            <SelectItem value="EUR">EUR (€)</SelectItem>
+                                            <SelectItem value="GBP">GBP (£)</SelectItem>
+                                            <SelectItem value="AED">AED (د.إ)</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="space-y-2 sm:col-span-2">
+                                    <Label>Payment terms</Label>
+                                    <Input
+                                        value={data.paymentTerms}
+                                        onChange={(e) => set("paymentTerms", e.target.value)}
+                                        placeholder="Net 30, 50% advance, Milestone-based…"
+                                    />
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    {/* Content */}
+                    <Card>
+                        <CardContent className="space-y-4 p-4 md:p-5">
+                            <p className="text-sm font-semibold">Agreement Content</p>
+                            <div className="space-y-2">
+                                <Label>Scope of work</Label>
+                                <Textarea
+                                    rows={3}
+                                    value={data.scope}
+                                    onChange={(e) => set("scope", e.target.value)}
+                                    placeholder="Describe the services, deliverables and timelines…"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Terms &amp; clauses</Label>
+                                <Textarea
+                                    rows={12}
+                                    className="font-mono text-xs"
+                                    value={data.clauses}
+                                    onChange={(e) => set("clauses", e.target.value)}
+                                    placeholder="1. SCOPE OF WORK…"
+                                />
+                                <p className="text-xs text-muted-foreground">
+                                    Each numbered clause renders as a paragraph in the PDF.
+                                </p>
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Additional notes (optional)</Label>
+                                <Textarea
+                                    rows={3}
+                                    value={data.notes}
+                                    onChange={(e) => set("notes", e.target.value)}
+                                />
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    {/* Company */}
+                    <Card>
+                        <CardContent className="space-y-4 p-4 md:p-5">
+                            <p className="text-sm font-semibold">Your Company</p>
+                            <div className="grid gap-4 sm:grid-cols-2">
+                                <div className="space-y-2">
+                                    <Label>Company name</Label>
+                                    <Input
+                                        value={data.companyDetails.name}
+                                        onChange={(e) =>
+                                            setCompanyDetail("name", e.target.value)
+                                        }
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Tax ID</Label>
+                                    <Input
+                                        value={data.companyDetails.taxId}
+                                        onChange={(e) =>
+                                            setCompanyDetail("taxId", e.target.value)
+                                        }
+                                    />
+                                </div>
+                                <div className="space-y-2 sm:col-span-2">
+                                    <Label>Address</Label>
+                                    <Textarea
+                                        rows={2}
+                                        value={data.companyDetails.address}
+                                        onChange={(e) =>
+                                            setCompanyDetail("address", e.target.value)
+                                        }
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Email</Label>
+                                    <Input
+                                        type="email"
+                                        value={data.companyDetails.email}
+                                        onChange={(e) =>
+                                            setCompanyDetail("email", e.target.value)
+                                        }
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Phone</Label>
+                                    <Input
+                                        value={data.companyDetails.phone}
+                                        onChange={(e) =>
+                                            setCompanyDetail("phone", e.target.value)
+                                        }
+                                    />
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
+            </div>
+
+            {/* Right: PDF preview */}
+            <div className="w-full md:w-1/2 flex-col overflow-y-auto bg-white">
+                <div className="p-4 border-b bg-background flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <FileText className="h-4 w-4" />
+                        Live PDF preview
+                    </div>
+                    <PDFDownloadLink
+                        document={<AgreementPdf data={data} />}
+                        fileName={fileName}
+                        style={{ textDecoration: "none" }}
+                    >
+                        {({ loading, error }) => {
+                            if (error) toast.error("PDF generation failed")
+                            return (
+                                <Button size="sm" disabled={loading}>
+                                    {loading ? (
+                                        <Loader2 className="h-4 w-4 animate-spin" />
+                                    ) : (
+                                        <Plus className="h-4 w-4" />
+                                    )}
+                                    {loading ? "Preparing…" : "Download PDF"}
+                                </Button>
+                            )
+                        }}
+                    </PDFDownloadLink>
+                </div>
+                <div className="p-4 flex justify-center min-h-full">
+                    <div className="w-full h-[calc(100vh-220px)] rounded-lg overflow-hidden bg-white shadow-sm">
+                        <PDFViewer
+                            width="100%"
+                            height="100%"
+                            showToolbar={false}
+                            key={previewReady ? "ready" : "init"}
+                        >
+                            <AgreementPdf data={data} />
+                        </PDFViewer>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
