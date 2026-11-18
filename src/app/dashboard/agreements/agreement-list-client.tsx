@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
@@ -50,6 +50,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { cn } from "@/lib/utils"
+import { deleteAgreement } from "@/actions/agreements"
 
 type AgreementStatus =
   | "DRAFT"
@@ -60,127 +61,21 @@ type AgreementStatus =
 
 interface Agreement {
   id: string
-  number: string
+  agreementNumber: string
   title: string
-  client: string
-  clientInitials: string
   type: string
-  value: string
-  valueNote: string
-  status: AgreementStatus
-  signed: number
-  totalSigners: number
-  expires: string
-  updated: string
+  currency: string
+  value: number | null
+  status: string
+  effectiveDate: string
+  expiryDate: string
+  updatedAt: string
+  client: {
+    id: string
+    name: string
+    clientCompany: string | null
+  } | null
 }
-
-const AGREEMENTS: Agreement[] = [
-  {
-    id: "agr-2026-014",
-    number: "AGR-2026-014",
-    title: "Master Service Agreement",
-    client: "Acme Studios",
-    clientInitials: "AS",
-    type: "Service",
-    value: "₹2,40,000",
-    valueNote: "One-time",
-    status: "ACTIVE",
-    signed: 2,
-    totalSigners: 2,
-    expires: "Mar 31, 2027",
-    updated: "Updated 2 days ago",
-  },
-  {
-    id: "agr-2026-013",
-    number: "AGR-2026-013",
-    title: "Mutual NDA",
-    client: "Northwind Labs",
-    clientInitials: "NL",
-    type: "NDA",
-    value: "—",
-    valueNote: "No value",
-    status: "PENDING_SIGNATURE",
-    signed: 1,
-    totalSigners: 2,
-    expires: "Aug 12, 2027",
-    updated: "Sent 3 hours ago",
-  },
-  {
-    id: "agr-2026-012",
-    number: "AGR-2026-012",
-    title: "Monthly Retainer",
-    client: "Vertex Media",
-    clientInitials: "VM",
-    type: "Retainer",
-    value: "₹85,000",
-    valueNote: "Per month",
-    status: "ACTIVE",
-    signed: 2,
-    totalSigners: 2,
-    expires: "Dec 31, 2026",
-    updated: "Updated 1 week ago",
-  },
-  {
-    id: "agr-2026-011",
-    number: "AGR-2026-011",
-    title: "Website Redesign SOW",
-    client: "Pixel Forge",
-    clientInitials: "PF",
-    type: "SOW",
-    value: "₹1,20,000",
-    valueNote: "One-time",
-    status: "EXPIRING_SOON",
-    signed: 2,
-    totalSigners: 2,
-    expires: "Dec 05, 2026",
-    updated: "Updated 4 days ago",
-  },
-  {
-    id: "agr-2026-009",
-    number: "AGR-2026-009",
-    title: "Partnership Agreement",
-    client: "Brightline Co.",
-    clientInitials: "BC",
-    type: "Partnership",
-    value: "₹4,50,000",
-    valueNote: "Revenue share",
-    status: "PENDING_SIGNATURE",
-    signed: 1,
-    totalSigners: 2,
-    expires: "Jun 30, 2027",
-    updated: "Sent yesterday",
-  },
-  {
-    id: "agr-2026-007",
-    number: "AGR-2026-007",
-    title: "Design Services Contract",
-    client: "Orbit Digital",
-    clientInitials: "OD",
-    type: "Contract",
-    value: "₹60,000",
-    valueNote: "One-time",
-    status: "DRAFT",
-    signed: 0,
-    totalSigners: 2,
-    expires: "—",
-    updated: "Edited 25 minutes ago",
-  },
-  {
-    id: "agr-2025-041",
-    number: "AGR-2025-041",
-    title: "Legacy Support Agreement",
-    client: "Helix Systems",
-    clientInitials: "HS",
-    type: "Service",
-    value: "₹1,80,000",
-    valueNote: "One-time",
-    status: "EXPIRED",
-    signed: 2,
-    totalSigners: 2,
-    expires: "Sep 30, 2026",
-    updated: "Expired 2 months ago",
-  },
-]
 
 const STATUS_META: Record<
   AgreementStatus,
@@ -218,82 +113,111 @@ const STATUS_META: Record<
   },
 }
 
-const STATS = [
-  {
-    label: "Total agreements",
-    value: "24",
-    note: "+6 this quarter",
-    icon: Handshake,
-    iconClass:
-      "bg-primary/10 text-primary dark:bg-primary/20",
-  },
-  {
-    label: "Awaiting signature",
-    value: "5",
-    note: "2 sent in the last 48h",
-    icon: PenLine,
-    iconClass:
-      "bg-amber-500/10 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400",
-  },
-  {
-    label: "Active contracts",
-    value: "16",
-    note: "₹9.4L under management",
-    icon: ShieldCheck,
-    iconClass:
-      "bg-emerald-500/10 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400",
-  },
-  {
-    label: "Expiring soon",
-    value: "3",
-    note: "Within the next 30 days",
-    icon: CalendarClock,
-    iconClass:
-      "bg-orange-500/10 text-orange-600 dark:bg-orange-500/20 dark:text-orange-400",
-  },
-]
+function deriveStatus(agreement: Agreement): AgreementStatus {
+  if (agreement.status === "DRAFT") return "DRAFT"
+  const now = new Date()
+  const expiry = new Date(agreement.expiryDate)
+  if (expiry < now) return "EXPIRED"
+  const in30Days = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000)
+  if (expiry <= in30Days) return "EXPIRING_SOON"
+  return "ACTIVE"
+}
 
-export function AgreementListClient() {
-  const [agreements, setAgreements] = useState(AGREEMENTS)
+function formatMoney(value: number | null, currency: string): string {
+  if (value == null) return "—"
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency,
+    maximumFractionDigits: 0,
+  }).format(value)
+}
+
+export function AgreementListClient({ agreements }: { agreements: Agreement[] }) {
   const [search, setSearch] = useState("")
   const [statusFilter, setStatusFilter] = useState<string>("ALL")
 
   const query = search.trim().toLowerCase()
 
   const filteredAgreements = agreements.filter((agreement) => {
+    const clientName = agreement.client?.name ?? ""
+    const clientCompany = agreement.client?.clientCompany ?? ""
     const matchesSearch =
       query.length === 0 ||
       agreement.title.toLowerCase().includes(query) ||
-      agreement.client.toLowerCase().includes(query) ||
-      agreement.number.toLowerCase().includes(query)
+      clientName.toLowerCase().includes(query) ||
+      clientCompany.toLowerCase().includes(query) ||
+      agreement.agreementNumber.toLowerCase().includes(query)
 
     const matchesStatus =
-      statusFilter === "ALL" || agreement.status === statusFilter
+      statusFilter === "ALL" || deriveStatus(agreement) === statusFilter
 
     return matchesSearch && matchesStatus
   })
 
   const router = useRouter()
 
-  const handlePreview = () => {
-    toast.info("The agreement builder is coming next.", {
-      description: "This page is a design preview with sample data.",
-    })
+  const handleNew = () => {
+    router.push("/dashboard/agreements/new")
   }
 
-  const handleDelete = (agreement: Agreement) => {
+  const handleDelete = async (agreement: Agreement) => {
     if (!confirm(`Delete "${agreement.title}"?`)) return
 
-    setAgreements((current) =>
-      current.filter((item) => item.id !== agreement.id)
-    )
-    toast.success("Agreement deleted")
+    const res = await deleteAgreement(agreement.id)
+    if (res.success) {
+      toast.success("Agreement deleted")
+      router.refresh()
+    } else {
+      toast.error(res.error || "Failed to delete agreement")
+    }
   }
+
+  const stats = useMemo(() => {
+    const now = new Date()
+    const in30Days = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000)
+    const awaiting = agreements.filter((a) => a.status === "PENDING_SIGNATURE").length
+    const active = agreements.filter((a) => deriveStatus(a) === "ACTIVE")
+    const expiring = agreements.filter((a) => deriveStatus(a) === "EXPIRING_SOON").length
+    const managed = active.reduce((sum, a) => sum + (a.value ?? 0), 0)
+    return [
+      {
+        label: "Total agreements",
+        value: String(agreements.length),
+        note: "Across all clients",
+        icon: Handshake,
+        iconClass: "bg-primary/10 text-primary dark:bg-primary/20",
+      },
+      {
+        label: "Awaiting signature",
+        value: String(awaiting),
+        note: awaiting > 0 ? "Needs follow-up" : "All caught up",
+        icon: PenLine,
+        iconClass:
+          "bg-amber-500/10 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400",
+      },
+      {
+        label: "Active contracts",
+        value: String(active.length),
+        note: `${formatMoney(managed, "INR")} under management`,
+        icon: ShieldCheck,
+        iconClass:
+          "bg-emerald-500/10 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400",
+      },
+      {
+        label: "Expiring soon",
+        value: String(expiring),
+        note: "Within the next 30 days",
+        icon: CalendarClock,
+        iconClass:
+          "bg-orange-500/10 text-orange-600 dark:bg-orange-500/20 dark:text-orange-400",
+      },
+    ]
+  }, [agreements])
 
   return (
     <div className="space-y-6">
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        {STATS.map((stat) => (
+        {stats.map((stat) => (
           <Card key={stat.label}>
             <CardContent className="flex items-start justify-between gap-4">
               <div className="space-y-1">
@@ -353,7 +277,7 @@ export function AgreementListClient() {
         </div>
 
         <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={handlePreview}>
+          <Button variant="outline" onClick={handleComingSoon}>
             <LayoutTemplate className="h-4 w-4" />
             Templates
           </Button>
@@ -374,7 +298,6 @@ export function AgreementListClient() {
                 <TableHead>Type</TableHead>
                 <TableHead>Value</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead>Signatures</TableHead>
                 <TableHead>Expires</TableHead>
                 <TableHead className="pr-4 text-right">Actions</TableHead>
               </TableRow>
@@ -382,7 +305,7 @@ export function AgreementListClient() {
             <TableBody>
               {filteredAgreements.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={8} className="h-64">
+                  <TableCell colSpan={7} className="h-64">
                     <div className="flex flex-col items-center justify-center text-center">
                       <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-muted">
                         <Handshake className="h-6 w-6 text-muted-foreground" />

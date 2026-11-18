@@ -1,4 +1,6 @@
 import { Metadata } from "next"
+import { requireUser } from "@/lib/auth/utils"
+import { getAgreements } from "@/actions/agreements"
 
 import { AgreementListClient } from "./agreement-list-client"
 
@@ -7,7 +9,12 @@ export const metadata: Metadata = {
   description: "Create, sign, and manage your client agreements.",
 }
 
-export default function AgreementsPage() {
+export default async function AgreementsPage() {
+  await requireUser()
+
+  const res = await getAgreements()
+  const agreements = res.success ? res.agreements : []
+
   return (
     <div className="flex w-full flex-col gap-6">
       <div>
@@ -18,7 +25,7 @@ export default function AgreementsPage() {
         </p>
       </div>
 
-      <AgreementListClient />
+      <AgreementListClient agreements={agreements as any} />
     </div>
   )
 }

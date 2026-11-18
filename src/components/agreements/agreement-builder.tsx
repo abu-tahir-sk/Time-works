@@ -15,9 +15,8 @@ import { AgreementPdf } from "./agreement-pdf"
 import {
     AGREEMENT_TYPES,
     DEFAULT_CLAUSES_BY_TYPE,
-    type AgreementFormValues,
-    type AgreementType,
 } from "@/lib/agreements/schema"
+import { createOrUpdateAgreement } from "@/actions/agreements"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -39,6 +38,7 @@ interface AgreementBuilderProps {
 export function AgreementBuilder({ clients, company }: AgreementBuilderProps) {
     const router = useRouter()
     const [previewReady, setPreviewReady] = useState(false)
+    const [isSaving, setIsSaving] = useState(false)
     const [data, setData] = useState<AgreementFormValues>(() => ({
         title: "Service Agreement",
         agreementNumber: `AGR-${new Date().getFullYear()}-${Math.floor(
@@ -111,6 +111,29 @@ export function AgreementBuilder({ clients, company }: AgreementBuilderProps) {
         }
     }
 
+    const handleSave = async () => {
+        if (!data.clientId) {
+            toast.error("Please select an existing client before saving", {
+                description: "Manual entries can be downloaded as PDF, but agreements must be linked to a client to save.",
+            })
+            return
+        }
+        setIsSaving(true)
+        try {
+            const res = await createOrUpdateAgreement(data)
+            if (res.success) {
+                toast.success("Agreement saved successfully!")
+                router.push("/dashboard/agreements")
+            } else {
+                toast.error(res.error || "Failed to save agreement")
+            }
+        } catch (error) {
+            toast.error("An unexpected error occurred")
+        } finally {
+            setIsSaving(false)
+        }
+    }
+
     const fileName = useMemo(
         () =>
             `${data.agreementNumber}-${data.title
@@ -141,9 +164,8 @@ export function AgreementBuilder({ clients, company }: AgreementBuilderProps) {
                         >
                             Cancel
                         </Button>
-                        <Button size="sm" onClick={() => setPreviewReady(true)}>
-                            <FileText className="h-4 w-4" />
-                            Generate PDF
+                        <Button size="sm" onClick={handleSave} disabled={isSaving}>
+                            {isSaving ? "Saving…" : "Save Agreement"}
                         </Button>
                     </div>
                 </div>
