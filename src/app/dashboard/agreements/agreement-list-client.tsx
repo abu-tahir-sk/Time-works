@@ -1,6 +1,6 @@
-﻿"use client"
+"use client"
 
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { useRouter } from "next/navigation"
 import {
   CalendarClock,
@@ -172,9 +172,10 @@ export function AgreementListClient({ agreements }: { agreements: Agreement[] })
     }
   }
 
+  const handleComingSoon = () => toast.info("Coming soon")
+
   const stats = useMemo(() => {
     const now = new Date()
-    const in30Days = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000)
     const awaiting = agreements.filter((a) => a.status === "PENDING_SIGNATURE").length
     const active = agreements.filter((a) => deriveStatus(a) === "ACTIVE")
     const expiring = agreements.filter((a) => deriveStatus(a) === "EXPIRING_SOON").length
@@ -320,7 +321,9 @@ export function AgreementListClient({ agreements }: { agreements: Agreement[] })
                 </TableRow>
               ) : (
                 filteredAgreements.map((agreement) => {
-                  const status = STATUS_META[agreement.status]
+                  const derived = deriveStatus(agreement)
+                  const status = STATUS_META[derived] || STATUS_META.DRAFT
+                  const anyAgr = agreement as any
 
                   return (
                     <TableRow key={agreement.id} className="group">
@@ -334,7 +337,7 @@ export function AgreementListClient({ agreements }: { agreements: Agreement[] })
                               {agreement.title}
                             </p>
                             <p className="text-xs text-muted-foreground">
-                              {agreement.number}
+                              {agreement.agreementNumber || anyAgr.number || "—"}
                             </p>
                           </div>
                         </div>
@@ -343,10 +346,10 @@ export function AgreementListClient({ agreements }: { agreements: Agreement[] })
                       <TableCell>
                         <div className="flex items-center gap-2">
                           <div className="flex h-7 w-7 items-center justify-center rounded-full bg-muted text-[10px] font-semibold text-muted-foreground">
-                            {agreement.clientInitials}
+                            {agreement.client?.name ? agreement.client.name.slice(0, 2).toUpperCase() : "NA"}
                           </div>
                           <span className="whitespace-nowrap">
-                            {agreement.client}
+                            {agreement.client?.name || "No Client"}
                           </span>
                         </div>
                       </TableCell>
@@ -356,10 +359,14 @@ export function AgreementListClient({ agreements }: { agreements: Agreement[] })
                       </TableCell>
 
                       <TableCell>
-                        <p className="font-medium">{agreement.value}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {agreement.valueNote}
+                        <p className="font-medium">
+                          {typeof agreement.value === "number" ? formatMoney(agreement.value, agreement.currency) : "—"}
                         </p>
+                        {anyAgr.valueNote && (
+                          <p className="text-xs text-muted-foreground">
+                            {anyAgr.valueNote}
+                          </p>
+                        )}
                       </TableCell>
 
                       <TableCell>
@@ -380,9 +387,9 @@ export function AgreementListClient({ agreements }: { agreements: Agreement[] })
                       <TableCell>
                         <div className="flex items-center gap-1.5">
                           {Array.from({
-                            length: agreement.totalSigners,
+                            length: anyAgr.totalSigners || 1,
                           }).map((_, index) => {
-                            const isSigned = index < agreement.signed
+                            const isSigned = index < (anyAgr.signed || 0)
 
                             return (
                               <span
@@ -403,17 +410,17 @@ export function AgreementListClient({ agreements }: { agreements: Agreement[] })
                             )
                           })}
                           <span className="ml-1 text-xs text-muted-foreground">
-                            {agreement.signed}/{agreement.totalSigners}
+                            {anyAgr.signed || 0}/{anyAgr.totalSigners || 1}
                           </span>
                         </div>
                       </TableCell>
 
                       <TableCell>
                         <p className="whitespace-nowrap">
-                          {agreement.expires}
+                          {agreement.expiryDate ? new Date(agreement.expiryDate).toLocaleDateString() : "—"}
                         </p>
                         <p className="text-xs text-muted-foreground">
-                          {agreement.updated}
+                          {agreement.updatedAt ? new Date(agreement.updatedAt).toLocaleDateString() : "—"}
                         </p>
                       </TableCell>
 
@@ -431,15 +438,15 @@ export function AgreementListClient({ agreements }: { agreements: Agreement[] })
                             <MoreHorizontal className="h-4 w-4" />
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={handlePreview}>
+                            <DropdownMenuItem onClick={handleComingSoon}>
                               <Eye className="mr-2 h-4 w-4" />
                               View agreement
                             </DropdownMenuItem>
-                            <DropdownMenuItem onClick={handlePreview}>
+                            <DropdownMenuItem onClick={handleComingSoon}>
                               <Download className="mr-2 h-4 w-4" />
                               Download PDF
                             </DropdownMenuItem>
-                            <DropdownMenuItem onClick={handlePreview}>
+                            <DropdownMenuItem onClick={handleComingSoon}>
                               <Copy className="mr-2 h-4 w-4" />
                               Duplicate
                             </DropdownMenuItem>

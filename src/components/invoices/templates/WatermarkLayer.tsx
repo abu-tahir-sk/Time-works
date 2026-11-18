@@ -3,55 +3,97 @@ import { View, Text, Image, StyleSheet } from '@react-pdf/renderer';
 import { DesignSettings } from '@/lib/design-system/schema';
 import { getFontFamilyBold } from './font-utils';
 
-export function WatermarkLayer({ ds, companyLogo }: { ds: DesignSettings, companyLogo?: string }) {
-    if (!ds.watermark.enabled) return null;
+interface WatermarkLayerProps {
+    ds: DesignSettings;
+    companyLogo?: string;
+    companyName?: string;
+}
 
-    const config = ds.watermark.type === 'TEXT' ? ds.watermark.text : ds.watermark.logo;
-    const hGap = config.horizontalGap || 70;
-    const vGap = config.verticalGap || 55;
-    const scale = config.tileScale || 1;
-    const startX = -300 + (config.offsetX || 0);
-    const startY = -300 + (config.offsetY || 0);
-    const cols = 8;
-    const rows = 15;
+/**
+ * Single, centered photo (logo) watermark — like the original design.
+ *
+ * The "Watermark Theme Options" picker was removed on purpose, so this layer
+ * does not read watermark modes (tiling, text, corner, band, frame, etc.).
+ * It always renders one large, subtle logo watermark. It can only be turned
+ * off by explicitly saving `designSettings.watermark.enabled = false`.
+ */
+export function WatermarkLayer({ ds, companyLogo, companyName }: WatermarkLayerProps) {
+    const wm: any = ds.watermark || {};
 
-    const tiles = [];
-    for (let r = 0; r < rows; r++) {
-        for (let c = 0; c < cols; c++) {
-            const staggerX = r % 2 !== 0 ? hGap / 2 : 0;
-            const x = startX + (c * hGap * 2.5) + staggerX;
-            const y = startY + (r * vGap * 2);
+    if (wm.enabled === false) {
+        return null;
+    }
 
-            if (ds.watermark.type === 'TEXT' && ds.watermark.text.content) {
-                tiles.push(
-                    <Text key={`txt-${r}-${c}`} style={{
-                        position: 'absolute', left: x, top: y,
-                        color: ds.watermark.text.color || '#000000',
-                        opacity: ds.watermark.text.opacity || 0.1,
-                        transform: `rotate(${ds.watermark.text.rotation || 0}deg)`,
-                        fontSize: (ds.watermark.text.fontSize || 48) * scale,
-                        fontFamily: getFontFamilyBold(ds.watermark.text.fontFamily),
-                    }}>
-                        {ds.watermark.text.content}
+    const opacity = typeof wm.opacity === 'number' ? wm.opacity : (wm.logo?.opacity ?? 0.05);
+    const size = typeof wm.size === 'number' ? wm.size : (wm.logo?.size ?? 220);
+
+    // Uploaded watermark logo (if one was saved earlier) wins, otherwise the company photo logo.
+    const logoSrc = wm.logo?.url || companyLogo || '';
+    const textContent = companyName || 'DocuFlow';
+    const textColor = wm.text?.color || '#0f172a';
+    const fontFamily = getFontFamilyBold(wm.text?.fontFamily || ds.typography?.fontFamily);
+
+    if (!logoSrc) {
+        // No logo photo available — fall back to a single centered text watermark.
+        return (
+            <View style={styles.fullscreenFixed} fixed>
+                <View style={styles.centerContainer}>
+                    <Text
+                        style={[
+                            styles.singleText,
+                            {
+                                fontSize: Math.min(Math.max(Math.round(size * 0.28), 32), 72),
+                                opacity,
+                                color: textColor,
+                                fontFamily,
+                            },
+                        ]}
+                    >
+                        {textContent}
                     </Text>
-                );
-            } else if (ds.watermark.type === 'LOGO' && (ds.watermark.logo.url || companyLogo)) {
-                tiles.push(
-                    <Image key={`img-${r}-${c}`} src={ds.watermark.logo.url || companyLogo} style={{
-                        position: 'absolute', left: x, top: y,
-                        width: (ds.watermark.logo.size || 100) * scale,
-                        height: 'auto',
-                        opacity: ds.watermark.logo.opacity || 0.1,
-                        transform: `rotate(${ds.watermark.logo.rotation || 0}deg)`
-                    }} />
-                );
-            }
-        }
+                </View>
+            </View>
+        );
     }
 
     return (
-        <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: -1, overflow: 'hidden' }} fixed>
-            {tiles}
+        <View style={styles.fullscreenFixed} fixed>
+            <View style={styles.centerContainer}>
+                <Image
+                    src={logoSrc}
+                    style={{
+                        width: Math.min(Math.max(size, 80), 320),
+                        height: 'auto',
+                        maxHeight: 280,
+                        opacity,
+                        objectFit: 'contain',
+                    }}
+                />
+            </View>
         </View>
     );
-}
+}
+
+const styles = StyleSheet.create({
+    fullscreenFixed: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: -1,
+        overflow: 'hidden',
+    },
+    centerContainer: {
+        width: '100%',
+        height: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    singleText: {
+        transform: 'rotate(-35deg)',
+        letterSpacing: 3,
+        textTransform: 'uppercase',
+        textAlign: 'center',
+    },
+});

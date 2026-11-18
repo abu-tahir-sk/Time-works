@@ -15,6 +15,8 @@ import { AgreementPdf } from "./agreement-pdf"
 import {
     AGREEMENT_TYPES,
     DEFAULT_CLAUSES_BY_TYPE,
+    AgreementFormValues,
+    AgreementType,
 } from "@/lib/agreements/schema"
 import { createOrUpdateAgreement } from "@/actions/agreements"
 import { Button } from "@/components/ui/button"

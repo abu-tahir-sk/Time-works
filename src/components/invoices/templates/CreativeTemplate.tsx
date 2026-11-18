@@ -55,7 +55,7 @@ export function CreativeTemplate({ data, company, clients, totals, ds }: any) {
 
     return (
         <Page size="A4" style={styles.page} wrap>
-            <WatermarkLayer ds={ds} companyLogo={company?.logoUrl} />
+            <WatermarkLayer ds={ds} companyLogo={company?.logoUrl} companyName={company?.name} />
 
             <View style={styles.header}>
                 <View style={styles.companyCol}>

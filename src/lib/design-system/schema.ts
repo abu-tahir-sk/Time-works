@@ -2,16 +2,21 @@ import { z } from "zod";
 
 export const designSettingsSchema = z.object({
   watermark: z.object({
-    enabled: z.boolean().default(false),
-    type: z.enum(["TEXT", "LOGO"]).default("TEXT"),
+    enabled: z.boolean().default(true),
+    mode: z.enum(["SINGLE_LOGO", "LOGO_TILING", "SINGLE_TEXT", "TEXT_TILING", "CORNER_TEXT", "DIAGONAL_BAND", "EDGE_FRAME", "LOGO_CORNER", "NONE"]).default("SINGLE_LOGO"),
+    opacity: z.number().default(0.05),
+    size: z.number().default(220),
+    rotation: z.number().default(0),
+    gap: z.number().default(90),
+    type: z.enum(["TEXT", "LOGO"]).default("LOGO"),
     text: z.object({
       content: z.string().default("CONFIDENTIAL"),
       fontFamily: z.string().default("Inter, sans-serif"),
       fontSize: z.number().default(48),
       fontWeight: z.union([z.string(), z.number()]).default(700),
       color: z.string().default("#000000"),
-      opacity: z.number().default(0.1),
-      rotation: z.number().default(-45),
+      opacity: z.number().default(0.05),
+      rotation: z.number().default(-35),
       position: z.string().default("CENTER"),
       letterSpacing: z.number().default(0),
       horizontalGap: z.number().default(70),
@@ -22,8 +27,8 @@ export const designSettingsSchema = z.object({
     }),
     logo: z.object({
       url: z.string().optional(),
-      size: z.number().default(100),
-      opacity: z.number().default(0.1),
+      size: z.number().default(220),
+      opacity: z.number().default(0.05),
       rotation: z.number().default(0),
       position: z.string().default("CENTER"),
       horizontalGap: z.number().default(60),
@@ -118,16 +123,21 @@ export type DesignSettings = z.infer<typeof designSettingsSchema>;
 
 export const defaultDesignSettings: DesignSettings = {
   watermark: {
-    enabled: false,
-    type: "TEXT",
+    enabled: true,
+    mode: "SINGLE_LOGO",
+    opacity: 0.05,
+    size: 220,
+    rotation: 0,
+    gap: 90,
+    type: "LOGO",
     text: {
       content: "CONFIDENTIAL",
       fontFamily: "Inter, sans-serif",
       fontSize: 48,
       fontWeight: 700,
       color: "#000000",
-      opacity: 0.1,
-      rotation: -45,
+      opacity: 0.05,
+      rotation: -35,
       position: "CENTER",
       letterSpacing: 0,
       horizontalGap: 70,
@@ -138,8 +148,8 @@ export const defaultDesignSettings: DesignSettings = {
     },
     logo: { 
       url: "",
-      size: 100, 
-      opacity: 0.1, 
+      size: 220, 
+      opacity: 0.05, 
       rotation: 0, 
       position: "CENTER",
       horizontalGap: 60,

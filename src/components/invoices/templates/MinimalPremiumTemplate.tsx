@@ -122,7 +122,7 @@ export function MinimalPremiumTemplate({ data, company, clients, totals, ds }: a
 
     return (
         <Page size="A4" style={styles.page} wrap>
-            <WatermarkLayer ds={ds} companyLogo={company?.logoUrl} />
+            <WatermarkLayer ds={ds} companyLogo={company?.logoUrl} companyName={company?.name} />
 
             <View style={styles.header}>
                 <View style={styles.companyContainer}>

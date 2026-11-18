@@ -176,7 +176,7 @@ export function PremiumQuotationTemplate({ data, company, clients, totals, ds }:
 
     return (
         <Page size="A4" style={styles.page} wrap>
-            <WatermarkLayer ds={ds} companyLogo={company?.logoUrl} />
+            <WatermarkLayer ds={ds} companyLogo={company?.logoUrl} companyName={company?.name} />
 
             <View style={styles.headerContainer}>
                 <View style={styles.companyCol}>
