@@ -9,7 +9,6 @@ import {
   Grid,
   Type,
   Upload,
-  Trash2,
   Image as ImageIcon,
   RotateCcw,
 } from "lucide-react"

@@ -121,7 +121,7 @@ export async function getDocumentLibrary(): Promise<
 
     for (const quotation of quotations) {
       const totals = calculateInvoiceTotals(
-        quotation.items.map((item) => ({
+        quotation.items.map((item: any) => ({
           quantity: item.quantity,
           unitPrice: item.unitPrice,
           discountValue: item.discountValue,
