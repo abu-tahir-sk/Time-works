@@ -38,11 +38,13 @@ export function MobileNav() {
           <span className="font-bold">{siteConfig.name}</span>
         </MobileLink>
         <div className="flex flex-col space-y-3 mt-6">
+          <MobileLink href="/" onOpenChange={setOpen}>Home</MobileLink>
           <MobileLink href="/features" onOpenChange={setOpen}>Features</MobileLink>
-          <MobileLink href="/solutions" onOpenChange={setOpen}>Solutions</MobileLink>
-          <MobileLink href="/pricing" onOpenChange={setOpen}>Pricing</MobileLink>
-          <MobileLink href="/docs" onOpenChange={setOpen}>Docs</MobileLink>
-          <MobileLink href="/resources" onOpenChange={setOpen}>Resources</MobileLink>
+          <MobileLink href="/dashboard/invoices" onOpenChange={setOpen}>Invoices</MobileLink>
+          <MobileLink href="/dashboard/quotations" onOpenChange={setOpen}>Quotations</MobileLink>
+          <MobileLink href="/dashboard/expenses" onOpenChange={setOpen}>Ledger & Expenses</MobileLink>
+          <MobileLink href="/dashboard/agreements" onOpenChange={setOpen}>Agreements</MobileLink>
+          <MobileLink href="/admin" onOpenChange={setOpen}>Admin Portal</MobileLink>
         </div>
         <div className="mt-6 border-t pt-4">
           <h4 className="mb-2 font-medium text-sm text-muted-foreground">Dashboard Menu</h4>
