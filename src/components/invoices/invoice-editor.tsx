@@ -1,17 +1,30 @@
 "use client"
 
+import { useState } from "react"
 import { useFieldArray } from "react-hook-form"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
-import { CalendarIcon, Plus, Trash2, User, FileText, List, CreditCard, AlignLeft, Sparkles, Building2 } from "lucide-react"
+import {
+  CalendarIcon,
+  Plus,
+  Trash2,
+  User,
+  FileSpreadsheet,
+  Building2,
+  Sparkles,
+  CreditCard,
+  Check,
+  Shield,
+  Percent,
+  Truck,
+} from "lucide-react"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Calendar } from "@/components/ui/calendar"
 import { format } from "date-fns"
-import { cn } from "@/lib/utils"
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
+import { cn, formatMoney } from "@/lib/utils"
 import { AddClientModal } from "./add-client-modal"
 import { WatermarkSettings } from "./watermark-settings"
 
@@ -19,444 +32,646 @@ interface InvoiceEditorProps {
   form: any
   clients: any[]
   onAddClient: (client: any) => void
+  onCreateInvoice?: () => void
+  isSaving?: boolean
 }
 
-const SectionHeader = ({ icon: Icon, title, description }: { icon: any, title: string, description?: string }) => (
-  <div className="flex items-center gap-3">
-    <div className="p-2 bg-muted rounded-md text-primary">
-      <Icon className="h-4 w-4" />
-    </div>
-    <div className="text-left">
-      <h3 className="text-sm font-semibold">{title}</h3>
-      {description && <p className="text-xs text-muted-foreground font-normal">{description}</p>}
-    </div>
-  </div>
-)
-
-export function InvoiceEditor({ form, clients, onAddClient }: InvoiceEditorProps) {
+export function InvoiceEditor({ form, clients, onAddClient, onCreateInvoice, isSaving }: InvoiceEditorProps) {
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: "items"
   })
 
+  const [showDiscountInput, setShowDiscountInput] = useState(form.watch("discountValue") > 0)
+  const [showShippingInput, setShowShippingInput] = useState(false)
+  const [shippingFee, setShippingFee] = useState<number>(0)
+
+  // Watch fields for live summary calculation
+  const watchedItems = form.watch("items") || []
+  const currency = form.watch("currency") || "USD"
+  const discountType = form.watch("discountType") || "PERCENTAGE"
+  const discountValue = Number(form.watch("discountValue") || 0)
+
+  // Calculate Subtotal and Tax
+  let subtotal = 0
+  let taxTotal = 0
+
+  watchedItems.forEach((item: any) => {
+    const qty = Number(item.quantity || 0)
+    const rate = Number(item.unitPrice || 0)
+    const taxRate = Number(item.taxRate || 0)
+    const lineTotal = qty * rate
+    subtotal += lineTotal
+    taxTotal += lineTotal * (taxRate / 100)
+  })
+
+  // Calculate Discount
+  let discountAmount = 0
+  if (discountType === "PERCENTAGE") {
+    discountAmount = subtotal * (discountValue / 100)
+  } else {
+    discountAmount = discountValue
+  }
+
+  const grandTotal = Math.max(0, subtotal - discountAmount + taxTotal + shippingFee)
+
+  const selectedClientId = form.watch("clientId")
+  const selectedClient = clients.find((c) => c.id === selectedClientId)
+
+  const handleClientSelect = (clientId: string) => {
+    form.setValue("clientId", clientId)
+    const client = clients.find((c) => c.id === clientId)
+    if (client) {
+      if (!form.getValues("clientEmail")) form.setValue("clientEmail", client.email || "")
+      if (!form.getValues("clientAddress")) form.setValue("clientAddress", client.address || "")
+    }
+  }
+
   return (
     <Form {...form}>
-      <form className="space-y-6">
-        <Accordion defaultValue={["company", "client", "items"]} className="w-full space-y-4">
+      <form className="w-full">
+        {/* Two-Column Layout (Matching Screenshot 1) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           
-          {/* COMPANY / SENDER DETAILS (FROM) */}
-          <AccordionItem value="company" className="bg-card border rounded-lg px-4 border-b-0 shadow-sm">
-            <AccordionTrigger className="hover:no-underline py-4">
-              <SectionHeader
-                icon={Building2}
-                title="Company Details (From / Sender)"
-                description="Your company name, branding, address & contact"
-              />
-            </AccordionTrigger>
-            <AccordionContent className="pb-4 pt-2">
-              <div className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="companyDetails.name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-xs text-muted-foreground">Company Name *</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Times Digitals" className="h-10 font-medium" {...field} value={field.value || ""} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="companyDetails.taxId"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-xs text-muted-foreground">Tax ID / VAT / GST / EIN</FormLabel>
-                        <FormControl>
-                          <Input placeholder="US-EIN-98-7654321" className="h-10" {...field} value={field.value || ""} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
+          {/* LEFT COLUMN: Main Invoice Form Cards (8 Cols) */}
+          <div className="lg:col-span-8 space-y-6">
+            
+            {/* Card 1: Invoice Details (Matching Screenshot 1) */}
+            <div className="bg-white dark:bg-[#181a20] rounded-2xl shadow-sm border border-border/60 p-6 space-y-4">
+              <h2 className="text-base font-bold text-foreground">Invoice Details</h2>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="companyDetails.email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-xs text-muted-foreground">Company Email</FormLabel>
-                        <FormControl>
-                          <Input type="email" placeholder="billing@timesdigitals.com" className="h-10" {...field} value={field.value || ""} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="companyDetails.phone"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-xs text-muted-foreground">Company Phone</FormLabel>
-                        <FormControl>
-                          <Input placeholder="+1 (800) 555-0199" className="h-10" {...field} value={field.value || ""} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <FormField
-                  control={form.control}
-                  name="companyDetails.address"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-xs text-muted-foreground">Business Address</FormLabel>
-                      <FormControl>
-                        <Textarea placeholder="Times Digitals Tower, Suite 400, Redmond, WA 98052, USA" className="min-h-[70px] resize-y" {...field} value={field.value || ""} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-
-          {/* CLIENT SECTION */}
-          <AccordionItem value="client" className="bg-card border rounded-lg px-4 border-b-0 shadow-sm">
-            <AccordionTrigger className="hover:no-underline py-4">
-              <SectionHeader icon={User} title="Client & Invoice Details" description="Select client and metadata" />
-            </AccordionTrigger>
-            <AccordionContent className="pb-4 pt-2">
-              <div className="space-y-5">
-                <FormField
-                  control={form.control}
-                  name="clientId"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-xs text-muted-foreground">Billed To</FormLabel>
-                      <div className="flex gap-2">
-                        <div className="flex-1">
-                          {clients.length === 0 ? (
-                            <div className="flex flex-col gap-2 p-3 border rounded-md bg-muted/10">
-                              <p className="text-xs text-muted-foreground">No clients found.</p>
-                            </div>
-                          ) : (
-                            <Select onValueChange={field.onChange} value={field.value || ""}>
-                              <SelectTrigger className="h-10">
-                                <SelectValue placeholder="Select a client..." />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {clients.map(c => (
-                                  <SelectItem key={c.id} value={c.id}>
-                                    {c.name} {c.clientCompany ? `(${c.clientCompany})` : ""}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          )}
-                        </div>
-                        <AddClientModal onSuccess={(client) => {
-                          onAddClient(client)
-                          form.setValue("clientId", client.id)
-                        }} />
-                      </div>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-5 gap-3.5">
+                {/* 1. Invoice Number */}
+                <div className="sm:col-span-1">
                   <FormField
                     control={form.control}
                     name="invoiceNumber"
                     render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-xs text-muted-foreground">Invoice Number</FormLabel>
+                      <FormItem className="space-y-1">
+                        <FormLabel className="text-xs text-muted-foreground font-medium">Invoice Number</FormLabel>
                         <FormControl>
-                          <Input placeholder="Auto-generated" className="h-10" {...field} value={field.value || ""} />
+                          <Input
+                            placeholder="INV-2026"
+                            className="h-10 text-xs font-mono font-medium rounded-xl bg-muted/20"
+                            {...field}
+                            value={field.value || ""}
+                          />
                         </FormControl>
                       </FormItem>
                     )}
                   />
+                </div>
+
+                {/* 2. Template */}
+                <div className="sm:col-span-1">
                   <FormField
                     control={form.control}
-                    name="status"
+                    name="template"
                     render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-xs text-muted-foreground">Status</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value}>
-                            <SelectTrigger className="h-10">
-                              <SelectValue placeholder="Select status" />
+                      <FormItem className="space-y-1">
+                        <FormLabel className="text-xs text-muted-foreground font-medium">Template</FormLabel>
+                        <Select onValueChange={field.onChange} value={field.value || "professional"}>
+                          <FormControl>
+                            <SelectTrigger className="h-10 text-xs rounded-xl bg-muted/20">
+                              <SelectValue placeholder="Template" />
                             </SelectTrigger>
+                          </FormControl>
                           <SelectContent>
-                            <SelectItem value="DRAFT">Draft</SelectItem>
-                            <SelectItem value="SENT">Sent</SelectItem>
-                            <SelectItem value="PAID">Paid</SelectItem>
-                            <SelectItem value="OVERDUE">Overdue</SelectItem>
-                            <SelectItem value="CANCELLED">Cancelled</SelectItem>
+                            <SelectItem value="professional">Professional</SelectItem>
+                            <SelectItem value="classic">Classic</SelectItem>
+                            <SelectItem value="modern">Modern</SelectItem>
+                            <SelectItem value="minimal">Minimal</SelectItem>
                           </SelectContent>
                         </Select>
-                        <FormMessage />
                       </FormItem>
                     )}
                   />
+                </div>
+
+                {/* 3. Issue Date */}
+                <div className="sm:col-span-1">
                   <FormField
                     control={form.control}
                     name="issueDate"
                     render={({ field }) => (
-                      <FormItem className="flex flex-col mt-1">
-                        <FormLabel className="text-xs text-muted-foreground">Issue Date</FormLabel>
+                      <FormItem className="space-y-1 flex flex-col">
+                        <FormLabel className="text-xs text-muted-foreground font-medium">Issue Date</FormLabel>
                         <Popover>
                           <FormControl>
                             <PopoverTrigger render={
-                              <Button variant="outline" className={cn("w-full pl-3 text-left font-normal h-10", !field.value && "text-muted-foreground")}>
-                                {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
-                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                              <Button
+                                variant="outline"
+                                className={cn(
+                                  "h-10 text-xs justify-between rounded-xl font-normal bg-muted/20 border-input",
+                                  !field.value && "text-muted-foreground"
+                                )}
+                              >
+                                {field.value ? format(new Date(field.value), "MM/dd/yy") : "Pick date"}
+                                <CalendarIcon className="h-3.5 w-3.5 opacity-60 ml-1" />
                               </Button>
                             } />
                           </FormControl>
                           <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar mode="single" selected={field.value} onSelect={field.onChange} />
-                          </PopoverContent>
-                        </Popover>
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="dueDate"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col mt-1">
-                        <FormLabel className="text-xs text-muted-foreground">Due Date</FormLabel>
-                        <Popover>
-                          <FormControl>
-                            <PopoverTrigger render={
-                              <Button variant="outline" className={cn("w-full pl-3 text-left font-normal h-10", !field.value && "text-muted-foreground")}>
-                                {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
-                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                              </Button>
-                            } />
-                          </FormControl>
-                          <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar mode="single" selected={field.value} onSelect={field.onChange} />
+                            <Calendar
+                              mode="single"
+                              selected={field.value ? new Date(field.value) : undefined}
+                              onSelect={field.onChange}
+                            />
                           </PopoverContent>
                         </Popover>
                       </FormItem>
                     )}
                   />
                 </div>
+
+                {/* 4. Due Date */}
+                <div className="sm:col-span-1">
+                  <FormField
+                    control={form.control}
+                    name="dueDate"
+                    render={({ field }) => (
+                      <FormItem className="space-y-1 flex flex-col">
+                        <FormLabel className="text-xs text-muted-foreground font-medium">Due Date</FormLabel>
+                        <Popover>
+                          <FormControl>
+                            <PopoverTrigger render={
+                              <Button
+                                variant="outline"
+                                className={cn(
+                                  "h-10 text-xs justify-between rounded-xl font-normal bg-muted/20 border-input",
+                                  !field.value && "text-muted-foreground"
+                                )}
+                              >
+                                {field.value ? format(new Date(field.value), "MM/dd/yy") : "Pick date"}
+                                <CalendarIcon className="h-3.5 w-3.5 opacity-60 ml-1" />
+                              </Button>
+                            } />
+                          </FormControl>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={field.value ? new Date(field.value) : undefined}
+                              onSelect={field.onChange}
+                            />
+                          </PopoverContent>
+                        </Popover>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {/* 5. Payment Terms */}
+                <div className="sm:col-span-1">
+                  <FormField
+                    control={form.control}
+                    name="paymentTerms"
+                    render={({ field }) => (
+                      <FormItem className="space-y-1">
+                        <FormLabel className="text-xs text-muted-foreground font-medium">Payment Terms</FormLabel>
+                        <Select onValueChange={field.onChange} value={field.value || "NET 15 days"}>
+                          <FormControl>
+                            <SelectTrigger className="h-10 text-xs rounded-xl bg-muted/20">
+                              <SelectValue placeholder="Terms" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="Due upon receipt">Due upon receipt</SelectItem>
+                            <SelectItem value="NET 15 days">NET 15 days</SelectItem>
+                            <SelectItem value="NET 30 days">NET 30 days</SelectItem>
+                            <SelectItem value="NET 60 days">NET 60 days</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormItem>
+                    )}
+                  />
+                </div>
               </div>
-            </AccordionContent>
-          </AccordionItem>
+            </div>
 
-          {/* ITEMS SECTION */}
-          <AccordionItem value="items" className="bg-card border rounded-lg px-4 border-b-0 shadow-sm">
-            <AccordionTrigger className="hover:no-underline py-4">
-              <SectionHeader icon={List} title="Items" description="Products, services, and associated charges" />
-            </AccordionTrigger>
-            <AccordionContent className="pb-4 pt-2">
-              <div className="space-y-4">
-                {fields.map((field, index) => {
-                  const qty = form.watch(`items.${index}.quantity`) || 0;
-                  const price = form.watch(`items.${index}.unitPrice`) || 0;
-                  const total = (qty * price).toFixed(2);
-                  
-                  return (
-                    <div key={field.id} className="p-4 border rounded-md relative bg-background shadow-sm group">
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        className="absolute -right-2 -top-2 h-7 w-7 rounded-full bg-destructive/10 text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
-                        onClick={() => remove(index)}
-                        disabled={fields.length === 1}
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </Button>
-                      <div className="grid grid-cols-12 gap-3 sm:gap-4">
-                        <div className="col-span-12">
-                          <FormField
-                            control={form.control}
-                            name={`items.${index}.description`}
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel className="text-[10px] uppercase tracking-wider text-muted-foreground">Description</FormLabel>
-                                <FormControl>
-                                  <Input placeholder="Item description" className="h-9" {...field} />
-                                </FormControl>
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                        <div className="col-span-4 sm:col-span-3">
-                          <FormField
-                            control={form.control}
-                            name={`items.${index}.quantity`}
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel className="text-[10px] uppercase tracking-wider text-muted-foreground">Qty</FormLabel>
-                                <FormControl>
-                                  <Input type="number" step="0.01" className="h-9" {...field} />
-                                </FormControl>
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                        <div className="col-span-4 sm:col-span-4">
-                          <FormField
-                            control={form.control}
-                            name={`items.${index}.unitPrice`}
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel className="text-[10px] uppercase tracking-wider text-muted-foreground">Price</FormLabel>
-                                <FormControl>
-                                  <Input type="number" step="0.01" className="h-9" {...field} />
-                                </FormControl>
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                        <div className="col-span-4 sm:col-span-5 flex flex-col justify-end">
-                          <div className="h-9 flex items-center justify-end px-2 sm:px-3 bg-muted/30 rounded-md border text-xs sm:text-sm font-medium font-mono">
-                            {form.watch("currency") === "USD" ? "$" : (form.watch("currency") === "EUR" ? "€" : "₹")} {total}
+            {/* Card 2: Client (Matching Screenshot 1) */}
+            <div className="bg-white dark:bg-[#181a20] rounded-2xl shadow-sm border border-border/60 p-6 space-y-4">
+              <div className="flex items-center justify-between">
+                <h2 className="text-base font-bold text-foreground">Client</h2>
+                <AddClientModal onSuccess={(client) => {
+                  onAddClient(client)
+                  form.setValue("clientId", client.id)
+                }} />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                {/* Client Name */}
+                <div className="sm:col-span-1">
+                  <FormField
+                    control={form.control}
+                    name="clientId"
+                    render={({ field }) => (
+                      <FormItem className="space-y-1">
+                        <FormLabel className="text-xs text-muted-foreground font-medium">Client Name</FormLabel>
+                        {clients.length === 0 ? (
+                          <div className="text-xs text-muted-foreground p-2 border rounded-xl bg-muted/20">
+                            No clients yet. Click Add Client above.
                           </div>
-                        </div>
-                      </div>
-                    </div>
-                  )
-                })}
+                        ) : (
+                          <Select onValueChange={handleClientSelect} value={field.value || ""}>
+                            <FormControl>
+                              <SelectTrigger className="h-10 text-xs rounded-xl bg-muted/20">
+                                <SelectValue placeholder="Search or add client..." />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {clients.map((c) => (
+                                <SelectItem key={c.id} value={c.id}>
+                                  {c.name} {c.clientCompany ? `(${c.clientCompany})` : ""}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        )}
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
-                <Button type="button" variant="outline" className="w-full h-10 border-dashed hover:bg-muted/50" onClick={() => append({ description: "", quantity: 1, unit: "Item", unitPrice: 0 })}>
-                  <Plus className="h-4 w-4 mr-2" /> Add Line Item
+                {/* Email */}
+                <div className="sm:col-span-1">
+                  <div className="space-y-1">
+                    <label className="text-xs text-muted-foreground font-medium">Email</label>
+                    <Input
+                      readOnly
+                      placeholder="client@example.com"
+                      value={selectedClient?.email || ""}
+                      className="h-10 text-xs rounded-xl bg-muted/20 text-muted-foreground cursor-default"
+                    />
+                  </div>
+                </div>
+
+                {/* Currency */}
+                <div className="sm:col-span-1">
+                  <FormField
+                    control={form.control}
+                    name="currency"
+                    render={({ field }) => (
+                      <FormItem className="space-y-1">
+                        <FormLabel className="text-xs text-muted-foreground font-medium">Currency</FormLabel>
+                        <Select onValueChange={field.onChange} value={field.value || "USD"}>
+                          <FormControl>
+                            <SelectTrigger className="h-10 text-xs rounded-xl bg-muted/20">
+                              <SelectValue placeholder="Currency" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="USD">$ USD - US Dollar</SelectItem>
+                            <SelectItem value="INR">₹ INR - Indian Rupee</SelectItem>
+                            <SelectItem value="EUR">€ EUR - Euro</SelectItem>
+                            <SelectItem value="GBP">£ GBP - British Pound</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+
+              {/* Billing Address */}
+              <div className="space-y-1">
+                <label className="text-xs text-muted-foreground font-medium">Billing Address</label>
+                <Input
+                  readOnly
+                  placeholder="123 Client Street, City, State 12345"
+                  value={selectedClient?.address || ""}
+                  className="h-10 text-xs rounded-xl bg-muted/20 text-muted-foreground cursor-default"
+                />
+              </div>
+            </div>
+
+            {/* Card 3: Line Items (Matching Screenshot 1) */}
+            <div className="bg-white dark:bg-[#181a20] rounded-2xl shadow-sm border border-border/60 p-6 space-y-4">
+              <div className="flex items-center justify-between">
+                <h2 className="text-base font-bold text-foreground">Line Items</h2>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => append({ description: "", quantity: 1, unit: "Hour", unitPrice: 0, taxRate: 0 })}
+                  className="h-8 text-xs font-semibold rounded-lg border-border/80 hover:bg-muted"
+                >
+                  <Plus className="h-3.5 w-3.5 mr-1 text-[#c82020]" />
+                  Add Line Item
                 </Button>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-6 border-t mt-6">
+              <div className="border border-border/60 rounded-xl overflow-hidden shadow-2xs">
+                <table className="w-full text-left text-xs">
+                  <thead className="bg-muted/40 border-b border-border/60 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                    <tr>
+                      <th className="py-2.5 px-3">Description</th>
+                      <th className="py-2.5 px-2 w-20 text-center">Qty / Hrs</th>
+                      <th className="py-2.5 px-2 w-28 text-right">Rate</th>
+                      <th className="py-2.5 px-2 w-20 text-right">Tax %</th>
+                      <th className="py-2.5 px-3 w-28 text-right">Amount</th>
+                      <th className="py-2.5 px-2 w-10 text-center"></th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border/40">
+                    {fields.map((field, index) => {
+                      const qty = Number(form.watch(`items.${index}.quantity`) || 0)
+                      const price = Number(form.watch(`items.${index}.unitPrice`) || 0)
+                      const rowTotal = qty * price
+
+                      return (
+                        <tr key={field.id} className="hover:bg-muted/15 transition-colors">
+                          <td className="p-2">
+                            <FormField
+                              control={form.control}
+                              name={`items.${index}.description`}
+                              render={({ field }) => (
+                                <Input
+                                  placeholder="Service or product description..."
+                                  className="h-8 text-xs rounded-lg border-transparent focus:border-input bg-transparent hover:bg-muted/30"
+                                  {...field}
+                                />
+                              )}
+                            />
+                          </td>
+                          <td className="p-2">
+                            <FormField
+                              control={form.control}
+                              name={`items.${index}.quantity`}
+                              render={({ field }) => (
+                                <Input
+                                  type="number"
+                                  step="0.01"
+                                  className="h-8 text-xs text-center font-mono rounded-lg border-transparent focus:border-input bg-transparent hover:bg-muted/30"
+                                  {...field}
+                                />
+                              )}
+                            />
+                          </td>
+                          <td className="p-2">
+                            <FormField
+                              control={form.control}
+                              name={`items.${index}.unitPrice`}
+                              render={({ field }) => (
+                                <Input
+                                  type="number"
+                                  step="0.01"
+                                  className="h-8 text-xs text-right font-mono rounded-lg border-transparent focus:border-input bg-transparent hover:bg-muted/30"
+                                  {...field}
+                                />
+                              )}
+                            />
+                          </td>
+                          <td className="p-2">
+                            <FormField
+                              control={form.control}
+                              name={`items.${index}.taxRate`}
+                              render={({ field }) => (
+                                <Input
+                                  type="number"
+                                  step="1"
+                                  placeholder="0"
+                                  className="h-8 text-xs text-right font-mono rounded-lg border-transparent focus:border-input bg-transparent hover:bg-muted/30"
+                                  {...field}
+                                />
+                              )}
+                            />
+                          </td>
+                          <td className="p-2 text-right font-mono font-bold text-foreground text-xs pr-3">
+                            {formatMoney(rowTotal, currency)}
+                          </td>
+                          <td className="p-2 text-center">
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              disabled={fields.length === 1}
+                              onClick={() => remove(index)}
+                              className="h-7 w-7 text-muted-foreground hover:text-red-600 rounded-md"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </Button>
+                          </td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Card 4: Sender Company & Payment Terms */}
+            <div className="bg-white dark:bg-[#181a20] rounded-2xl shadow-sm border border-border/60 p-6 space-y-4">
+              <h2 className="text-base font-bold text-foreground">Remittance & Notes</h2>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
-                  name="discountValue"
+                  name="companyDetails.name"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-xs text-muted-foreground">Global Discount</FormLabel>
+                    <FormItem className="space-y-1">
+                      <FormLabel className="text-xs text-muted-foreground font-medium">Issuing Entity</FormLabel>
                       <FormControl>
-                        <Input type="number" step="0.01" placeholder="0.00" className="h-10" {...field} value={field.value || ""} />
+                        <Input className="h-9 text-xs rounded-xl bg-muted/20 font-medium" {...field} value={field.value || "Times Works"} />
                       </FormControl>
                     </FormItem>
                   )}
                 />
                 <FormField
                   control={form.control}
-                  name="discountType"
+                  name="companyDetails.email"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-xs text-muted-foreground">Discount Type</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
-                          <SelectTrigger className="h-10">
-                            <SelectValue placeholder="Select type" />
-                          </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="PERCENTAGE">Percentage (%)</SelectItem>
-                          <SelectItem value="FIXED">Fixed Amount</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-
-          {/* PAYMENT SECTION */}
-          <AccordionItem value="payment" className="bg-card border rounded-lg px-4 border-b-0 shadow-sm">
-            <AccordionTrigger className="hover:no-underline py-4">
-              <SectionHeader icon={CreditCard} title="Payment & Notes" description="Currency, terms, and notes" />
-            </AccordionTrigger>
-            <AccordionContent className="pb-4 pt-2">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
-                <FormField
-                  control={form.control}
-                  name="currency"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-xs text-muted-foreground">Currency</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
-                          <SelectTrigger className="h-10">
-                            <SelectValue placeholder="Select currency" />
-                          </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="INR">INR (₹)</SelectItem>
-                          <SelectItem value="USD">USD ($)</SelectItem>
-                          <SelectItem value="EUR">EUR (€)</SelectItem>
-                          <SelectItem value="GBP">GBP (£)</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="paymentTerms"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-xs text-muted-foreground">Payment Terms</FormLabel>
+                    <FormItem className="space-y-1">
+                      <FormLabel className="text-xs text-muted-foreground font-medium">Billing Email</FormLabel>
                       <FormControl>
-                        <Input placeholder="Net 30, Due on Receipt" className="h-10" {...field} value={field.value || ""} />
+                        <Input className="h-9 text-xs rounded-xl bg-muted/20" {...field} value={field.value || "billing@timesworks.com"} />
                       </FormControl>
                     </FormItem>
                   )}
                 />
               </div>
-              <FormField
-                control={form.control}
-                name="notes"
-                render={({ field }) => (
-                  <FormItem className="mb-5">
-                    <FormLabel className="text-xs text-muted-foreground">Notes to Client</FormLabel>
-                    <FormControl>
-                      <Textarea placeholder="Thank you for your business!" className="min-h-[80px] resize-y" {...field} value={field.value || ""} />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="terms"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-xs text-muted-foreground">Terms & Conditions</FormLabel>
-                    <FormControl>
-                      <Textarea placeholder="Please pay within the due date..." className="min-h-[80px] resize-y" {...field} value={field.value || ""} />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            </AccordionContent>
-          </AccordionItem>
 
-          {/* WATERMARK */}
-          <AccordionItem value="watermark" className="bg-card border rounded-lg px-4 border-b-0 shadow-sm">
-            <AccordionTrigger className="hover:no-underline py-4">
-              <SectionHeader
-                icon={Sparkles}
-                title="Watermark"
-                description="Logo, text, opacity, size & rotation"
-              />
-            </AccordionTrigger>
-            <AccordionContent className="pb-4 pt-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="notes"
+                  render={({ field }) => (
+                    <FormItem className="space-y-1">
+                      <FormLabel className="text-xs text-muted-foreground font-medium">Project Notes / Purchase Order</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Client Project & Deliverables..." className="text-xs rounded-xl bg-muted/20 min-h-[70px]" {...field} value={field.value || ""} />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="terms"
+                  render={({ field }) => (
+                    <FormItem className="space-y-1">
+                      <FormLabel className="text-xs text-muted-foreground font-medium">Payment Instructions</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Wire Remittance / Stripe Payment terms..." className="text-xs rounded-xl bg-muted/20 min-h-[70px]" {...field} value={field.value || ""} />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+
+            {/* Card 5: Watermarking & Anti-Fraud Security */}
+            <div className="bg-white dark:bg-[#181a20] rounded-2xl shadow-sm border border-border/60 p-6 space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Shield className="h-4 w-4 text-[#c82020]" />
+                  <h2 className="text-base font-bold text-foreground">Anti-Fraud & Watermark Security</h2>
+                </div>
+                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#c82020]/10 text-[#c82020]">
+                  Times Works Protection
+                </span>
+              </div>
               <WatermarkSettings />
-            </AccordionContent>
-          </AccordionItem>
+            </div>
 
-        </Accordion>
+          </div>
+
+          {/* RIGHT COLUMN: Sticky Summary Card (Matching Screenshot 1) (4 Cols) */}
+          <div className="lg:col-span-4 sticky top-6 space-y-4">
+            <div className="bg-white dark:bg-[#181a20] rounded-2xl shadow-sm border border-border/60 p-6 space-y-5">
+              <h2 className="text-base font-bold text-foreground">Summary</h2>
+
+              <div className="space-y-3 text-xs">
+                {/* Subtotal */}
+                <div className="flex justify-between items-center text-muted-foreground">
+                  <span className="font-medium">Subtotal</span>
+                  <span className="font-mono font-semibold text-foreground text-sm">
+                    {formatMoney(subtotal, currency)}
+                  </span>
+                </div>
+
+                {/* + Add Invoice Discount Button / Input */}
+                {!showDiscountInput ? (
+                  <button
+                    type="button"
+                    onClick={() => setShowDiscountInput(true)}
+                    className="text-[#c82020] hover:text-[#a81a1a] font-semibold text-xs flex items-center gap-1 cursor-pointer transition-colors"
+                  >
+                    + Add Invoice Discount
+                  </button>
+                ) : (
+                  <div className="p-3 rounded-xl bg-muted/30 border border-border/60 space-y-2">
+                    <div className="flex justify-between items-center text-[11px]">
+                      <span className="font-semibold text-foreground">Invoice Discount</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          form.setValue("discountValue", 0)
+                          setShowDiscountInput(false)
+                        }}
+                        className="text-muted-foreground hover:text-red-600 text-[10px]"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                    <div className="flex gap-2">
+                      <FormField
+                        control={form.control}
+                        name="discountValue"
+                        render={({ field }) => (
+                          <Input
+                            type="number"
+                            step="0.01"
+                            placeholder="0.00"
+                            className="h-8 text-xs font-mono rounded-lg bg-background"
+                            {...field}
+                          />
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="discountType"
+                        render={({ field }) => (
+                          <Select onValueChange={field.onChange} value={field.value || "PERCENTAGE"}>
+                            <SelectTrigger className="h-8 text-xs w-24 rounded-lg bg-background">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="PERCENTAGE">%</SelectItem>
+                              <SelectItem value="FIXED">Flat</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        )}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* + Add Shipping Button / Input */}
+                {!showShippingInput ? (
+                  <button
+                    type="button"
+                    onClick={() => setShowShippingInput(true)}
+                    className="text-[#c82020] hover:text-[#a81a1a] font-semibold text-xs flex items-center gap-1 cursor-pointer transition-colors"
+                  >
+                    + Add Shipping
+                  </button>
+                ) : (
+                  <div className="p-3 rounded-xl bg-muted/30 border border-border/60 space-y-2">
+                    <div className="flex justify-between items-center text-[11px]">
+                      <span className="font-semibold text-foreground">Shipping / Extra Fee</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShippingFee(0)
+                          setShowShippingInput(false)
+                        }}
+                        className="text-muted-foreground hover:text-red-600 text-[10px]"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      placeholder="0.00"
+                      value={shippingFee || ""}
+                      onChange={(e) => setShippingFee(Number(e.target.value) || 0)}
+                      className="h-8 text-xs font-mono rounded-lg bg-background"
+                    />
+                  </div>
+                )}
+
+                {/* Tax */}
+                <div className="flex justify-between items-center text-muted-foreground pt-1">
+                  <span className="font-medium">Tax (from line items)</span>
+                  <span className="font-mono font-semibold text-foreground">
+                    {formatMoney(taxTotal, currency)}
+                  </span>
+                </div>
+
+                {/* Total Row */}
+                <div className="border-t border-border/80 pt-3 flex justify-between items-baseline">
+                  <span className="font-bold text-base text-foreground">Total</span>
+                  <span className="font-mono text-2xl font-extrabold text-foreground tracking-tight">
+                    {formatMoney(grandTotal, currency)}
+                  </span>
+                </div>
+              </div>
+
+              {/* Pill Create Invoice Button (Matching Screenshot 1) */}
+              <Button
+                type="button"
+                disabled={isSaving}
+                onClick={onCreateInvoice}
+                className="w-full h-11 text-xs font-bold rounded-full bg-[#c82020] hover:bg-[#a81a1a] text-white shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+              >
+                <span>{isSaving ? "Creating..." : "Create Invoice"}</span>
+                <Check className="h-4 w-4 stroke-[3]" />
+              </Button>
+            </div>
+          </div>
+
+        </div>
       </form>
     </Form>
   )

@@ -11,8 +11,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "DocuFlow | All your business documents, in one place",
-  description: "Easily manage invoices, quotations, agreements, clients, and payments.",
+  title: "Times Works | Professional Invoicing & Financial Operations",
+  description: "Enterprise billing, precision single-page invoices, quotations, and financial ledger.",
 };
 
 export default function RootLayout({

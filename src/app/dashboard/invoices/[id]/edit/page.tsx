@@ -7,7 +7,7 @@ import { requireUser } from "@/lib/auth/utils"
 import { redirect } from "next/navigation"
 
 export const metadata: Metadata = {
-  title: "Edit Invoice | DocuFlow",
+  title: "Edit Invoice | Times Works",
   description: "Edit an existing invoice",
 }
 
@@ -29,7 +29,7 @@ export default async function EditInvoicePage({ params }: { params: { id: string
   const invoice = invoiceRes.invoice
 
   return (
-    <div className="h-[calc(100vh-4rem)]">
+    <div className="w-full">
       <InvoiceBuilder clients={clients} company={company} initialData={invoice} />
     </div>
   )

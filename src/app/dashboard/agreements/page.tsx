@@ -5,7 +5,7 @@ import { getAgreements } from "@/actions/agreements"
 import { AgreementListClient } from "./agreement-list-client"
 
 export const metadata: Metadata = {
-  title: "Agreements | DocuFlow",
+  title: "Agreements | Times Works",
   description: "Create, sign, and manage your client agreements.",
 }
 

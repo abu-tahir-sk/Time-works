@@ -5,7 +5,7 @@ import { InvoiceListClient } from "./invoice-list-client"
 import { AlertCircle } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "Invoices | DocuFlow",
+  title: "Invoices | Times Works",
   description: "Manage your invoices",
 }
 

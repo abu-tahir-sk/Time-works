@@ -24,20 +24,20 @@ export function Sidebar() {
   return (
     <div className="hidden border-r border-border/80 bg-background/95 backdrop-blur-md md:block w-64 lg:w-72 shrink-0 select-none shadow-[1px_0_0_0_rgba(0,0,0,0.04)]">
       <div className="flex h-full max-h-screen flex-col">
-        {/* Microsoft App Brand Header */}
-        <div className="flex h-14 items-center justify-between border-b border-border/60 px-4 lg:h-[60px] lg:px-5">
-          <Link href="/dashboard" className="flex items-center gap-2.5 font-semibold group">
-            <div className="relative flex items-center justify-center w-8 h-8 rounded-lg overflow-hidden ring-1 ring-border shadow-xs bg-primary/5">
-              <Image src="/logo-v3.jpg" alt="DocuFlow Logo" width={32} height={32} className="object-cover" />
+        {/* Times Works PRO Brand Header */}
+        <div className="flex h-16 items-center justify-between border-b border-border/60 px-5">
+          <Link href="/dashboard" className="flex items-center gap-3 font-semibold group">
+            <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-tr from-[#c82020] to-[#e11d48] text-white shadow-sm ring-1 ring-white/20">
+              <Sparkles className="w-5 h-5 text-white" />
             </div>
             <div className="flex flex-col">
-              <span className="text-sm font-semibold tracking-tight text-foreground flex items-center gap-1.5">
-                {siteConfig.name}
-                <span className="inline-flex items-center rounded px-1 py-0.2 text-[10px] font-medium bg-[#0078D4]/10 text-[#0078D4] border border-[#0078D4]/20">
-                  Business
+              <span className="text-sm font-bold tracking-tight text-foreground flex items-center gap-1.5">
+                Times Works
+                <span className="inline-flex items-center rounded-sm px-1.5 py-0.2 text-[9px] font-extrabold bg-[#c82020]/10 text-[#c82020] border border-[#c82020]/25 tracking-wider">
+                  PRO
                 </span>
               </span>
-              <span className="text-[11px] text-muted-foreground/75 font-normal">Finance & Ledger Suite</span>
+              <span className="text-[11px] text-muted-foreground/75 font-medium">Professional Services</span>
             </div>
           </Link>
         </div>
@@ -62,7 +62,7 @@ export function Sidebar() {
                       className={cn(
                         "group flex items-center justify-between rounded-md px-3 py-2 text-xs font-medium transition-all relative",
                         isActive
-                          ? "bg-[#eff6fc] dark:bg-blue-950/40 text-[#0078D4] dark:text-blue-400 font-semibold shadow-[inset_3px_0_0_0_#0078D4]"
+                          ? "bg-rose-50/70 dark:bg-rose-950/30 text-[#c82020] dark:text-rose-400 font-semibold shadow-[inset_3px_0_0_0_#c82020]"
                           : "text-muted-foreground hover:bg-muted/70 hover:text-foreground"
                       )}
                     >
@@ -71,7 +71,7 @@ export function Sidebar() {
                           className={cn(
                             "h-4 w-4 shrink-0 transition-colors",
                             isActive
-                              ? "text-[#0078D4] dark:text-blue-400"
+                              ? "text-[#c82020] dark:text-rose-400"
                               : "text-muted-foreground/80 group-hover:text-foreground"
                           )}
                         />
@@ -98,34 +98,46 @@ export function Sidebar() {
           ))}
         </div>
 
-        {/* Bottom User / System Panel */}
-        <div className="mt-auto border-t border-border/60 p-3 space-y-1 bg-muted/20">
+        {/* Bottom User Profile Card (CherryWorks Style) */}
+        <div className="mt-auto border-t border-border/60 p-3 space-y-2 bg-muted/15">
           <Link
             href="/dashboard/settings"
-            className="flex items-center gap-2.5 rounded-md px-3 py-1.5 text-xs text-muted-foreground hover:bg-muted hover:text-foreground transition-all"
+            className="flex items-center gap-3 p-2 rounded-xl hover:bg-muted/70 transition-all group"
           >
-            <Settings className="h-3.5 w-3.5" />
-            <span>Workspace Settings</span>
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#c82020] to-[#991b1b] text-white flex items-center justify-center text-xs font-bold ring-2 ring-white/50 shadow-2xs shrink-0">
+              {session?.user?.name
+                ? session.user.name
+                    .split(" ")
+                    .map((n: string) => n[0])
+                    .slice(0, 2)
+                    .join("")
+                    .toUpperCase()
+                : "TW"}
+            </div>
+            <div className="flex flex-col min-w-0 flex-1">
+              <span className="text-xs font-bold text-foreground truncate group-hover:text-[#c82020] transition-colors">
+                {session?.user?.name || "Abu Tahir"}
+              </span>
+              <span className="text-[10px] text-muted-foreground truncate">
+                {isSuperAdmin ? "Managing Partner" : "Finance Director"}
+              </span>
+            </div>
+            <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/50 group-hover:text-foreground" />
           </Link>
-          {isSuperAdmin && (
-            <Link
-              href="/admin"
-              className="flex items-center justify-between rounded-md px-3 py-1.5 text-xs text-muted-foreground hover:bg-muted hover:text-foreground transition-all"
+
+          <div className="flex items-center justify-between px-2 pt-1 border-t border-border/40 text-[11px] text-muted-foreground">
+            {isSuperAdmin && (
+              <Link href="/admin" className="hover:text-foreground flex items-center gap-1 font-medium">
+                <Sparkles className="h-3 w-3 text-[#c82020]" /> Admin
+              </Link>
+            )}
+            <button
+              onClick={() => signOut({ callbackUrl: "/login" })}
+              className="ml-auto hover:text-red-600 transition-colors cursor-pointer flex items-center gap-1 font-medium"
             >
-              <div className="flex items-center gap-2.5">
-                <Sparkles className="h-3.5 w-3.5 text-[#0078D4]" />
-                <span>Admin Portal</span>
-              </div>
-              <ChevronRight className="h-3 w-3 text-muted-foreground/60" />
-            </Link>
-          )}
-          <button
-            onClick={() => signOut({ callbackUrl: "/login" })}
-            className="flex w-full items-center gap-2.5 rounded-md px-3 py-1.5 text-xs text-red-600/90 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition-all cursor-pointer"
-          >
-            <LogOut className="h-3.5 w-3.5" />
-            <span>Sign out</span>
-          </button>
+              <LogOut className="h-3 w-3" /> Sign out
+            </button>
+          </div>
         </div>
       </div>
     </div>

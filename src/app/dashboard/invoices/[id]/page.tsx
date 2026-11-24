@@ -7,7 +7,7 @@ import { notFound } from "next/navigation"
 import { InvoiceDetailsClient } from "./invoice-details-client"
 
 export const metadata: Metadata = {
-  title: "Invoice Details | DocuFlow",
+  title: "Invoice Details | Times Works",
   description: "View and manage invoice",
 }
 
@@ -28,7 +28,7 @@ export default async function InvoiceDetailsPage({ params }: { params: { id: str
   const clients = clientsRes.success && clientsRes.clients ? clientsRes.clients : []
 
   return (
-    <div className="h-[calc(100vh-4rem)]">
+    <div className="w-full">
       <InvoiceDetailsClient 
         initialInvoice={invoiceRes.invoice} 
         company={company} 

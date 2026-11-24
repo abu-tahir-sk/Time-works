@@ -1,5 +1,5 @@
 export const siteConfig = {
-  name: "DocuFlow",
-  description: "Modern professional invoice generator.",
-  url: "https://docuflow.com",
+  name: "Times Works",
+  description: "Modern professional financial management & invoicing suite.",
+  url: "https://timesworks.com",
 }

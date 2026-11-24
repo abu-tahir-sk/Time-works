@@ -47,10 +47,10 @@ export default function HomePage() {
           />
 
           <div className="relative max-w-6xl mx-auto px-4 sm:px-6 text-center space-y-6">
-            {/* Microsoft Enterprise Announcement Pill */}
+            {/* Enterprise Announcement Pill */}
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-[#0078D4]/10 text-[#0078D4] border border-[#0078D4]/20 shadow-2xs">
               <Sparkles className="h-3.5 w-3.5" />
-              <span>DocuFlow Business Suite</span>
+              <span>Times Works Business Suite</span>
               <span className="text-muted-foreground/60">•</span>
               <span className="font-medium text-muted-foreground">Invoicing, Ledger & Admin Governance</span>
             </div>
@@ -175,7 +175,7 @@ export default function HomePage() {
                 <div className="w-2.5 h-2.5 rounded-full bg-amber-400/80" />
                 <div className="w-2.5 h-2.5 rounded-full bg-emerald-400/80" />
                 <span className="ml-2 text-[11px] font-mono text-muted-foreground">
-                  https://docuflow.cloud/{activeTab}
+                  https://timesworks.cloud/{activeTab}
                 </span>
               </div>
               <span className="text-[11px] font-medium text-muted-foreground flex items-center gap-1.5">

@@ -63,10 +63,10 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               </SheetTrigger>
               <SheetContent side="left" className="flex flex-col w-72 p-4">
                 <div className="flex items-center gap-2 pb-4 border-b">
-                  <Image src="/logo-v3.jpg" alt="DocuFlow Logo" width={32} height={32} className="rounded-md" />
+                  <Image src="/logo-v3.jpg" alt="Times Works Logo" width={32} height={32} className="rounded-md" />
                   <div>
-                    <span className="font-semibold text-sm">DocuFlow Suite</span>
-                    <p className="text-[11px] text-muted-foreground">Business & Ledger ERP</p>
+                    <span className="font-semibold text-sm">Times Works PRO</span>
+                    <p className="text-[11px] text-muted-foreground">Professional Services</p>
                   </div>
                 </div>
                 <nav className="flex-1 overflow-y-auto py-3 space-y-4">
@@ -201,7 +201,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 <DropdownMenuContent align="end" className="w-56 text-xs">
                   <DropdownMenuGroup>
                     <div className="p-2">
-                      <p className="font-semibold text-foreground truncate">{session?.user?.name || "DocuFlow User"}</p>
+                      <p className="font-semibold text-foreground truncate">{session?.user?.name || "Times Works User"}</p>
                       <p className="text-[11px] text-muted-foreground truncate">{session?.user?.email}</p>
                       <div className="mt-1.5 flex items-center gap-1.5">
                         <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">

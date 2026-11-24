@@ -77,7 +77,7 @@ export function Navbar() {
               <div className="relative w-8 h-8 rounded-lg overflow-hidden border border-border/60 shadow-2xs transition-transform group-hover:scale-105">
                 <Image
                   src="/logo-v3.jpg"
-                  alt="DocuFlow Logo"
+                  alt="Times Works Logo"
                   fill
                   className="object-cover"
                   priority
@@ -85,10 +85,10 @@ export function Navbar() {
               </div>
               <div className="flex items-center gap-2">
                 <span className="font-bold text-base sm:text-lg tracking-tight text-foreground font-sans">
-                  {siteConfig.name || "DocuFlow"}
+                  Times Works
                 </span>
-                <span className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-[#0078D4]/10 text-[#0078D4] border border-[#0078D4]/25 tracking-wide uppercase">
-                  Enterprise
+                <span className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-[#c82020]/10 text-[#c82020] border border-[#c82020]/25 tracking-wide uppercase">
+                  PRO
                 </span>
               </div>
             </Link>

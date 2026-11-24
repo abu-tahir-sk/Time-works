@@ -45,7 +45,7 @@ export function WatermarkSettings() {
 
   const watermark = form.watch("designSettings.watermark") || {}
   const companyLogo = form.watch("companyDetails.logoUrl") || ""
-  const companyName = form.watch("companyDetails.name") || "Times Digitals"
+  const companyName = form.watch("companyDetails.name") || "Times Works"
 
   const isEnabled = watermark.enabled !== false && watermark.mode !== "NONE"
   const currentMode: WatermarkType = !isEnabled

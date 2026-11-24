@@ -7,7 +7,7 @@ import { format } from "date-fns"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 
 export const metadata = {
-  title: "Quotations | DocuFlow Enterprise",
+  title: "Quotations | Times Works",
   description: "Create and manage estimates and project quotes for prospective clients.",
 }
 

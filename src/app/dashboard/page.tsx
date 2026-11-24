@@ -14,6 +14,7 @@ import {
   Sparkles,
   ShieldCheck,
   ChevronRight,
+  BarChart3,
 } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -25,7 +26,7 @@ import { getUserDocumentUsage } from "@/lib/subscriptions/limits"
 export const dynamic = "force-dynamic"
 
 export const metadata = {
-  title: "Executive Dashboard | DocuFlow Enterprise",
+  title: "Executive Dashboard | Times Works",
   description: "Company Financial Overview, Ledger, Invoices, and Business Analytics.",
 }
 
@@ -75,6 +76,12 @@ export default async function DashboardPage() {
             <Button size="sm" variant="outline" className="h-8.5 text-xs border-border/80 shadow-2xs hover:bg-muted font-medium">
               <FileSignature className="h-3.5 w-3.5 mr-1 text-indigo-500" />
               Quotation
+            </Button>
+          </Link>
+          <Link href="/dashboard/analytics">
+            <Button size="sm" variant="outline" className="h-8.5 text-xs border-border/80 shadow-2xs hover:bg-muted font-medium">
+              <BarChart3 className="h-3.5 w-3.5 mr-1 text-[#0078D4]" />
+              Analytics
             </Button>
           </Link>
         </div>

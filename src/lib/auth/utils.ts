@@ -54,24 +54,24 @@ export async function getUserCompany() {
   if (!company) {
     company = await prisma.company.create({
       data: {
-        name: "Times Digitals",
-        address: "Times Digitals Tower, Suite 400, Redmond, WA 98052, USA",
-        email: "billing@timesdigitals.com",
+        name: "Times Works",
+        address: "Times Works Tower, Suite 400, Redmond, WA 98052, USA",
+        email: "billing@timesworks.com",
         phone: "+1 (800) 555-0199",
-        website: "https://timesdigitals.com",
+        website: "https://timesworks.com",
         logoUrl: "/logo-v3.jpg",
         ownerId: user.id,
       }
     })
-  } else if (company.name.includes("'s Company") || company.name.includes("My Company") || company.name.toLowerCase().includes("sufian")) {
+  } else if (company.name.includes("'s Company") || company.name.includes("My Company") || company.name.toLowerCase().includes("sufian") || company.name === "Times Digitals" || company.name === "DocuFlow") {
     company = await prisma.company.update({
       where: { id: company.id },
       data: {
-        name: "Times Digitals",
-        address: company.address || "Times Digitals Tower, Suite 400, Redmond, WA 98052, USA",
-        email: company.email || "billing@timesdigitals.com",
+        name: "Times Works",
+        address: company.address || "Times Works Tower, Suite 400, Redmond, WA 98052, USA",
+        email: company.email || "billing@timesworks.com",
         phone: company.phone || "+1 (800) 555-0199",
-        website: company.website || "https://timesdigitals.com",
+        website: company.website || "https://timesworks.com",
         logoUrl: company.logoUrl || "/logo-v3.jpg",
       }
     })

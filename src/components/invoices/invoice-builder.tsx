@@ -11,6 +11,23 @@ import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import { createOrUpdateInvoice } from "@/actions/invoices"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
+import {
+  ArrowLeft,
+  Eye,
+  Save,
+  Download,
+  Check,
+  FileSpreadsheet,
+  Printer,
+  Sparkles,
+} from "lucide-react"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 
 interface InvoiceBuilderProps {
   clients: any[]
@@ -21,7 +38,7 @@ interface InvoiceBuilderProps {
 export function InvoiceBuilder({ clients, company, initialData }: InvoiceBuilderProps) {
   const router = useRouter()
   const [isSaving, setIsSaving] = useState(false)
-  const [activeTab, setActiveTab] = useState<"edit" | "preview">("edit")
+  const [previewOpen, setPreviewOpen] = useState(false)
   const [localClients, setLocalClients] = useState<any[]>(clients)
 
   const form = useForm<any>({
@@ -33,9 +50,9 @@ export function InvoiceBuilder({ clients, company, initialData }: InvoiceBuilder
       dueDate: new Date(initialData.dueDate),
       designSettings: initialData.designSettings || company?.designSettings || defaultDesignSettings,
       companyDetails: {
-        name: initialData.companyDetails?.name || (company?.name && !company.name.includes("'s Company") ? company.name : "Times Digitals"),
-        address: initialData.companyDetails?.address || company?.address || "Times Digitals Tower, Suite 400, Redmond, WA 98052, USA",
-        email: initialData.companyDetails?.email || company?.email || "billing@timesdigitals.com",
+        name: initialData.companyDetails?.name || company?.name || "Times Works",
+        address: initialData.companyDetails?.address || company?.address || "Times Works Tower, Suite 400, Redmond, WA 98052, USA",
+        email: initialData.companyDetails?.email || company?.email || "billing@timesworks.com",
         phone: initialData.companyDetails?.phone || company?.phone || "+1 (800) 555-0199",
         taxId: initialData.companyDetails?.taxId || company?.taxId || "US-EIN-98-7654321",
         logoUrl: initialData.companyDetails?.logoUrl || company?.logoUrl || "/logo-v3.jpg",
@@ -43,44 +60,38 @@ export function InvoiceBuilder({ clients, company, initialData }: InvoiceBuilder
         sealUrl: initialData.companyDetails?.sealUrl ?? company?.sealUrl ?? "",
       }
     } : {
-      clientId: "",
+      clientId: clients[0]?.id || "",
       currency: "USD",
       discountType: "PERCENTAGE",
       discountValue: 0,
       status: "DRAFT",
+      paymentTerms: "NET 15 days",
       issueDate: new Date(),
-      dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), // 14 days
-      template: "classic",
+      dueDate: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000), // 15 days
+      template: "professional",
       items: [
         {
-          description: "Enterprise Cloud Document Platform",
-          quantity: 1,
-          unit: "Year",
-          unitPrice: 2400,
-          taxRate: 10,
-        },
-        {
-          description: "Microsoft Azure & Dynamics Integration",
-          quantity: 1,
-          unit: "Service",
-          unitPrice: 850,
-          taxRate: 10,
-        },
-        {
-          description: "Dedicated 24/7 Enterprise SLA Support",
+          description: "Enterprise Financial Operations & Cloud Invoicing",
           quantity: 1,
           unit: "Month",
-          unitPrice: 500,
-          taxRate: 10,
+          unitPrice: 1250,
+          taxRate: 0,
+        },
+        {
+          description: "Senior Financial Partner Consultation",
+          quantity: 8,
+          unit: "Hour",
+          unitPrice: 220,
+          taxRate: 0,
         },
       ],
-      notes: company?.defaultNotes || "Thank you for choosing Times Digitals as your trusted document solutions provider.",
-      terms: company?.defaultTerms || "1. Payment is due within 14 calendar days of invoice date.\n2. Remittance via wire transfer to JPMorgan Chase Bank, N.A. (A/C: 9876 5432 1098, Routing: CHASUS33XXX).\n3. Late payments may incur standard statutory interest.",
+      notes: company?.defaultNotes || "Thank you for partnering with Times Works. We appreciate your business.",
+      terms: company?.defaultTerms || "1. Payment is due within 15 calendar days of invoice date.\n2. Remittance via ACH / Wire or credit card.\n3. Late payments subject to 1.5% statutory monthly fee.",
       designSettings: company?.designSettings || defaultDesignSettings,
       companyDetails: {
-        name: company?.name && !company.name.includes("'s Company") ? company.name : "Times Digitals",
-        address: company?.address || "Times Digitals Tower, Suite 400, Redmond, WA 98052, USA",
-        email: company?.email || "billing@timesdigitals.com",
+        name: company?.name || "Times Works",
+        address: company?.address || "Times Works Tower, Suite 400, Redmond, WA 98052, USA",
+        email: company?.email || "billing@timesworks.com",
         phone: company?.phone || "+1 (800) 555-0199",
         taxId: company?.taxId || "US-EIN-98-7654321",
         logoUrl: company?.logoUrl || "/logo-v3.jpg",
@@ -90,67 +101,130 @@ export function InvoiceBuilder({ clients, company, initialData }: InvoiceBuilder
     }
   })
 
-  async function onSubmit(data: any) {
+  async function handleSave(status = "DRAFT") {
     setIsSaving(true)
     try {
+      const data = form.getValues()
+      data.status = status
       const res = await createOrUpdateInvoice(data as InvoiceFormValues)
       if (res.success) {
-        toast.success("Invoice saved successfully")
+        toast.success(status === "DRAFT" ? "Draft saved successfully" : "Invoice created successfully!")
         router.push("/dashboard/invoices")
       } else {
         toast.error(res.error || "Failed to save invoice")
       }
-    } catch (error) {
-      toast.error("An unexpected error occurred")
+    } catch (error: any) {
+      toast.error(error.message || "An unexpected error occurred")
     } finally {
       setIsSaving(false)
     }
   }
 
-  // To build a truly split-screen editor on desktop, and tabs on mobile
+  const handlePrintPDF = () => {
+    setPreviewOpen(true)
+    setTimeout(() => {
+      window.print()
+    }, 600)
+  }
+
   return (
-    <div className="flex h-full flex-col md:flex-row overflow-hidden bg-muted/40">
-      {/* Mobile Tabs */}
-      <div className="md:hidden flex border-b bg-background">
-        <button 
-          onClick={() => setActiveTab("edit")}
-          className={`flex-1 py-3 text-sm font-medium ${activeTab === "edit" ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}
-        >
-          Edit
-        </button>
-        <button 
-          onClick={() => setActiveTab("preview")}
-          className={`flex-1 py-3 text-sm font-medium ${activeTab === "preview" ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}
-        >
-          Preview
-        </button>
+    <div className="w-full font-sans select-none space-y-6 pb-20">
+      {/* 1. Header Bar matching Image 1: "New Invoice (Professional)" */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/70 pb-4">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground font-sans">
+            {initialData ? `Edit Invoice (${form.watch("invoiceNumber") || "Professional"})` : "New Invoice (Professional)"}
+          </h1>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            Create a new invoice using the Professional template and automated tax calculations.
+          </p>
+        </div>
+
+        {/* Top Right Action Buttons (Image 1) */}
+        <div className="flex flex-wrap items-center gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => router.push("/dashboard/invoices")}
+            className="h-8.5 px-3 text-xs text-muted-foreground hover:text-foreground font-medium"
+          >
+            <ArrowLeft className="h-3.5 w-3.5 mr-1" />
+            Back
+          </Button>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setPreviewOpen(true)}
+            className="h-8.5 px-3 text-xs font-semibold border-border/80 shadow-2xs hover:bg-muted"
+          >
+            <Eye className="h-3.5 w-3.5 mr-1.5 text-muted-foreground" />
+            Preview
+          </Button>
+
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={isSaving}
+            onClick={() => handleSave("DRAFT")}
+            className="h-8.5 px-3 text-xs font-semibold border-border/80 shadow-2xs hover:bg-muted"
+          >
+            <Save className="h-3.5 w-3.5 mr-1.5 text-muted-foreground" />
+            Save Draft
+          </Button>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handlePrintPDF}
+            className="h-8.5 px-3 text-xs font-semibold border-border/80 shadow-2xs hover:bg-muted hidden sm:inline-flex"
+          >
+            <Download className="h-3.5 w-3.5 mr-1.5 text-muted-foreground" />
+            Export PDF
+          </Button>
+
+          <Button
+            size="sm"
+            disabled={isSaving}
+            onClick={() => handleSave("SENT")}
+            className="h-8.5 px-4 text-xs font-bold rounded-full bg-[#c82020] hover:bg-[#a81a1a] text-white shadow-xs transition-all cursor-pointer"
+          >
+            <span>{isSaving ? "Creating..." : "Create Invoice"}</span>
+            <Check className="h-3.5 w-3.5 ml-1.5 stroke-[3]" />
+          </Button>
+        </div>
       </div>
 
-      {/* Editor Panel */}
-      <div className={`w-full md:w-1/2 flex-col overflow-y-auto border-r bg-background ${activeTab === "preview" ? "hidden md:flex" : "flex"}`}>
-        <div className="flex items-center justify-between p-4 border-b sticky top-0 bg-background/95 backdrop-blur z-10">
-          <h2 className="text-lg font-semibold">Invoice Builder</h2>
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={() => router.push("/dashboard/invoices")}>
-              Cancel
+      {/* 2. Main Form Content */}
+      <InvoiceEditor
+        form={form}
+        clients={localClients}
+        onAddClient={(newClient) => {
+          setLocalClients((prev) => [newClient, ...prev])
+          form.setValue("clientId", newClient.id)
+        }}
+        onCreateInvoice={() => handleSave("SENT")}
+        isSaving={isSaving}
+      />
+
+      {/* 3. Live Preview Modal */}
+      <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-4 sm:p-6 bg-muted/30">
+          <DialogHeader className="flex flex-row items-center justify-between pb-3 border-b">
+            <DialogTitle className="text-base font-bold flex items-center gap-2">
+              <Eye className="h-4 w-4 text-[#c82020]" />
+              <span>Invoice Preview</span>
+            </DialogTitle>
+            <Button size="sm" variant="outline" onClick={() => window.print()} className="h-7 text-xs mr-4">
+              <Printer className="h-3.5 w-3.5 mr-1" />
+              Print / Save PDF
             </Button>
-            <Button onClick={form.handleSubmit(onSubmit)} disabled={isSaving}>
-              {isSaving ? "Saving..." : "Save Draft"}
-            </Button>
+          </DialogHeader>
+          <div className="flex justify-center py-4">
+            <InvoicePreview form={form} company={company} clients={localClients} />
           </div>
-        </div>
-        
-        <div className="p-4">
-          <InvoiceEditor form={form} clients={localClients} onAddClient={(newClient) => setLocalClients((prev) => [...prev, newClient])} />
-        </div>
-      </div>
-
-      {/* Preview Panel */}
-      <div className={`w-full md:w-1/2 flex-col overflow-y-auto bg-muted ${activeTab === "edit" ? "hidden md:flex" : "flex"}`}>
-        <div className="p-4 flex justify-center min-h-full">
-          <InvoicePreview form={form} company={company} clients={localClients} />
-        </div>
-      </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
