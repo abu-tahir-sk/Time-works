@@ -41,12 +41,12 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const { data: session } = useSession()
 
   return (
-    <div className="flex min-h-screen w-full flex-col bg-[#faf9f8] dark:bg-[#121212] font-sans antialiased text-foreground overflow-x-hidden">
-      <div className="flex flex-1 overflow-hidden">
+    <div className="flex h-screen w-full flex-col bg-[#faf9f8] dark:bg-[#121212] font-sans antialiased text-foreground overflow-hidden">
+      <div className="flex flex-1 h-full overflow-hidden">
         <Sidebar />
-        <div className="flex flex-col flex-1 overflow-hidden min-w-0">
+        <div className="flex flex-col flex-1 h-full overflow-hidden min-w-0">
           {/* Microsoft Fluent Top Navigation Header */}
-          <header className="flex h-14 items-center gap-3 border-b border-border/80 bg-background/95 backdrop-blur-md px-4 lg:h-[60px] lg:px-6 z-10 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
+          <header className="shrink-0 flex h-14 items-center gap-3 border-b border-border/80 bg-background/95 backdrop-blur-md px-4 lg:h-[60px] lg:px-6 z-10 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
             {/* Mobile Sidebar Trigger */}
             <Sheet>
               <SheetTrigger
