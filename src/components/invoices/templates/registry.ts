@@ -1,3 +1,4 @@
+import { ProfessionalTemplate } from "./ProfessionalTemplate";
 import { ClassicTemplate } from "./ClassicTemplate";
 import { ModernTemplate } from "./ModernTemplate";
 import { MinimalTemplate } from "./MinimalTemplate";
@@ -9,18 +10,25 @@ import { PremiumQuotationTemplate } from "./PremiumQuotationTemplate";
 
 export const INVOICE_TEMPLATES = [
     {
-        id: "premium",
-        name: "Premium",
-        description: "Modern premium quotation/invoice design with subtle blue accents",
-        component: PremiumQuotationTemplate,
-        thumbnail: "/templates/template-2.jpg"
+        id: "professional",
+        name: "Times Works Professional",
+        description: "Modern executive Times Works invoice layout with red branding and serif typography",
+        component: ProfessionalTemplate,
+        thumbnail: "/templates/template-1.jpg"
     },
     {
         id: "classic",
         name: "Classic",
         description: "Traditional professional business invoice",
-        component: ClassicTemplate,
+        component: ProfessionalTemplate,
         thumbnail: "/templates/template-1.jpg"
+    },
+    {
+        id: "premium",
+        name: "Premium",
+        description: "Modern premium quotation/invoice design with subtle blue accents",
+        component: PremiumQuotationTemplate,
+        thumbnail: "/templates/template-2.jpg"
     },
     {
         id: "modern",

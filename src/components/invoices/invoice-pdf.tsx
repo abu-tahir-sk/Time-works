@@ -6,7 +6,7 @@ import { calculateInvoiceTotals } from "@/lib/invoices/calculations"
 
 export function InvoicePdf({ data, company, clients }: any) {
   // Resolve Template
-  const templateId = data?.template || "classic"
+  const templateId = data?.template || "professional"
   const selectedTemplate =
     INVOICE_TEMPLATES.find((t) => t.id === templateId) || INVOICE_TEMPLATES[0]
   const TemplateComponent = selectedTemplate.component
@@ -74,7 +74,7 @@ export function InvoicePdf({ data, company, clients }: any) {
   const resolvedCompanyName =
     rawCompanyName && !rawCompanyName.includes("'s Company")
       ? rawCompanyName
-      : "Times Digitals"
+      : "Times Works"
 
   const mergedCompany = {
     ...company,
@@ -83,11 +83,11 @@ export function InvoicePdf({ data, company, clients }: any) {
     address:
       companyDetails.address ||
       company?.address ||
-      "Times Digitals Tower, Suite 400, Redmond, WA 98052, USA",
+      "Times Works Tower, Suite 400, Redmond, WA 98052, USA",
     email:
       companyDetails.email ||
       company?.email ||
-      "billing@timesdigitals.com",
+      "billing@timesworks.com",
     phone:
       companyDetails.phone ||
       company?.phone ||

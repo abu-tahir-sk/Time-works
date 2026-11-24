@@ -5,7 +5,7 @@ import dynamic from "next/dynamic"
 import { useWatch } from "react-hook-form"
 import { InvoicePdf } from "./invoice-pdf"
 import { Button } from "@/components/ui/button"
-import { Download, Loader2 } from "lucide-react"
+import { Download, Loader2, Printer } from "lucide-react"
 import { SendEmailDialog } from "./send-email-dialog"
 
 // PDFDownloadLink shouldn't strictly need dynamic if used conditionally after mount, but doing it ensures no SSR issues.
@@ -47,37 +47,51 @@ export function StaticInvoicePreview({ data, company, clients }: StaticInvoicePr
 
   return (
     <div className="w-full flex flex-col items-center h-full">
-      <div className="flex justify-end gap-2 w-full max-w-[210mm] p-4">
-        {pdfDocument && (
-          <SendEmailDialog
-            data={data}
-            company={company}
-            clients={clients}
-            pdfDocument={pdfDocument}
-          />
-        )}
-        {pdfDocument && (
-          <PDFDownloadLink
-            document={pdfDocument}
-            fileName={`${data?.quotationNumber ? 'quotation' : 'invoice'}-${data?.invoiceNumber || data?.quotationNumber || 'draft'}.pdf`}
+      <div className="flex flex-wrap items-center justify-between gap-2 w-full max-w-[210mm] px-2 py-3 bg-white dark:bg-card rounded-xl border border-border/60 shadow-2xs mb-3">
+        <span className="text-xs font-bold text-foreground flex items-center gap-1.5 pl-2">
+          Times Works Professional Document
+        </span>
+        <div className="flex items-center gap-2">
+          {pdfDocument && (
+            <SendEmailDialog
+              data={data}
+              company={company}
+              clients={clients}
+              pdfDocument={pdfDocument}
+            />
+          )}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => window.print()}
+            className="h-8 text-xs font-semibold shadow-2xs"
           >
-            {({ loading }: any) => (
-              <Button variant="default" size="sm" disabled={loading}>
-                {loading ? (
-                  <>
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Generating PDF...
-                  </>
-                ) : (
-                  <>
-                    <Download className="h-4 w-4 mr-2" />
-                    Download PDF
-                  </>
-                )}
-              </Button>
-            )}
-          </PDFDownloadLink>
-        )}
+            <Printer className="h-3.5 w-3.5 mr-1 text-muted-foreground" />
+            Print
+          </Button>
+          {pdfDocument && (
+            <PDFDownloadLink
+              document={pdfDocument}
+              fileName={`timesworks-${data?.quotationNumber ? 'quotation' : 'invoice'}-${data?.invoiceNumber || data?.quotationNumber || 'draft'}.pdf`}
+            >
+              {({ loading }: any) => (
+                <Button size="sm" disabled={loading} className="h-8 text-xs font-bold bg-[#c82020] hover:bg-[#a81a1a] text-white shadow-xs">
+                  {loading ? (
+                    <>
+                      <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
+                      Generating...
+                    </>
+                  ) : (
+                    <>
+                      <Download className="h-3.5 w-3.5 mr-1.5" />
+                      Download PDF
+                    </>
+                  )}
+                </Button>
+              )}
+            </PDFDownloadLink>
+          )}
+        </div>
       </div>
 
       <div className="w-full max-w-[210mm] h-[calc(100vh-140px)] min-h-[800px] bg-white shadow-xl rounded-sm overflow-hidden border">

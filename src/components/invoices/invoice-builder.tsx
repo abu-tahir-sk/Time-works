@@ -197,7 +197,7 @@ export function InvoiceBuilder({ clients, company, initialData }: InvoiceBuilder
           <Button
             variant="outline"
             size="sm"
-            onClick={handlePrintPDF}
+            onClick={() => setPreviewOpen(true)}
             className="h-8.5 px-3 text-xs font-semibold border-border/80 shadow-2xs hover:bg-muted"
           >
             <Download className="h-3.5 w-3.5 mr-1.5 text-muted-foreground" />
@@ -278,17 +278,13 @@ export function InvoiceBuilder({ clients, company, initialData }: InvoiceBuilder
       {/* 3. Live Print/PDF Dialog */}
       <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-4 sm:p-6 bg-muted/30">
-          <DialogHeader className="flex flex-row items-center justify-between pb-3 border-b">
+          <DialogHeader className="pb-3 border-b">
             <DialogTitle className="text-base font-bold flex items-center gap-2">
               <Eye className="h-4 w-4 text-[#c82020]" />
-              <span>Invoice PDF Preview</span>
+              <span>Times Works Professional Invoice Preview</span>
             </DialogTitle>
-            <Button size="sm" variant="outline" onClick={() => window.print()} className="h-7 text-xs mr-4">
-              <Printer className="h-3.5 w-3.5 mr-1" />
-              Print / Save PDF
-            </Button>
           </DialogHeader>
-          <div className="flex justify-center py-4">
+          <div className="flex justify-center py-2">
             <InvoicePreview form={form} company={company} clients={localClients} />
           </div>
         </DialogContent>
