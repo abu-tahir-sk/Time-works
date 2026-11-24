@@ -1,12 +1,17 @@
 export { cn } from "cn"
 
-export function formatMoney(amount: number, currency = "INR"): string {
+export function formatMoney(amount: number, currency = "USD"): string {
   const symbolMap: Record<string, string> = {
-    INR: "₹",
     USD: "$",
     EUR: "€",
     GBP: "£",
-    BDT: "BDT ",
+    INR: "₹",
+    CAD: "CA$",
+    AUD: "A$",
+    SGD: "S$",
+    AED: "AED ",
+    BDT: "৳",
+    JPY: "¥",
   }
   const symbol = symbolMap[currency] || `${currency} `
   return `${symbol}${Number(amount || 0).toLocaleString(undefined, {

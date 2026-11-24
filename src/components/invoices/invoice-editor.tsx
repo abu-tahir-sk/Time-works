@@ -322,9 +322,15 @@ export function InvoiceEditor({ form, clients, onAddClient, onCreateInvoice, isS
                           </FormControl>
                           <SelectContent>
                             <SelectItem value="USD">$ USD - US Dollar</SelectItem>
-                            <SelectItem value="INR">₹ INR - Indian Rupee</SelectItem>
                             <SelectItem value="EUR">€ EUR - Euro</SelectItem>
                             <SelectItem value="GBP">£ GBP - British Pound</SelectItem>
+                            <SelectItem value="INR">₹ INR - Indian Rupee</SelectItem>
+                            <SelectItem value="CAD">CA$ CAD - Canadian Dollar</SelectItem>
+                            <SelectItem value="AUD">A$ AUD - Australian Dollar</SelectItem>
+                            <SelectItem value="SGD">S$ SGD - Singapore Dollar</SelectItem>
+                            <SelectItem value="AED">AED - UAE Dirham</SelectItem>
+                            <SelectItem value="BDT">৳ BDT - Bangladeshi Taka</SelectItem>
+                            <SelectItem value="JPY">¥ JPY - Japanese Yen</SelectItem>
                           </SelectContent>
                         </Select>
                       </FormItem>
@@ -347,18 +353,56 @@ export function InvoiceEditor({ form, clients, onAddClient, onCreateInvoice, isS
 
             {/* Card 3: Line Items (Matching Screenshot 1) */}
             <div className="bg-white dark:bg-[#181a20] rounded-2xl shadow-sm border border-border/60 p-6 space-y-4">
-              <div className="flex items-center justify-between">
-                <h2 className="text-base font-bold text-foreground">Line Items</h2>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                  <h2 className="text-base font-bold text-foreground">Line Items</h2>
+                  <p className="text-[11px] text-muted-foreground">Add products, professional services, or retainer deliverables.</p>
+                </div>
                 <Button
                   type="button"
                   variant="outline"
                   size="sm"
                   onClick={() => append({ description: "", quantity: 1, unit: "Hour", unitPrice: 0, taxRate: 0 })}
-                  className="h-8 text-xs font-semibold rounded-lg border-border/80 hover:bg-muted"
+                  className="h-8 text-xs font-semibold rounded-lg border-border/80 hover:bg-muted self-start sm:self-auto"
                 >
                   <Plus className="h-3.5 w-3.5 mr-1 text-[#c82020]" />
                   Add Line Item
                 </Button>
+              </div>
+
+              {/* Quick Preset Services (Wave & Invoice Generator Speed) */}
+              <div className="flex flex-wrap items-center gap-1.5 p-2 rounded-xl bg-muted/20 border border-border/50">
+                <span className="text-[10px] font-bold text-muted-foreground/80 uppercase tracking-wider mr-1">
+                  Quick Add:
+                </span>
+                <button
+                  type="button"
+                  onClick={() => append({ description: "Full-Stack Web & Software Engineering", quantity: 40, unit: "Hour", unitPrice: 85, taxRate: 0 })}
+                  className="px-2.5 py-1 text-[10px] font-medium rounded-lg bg-background hover:bg-muted text-foreground border border-border/60 shadow-2xs transition-colors cursor-pointer"
+                >
+                  + Software Engineering (40h)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => append({ description: "Enterprise Cloud Infrastructure & DevOps", quantity: 1, unit: "Month", unitPrice: 1500, taxRate: 0 })}
+                  className="px-2.5 py-1 text-[10px] font-medium rounded-lg bg-background hover:bg-muted text-foreground border border-border/60 shadow-2xs transition-colors cursor-pointer"
+                >
+                  + Cloud Retainer ($1,500/mo)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => append({ description: "Strategic Business Advisory & Financial Consulting", quantity: 8, unit: "Hour", unitPrice: 200, taxRate: 0 })}
+                  className="px-2.5 py-1 text-[10px] font-medium rounded-lg bg-background hover:bg-muted text-foreground border border-border/60 shadow-2xs transition-colors cursor-pointer"
+                >
+                  + Financial Advisory (8h)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => append({ description: "UI/UX Executive Design & Prototyping", quantity: 1, unit: "Project", unitPrice: 2200, taxRate: 0 })}
+                  className="px-2.5 py-1 text-[10px] font-medium rounded-lg bg-background hover:bg-muted text-foreground border border-border/60 shadow-2xs transition-colors cursor-pointer"
+                >
+                  + UI/UX Design ($2,200)
+                </button>
               </div>
 
               <div className="overflow-x-auto w-full border border-border/60 rounded-xl shadow-2xs">

@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { invoiceSchema, InvoiceFormValues } from "@/lib/invoices/schema"
 import { defaultDesignSettings } from "@/lib/design-system/schema"
 import { InvoiceEditor } from "./invoice-editor"
+import { LivePaperCanvas } from "./live-paper-canvas"
 import { InvoicePreview } from "./invoice-preview"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
@@ -18,9 +19,12 @@ import {
   Save,
   Download,
   Check,
-  FileSpreadsheet,
   Printer,
   Sparkles,
+  LayoutTemplate,
+  FileText,
+  Columns,
+  Share2,
 } from "lucide-react"
 import {
   Dialog,
@@ -35,10 +39,13 @@ interface InvoiceBuilderProps {
   initialData?: any
 }
 
+type ViewMode = "studio" | "canvas" | "split"
+
 export function InvoiceBuilder({ clients, company, initialData }: InvoiceBuilderProps) {
   const router = useRouter()
   const [isSaving, setIsSaving] = useState(false)
   const [previewOpen, setPreviewOpen] = useState(false)
+  const [viewMode, setViewMode] = useState<ViewMode>("studio")
   const [localClients, setLocalClients] = useState<any[]>(clients)
 
   const form = useForm<any>({
@@ -129,37 +136,72 @@ export function InvoiceBuilder({ clients, company, initialData }: InvoiceBuilder
 
   return (
     <div className="w-full max-w-full overflow-x-hidden font-sans select-none space-y-6 pb-20">
-      {/* 1. Header Bar matching Image 1: "New Invoice (Professional)" */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/70 pb-4">
+      {/* 1. Header Bar with CherryWorks / Wave & Invoice Generator Modes */}
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-border/70 pb-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground font-sans">
-            {initialData ? `Edit Invoice (${form.watch("invoiceNumber") || "Professional"})` : "New Invoice (Professional)"}
-          </h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground font-sans">
+              {initialData ? `Edit Invoice (${form.watch("invoiceNumber") || "Professional"})` : "New Invoice (Professional)"}
+            </h1>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#c82020]/10 text-[#c82020] border border-[#c82020]/25">
+              Times Works PRO
+            </span>
+          </div>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Create a new invoice using the Professional template and automated tax calculations.
+            Inspired by Wave & Invoice Generator: live WYSIWYG paper calculations with enterprise security.
           </p>
         </div>
 
-        {/* Top Right Action Buttons (Image 1) */}
+        {/* View Mode Switcher + Action Controls */}
         <div className="flex flex-wrap items-center gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => router.push("/dashboard/invoices")}
-            className="h-8.5 px-3 text-xs text-muted-foreground hover:text-foreground font-medium"
-          >
-            <ArrowLeft className="h-3.5 w-3.5 mr-1" />
-            Back
-          </Button>
+          {/* Segmented View Mode Tabs */}
+          <div className="inline-flex items-center bg-muted/60 p-1 rounded-xl border border-border/60">
+            <button
+              type="button"
+              onClick={() => setViewMode("studio")}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
+                viewMode === "studio"
+                  ? "bg-background text-foreground shadow-2xs"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <LayoutTemplate className="w-3.5 h-3.5 text-[#c82020]" />
+              <span>Studio</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setViewMode("canvas")}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
+                viewMode === "canvas"
+                  ? "bg-background text-foreground shadow-2xs"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <FileText className="w-3.5 h-3.5 text-blue-600" />
+              <span>Paper Sheet</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setViewMode("split")}
+              className={`hidden 2xl:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
+                viewMode === "split"
+                  ? "bg-background text-foreground shadow-2xs"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <Columns className="w-3.5 h-3.5 text-purple-600" />
+              <span>Split View</span>
+            </button>
+          </div>
 
           <Button
             variant="outline"
             size="sm"
-            onClick={() => setPreviewOpen(true)}
+            onClick={handlePrintPDF}
             className="h-8.5 px-3 text-xs font-semibold border-border/80 shadow-2xs hover:bg-muted"
           >
-            <Eye className="h-3.5 w-3.5 mr-1.5 text-muted-foreground" />
-            Preview
+            <Download className="h-3.5 w-3.5 mr-1.5 text-muted-foreground" />
+            Export PDF
           </Button>
 
           <Button
@@ -174,46 +216,72 @@ export function InvoiceBuilder({ clients, company, initialData }: InvoiceBuilder
           </Button>
 
           <Button
-            variant="outline"
-            size="sm"
-            onClick={handlePrintPDF}
-            className="h-8.5 px-3 text-xs font-semibold border-border/80 shadow-2xs hover:bg-muted hidden sm:inline-flex"
-          >
-            <Download className="h-3.5 w-3.5 mr-1.5 text-muted-foreground" />
-            Export PDF
-          </Button>
-
-          <Button
             size="sm"
             disabled={isSaving}
             onClick={() => handleSave("SENT")}
             className="h-8.5 px-4 text-xs font-bold rounded-full bg-[#c82020] hover:bg-[#a81a1a] text-white shadow-xs transition-all cursor-pointer"
           >
-            <span>{isSaving ? "Creating..." : "Create Invoice"}</span>
+            <span>{isSaving ? "Finalizing..." : "Create Invoice"}</span>
             <Check className="h-3.5 w-3.5 ml-1.5 stroke-[3]" />
           </Button>
         </div>
       </div>
 
-      {/* 2. Main Form Content */}
-      <InvoiceEditor
-        form={form}
-        clients={localClients}
-        onAddClient={(newClient) => {
-          setLocalClients((prev) => [newClient, ...prev])
-          form.setValue("clientId", newClient.id)
-        }}
-        onCreateInvoice={() => handleSave("SENT")}
-        isSaving={isSaving}
-      />
+      {/* 2. Main Workspace based on selected View Mode */}
+      {viewMode === "studio" && (
+        <InvoiceEditor
+          form={form}
+          clients={localClients}
+          onAddClient={(newClient) => {
+            setLocalClients((prev) => [newClient, ...prev])
+            form.setValue("clientId", newClient.id)
+          }}
+          onCreateInvoice={() => handleSave("SENT")}
+          isSaving={isSaving}
+        />
+      )}
 
-      {/* 3. Live Preview Modal */}
+      {viewMode === "canvas" && (
+        <div className="py-4">
+          <LivePaperCanvas
+            form={form}
+            company={company}
+            clients={localClients}
+          />
+        </div>
+      )}
+
+      {viewMode === "split" && (
+        <div className="grid grid-cols-12 gap-8 items-start w-full">
+          <div className="col-span-7">
+            <InvoiceEditor
+              form={form}
+              clients={localClients}
+              onAddClient={(newClient) => {
+                setLocalClients((prev) => [newClient, ...prev])
+                form.setValue("clientId", newClient.id)
+              }}
+              onCreateInvoice={() => handleSave("SENT")}
+              isSaving={isSaving}
+            />
+          </div>
+          <div className="col-span-5 sticky top-6">
+            <LivePaperCanvas
+              form={form}
+              company={company}
+              clients={localClients}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* 3. Live Print/PDF Dialog */}
       <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-4 sm:p-6 bg-muted/30">
           <DialogHeader className="flex flex-row items-center justify-between pb-3 border-b">
             <DialogTitle className="text-base font-bold flex items-center gap-2">
               <Eye className="h-4 w-4 text-[#c82020]" />
-              <span>Invoice Preview</span>
+              <span>Invoice PDF Preview</span>
             </DialogTitle>
             <Button size="sm" variant="outline" onClick={() => window.print()} className="h-7 text-xs mr-4">
               <Printer className="h-3.5 w-3.5 mr-1" />
