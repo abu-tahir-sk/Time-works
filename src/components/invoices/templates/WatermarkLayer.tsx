@@ -53,7 +53,7 @@ export function WatermarkLayer({
   const textContent = (
     wm.text?.content ||
     companyName ||
-    "DocuFlow"
+    "TIMES DIGITALS"
   ).toUpperCase()
   const textColor = wm.text?.color || "#0f172a"
   const fontFamily = getFontFamilyBold(

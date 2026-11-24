@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Professional Invoice with Logo Tiling Watermark</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&family=Alex+Brush&display=swap');
+    body {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    }
+    .font-script {
+      font-family: 'Alex Brush', cursive;
+    }
+    .print-shadow {
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+    #watermark-layer {
+      pointer-events: none;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 p-4 sm:p-6 antialiased flex flex-col items-center min-h-screen">
+
+  <!-- Interactive Controls Bar -->
+  <div class="w-full max-w-4xl bg-white border border-slate-200 rounded-xl p-4 mb-6 shadow-sm flex flex-wrap items-center justify-between gap-4">
+    <div class="flex items-center gap-2">
+      <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-blue-50 text-blue-600 font-bold">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+        </svg>
+      </span>
+      <div>
+        <h3 class="text-sm font-semibold text-slate-900">Logo Tiling Watermark Controller</h3>
+        <p class="text-xs text-slate-500">Live preview & fine-tuning</p>
+      </div>
+    </div>
+
+    <!-- Sliders -->
+    <div class="flex flex-wrap items-center gap-6 text-xs">
+      <div class="flex items-center gap-2">
+        <span class="text-slate-600 font-medium">Opacity:</span>
+        <input type="range" id="opacitySlider" min="0.01" max="0.25" step="0.01" value="0.06" class="w-24 accent-blue-600">
+        <span id="opacityVal" class="font-mono text-slate-700 w-8">6%</span>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <span class="text-slate-600 font-medium">Tile Size:</span>
+        <input type="range" id="sizeSlider" min="24" max="72" step="2" value="42" class="w-24 accent-blue-600">
+        <span id="sizeVal" class="font-mono text-slate-700 w-10">42px</span>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <span class="text-slate-600 font-medium">Rotation:</span>
+        <input type="range" id="rotSlider" min="-45" max="45" step="5" value="-20" class="w-20 accent-blue-600">
+        <span id="rotVal" class="font-mono text-slate-700 w-10">-20°</span>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <span class="text-slate-600 font-medium">Spacing:</span>
+        <input type="range" id="gapSlider" min="60" max="150" step="5" value="95" class="w-20 accent-blue-600">
+        <span id="gapVal" class="font-mono text-slate-700 w-10">95px</span>
+      </div>
+
+      <button onclick="window.print()" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm transition flex items-center gap-1.5">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+        </svg>
+        Print / PDF
+      </button>
+    </div>
+  </div>
+
+  <!-- THE INVOICE SHEET (A4 Aspect Ratio: 800px x 1130px) -->
+  <div id="invoiceSheet" class="relative w-full max-w-4xl bg-white rounded-lg print-shadow border border-slate-200 overflow-hidden text-slate-800">
+    
+    <!-- WATERMARK LAYER (Behind content) -->
+    <div id="watermark-layer" class="absolute inset-0 z-0 select-none">
+    </div>
+
+    <!-- INVOICE CONTENT (Above watermark) -->
+    <div class="relative z-10 p-8 sm:p-12 flex flex-col justify-between min-h-[960px]">
+      
+      <!-- HEADER SECTION -->
+      <div>
+        <div class="flex flex-col sm:flex-row justify-between items-start gap-6 border-b border-slate-200/80 pb-6">
+          <!-- Logo & Company Brand -->
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 flex items-center justify-center">
+              <svg viewBox="0 0 120 100" fill="none" class="w-full h-full drop-shadow-sm">
+                <path d="M15 15C15 11.6863 17.6863 9 21 9H65C83.7777 9 99 24.2223 99 43C99 61.7777 83.7777 77 65 77H42V91H21C17.6863 91 15 88.3137 15 85V15Z" fill="#0078D4"/>
+                <path d="M42 31H65C71.6274 31 77 36.3726 77 43C77 49.6274 71.6274 55 65 55H42V31Z" fill="white"/>
+                <path d="M21 9H42V91H21C17.6863 91 15 88.3137 15 85V15C15 11.6863 17.6863 9 21 9Z" fill="#005A9E"/>
+              </svg>
+            </div>
+            <div>
+              <div class="text-2xl font-bold tracking-tight text-[#005A9E]">Times Digitals</div>
+              <div class="text-[11px] font-medium tracking-wide text-slate-500 uppercase">Enterprise Digital Solutions</div>
+            </div>
+          </div>
+
+          <!-- Document Title & Meta -->
+          <div class="sm:text-right">
+            <h1 class="text-3xl font-extrabold tracking-tight text-[#0078D4] uppercase">INVOICE</h1>
+            <div class="mt-2 space-y-1 text-xs">
+              <div class="flex sm:justify-end gap-3">
+                <span class="text-slate-500 font-medium">Invoice No:</span>
+                <span class="font-semibold text-slate-900">TD-2026-001</span>
+              </div>
+              <div class="flex sm:justify-end gap-3">
+                <span class="text-slate-500 font-medium">Issue Date:</span>
+                <span class="text-slate-700">Nov 24, 2026</span>
+              </div>
+              <div class="flex sm:justify-end gap-3">
+                <span class="text-slate-500 font-medium">Due Date:</span>
+                <span class="text-slate-700 font-medium text-amber-700">Dec 08, 2026</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ADDRESSES / BILL TO -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 my-8 text-xs">
+          <!-- From -->
+          <div class="space-y-1">
+            <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400">From</span>
+            <div class="text-sm font-bold text-slate-900">Times Digitals Inc.</div>
+            <div class="text-slate-600">Times Digitals Tower, Suite 400</div>
+            <div class="text-slate-600">Redmond, WA 98052, USA</div>
+            <div class="text-slate-600">billing@timesdigitals.com &bull; +1 (800) 555-0199</div>
+          </div>
+
+          <!-- Bill To -->
+          <div class="space-y-1 sm:text-right">
+            <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400">Billed To</span>
+            <div class="text-sm font-bold text-slate-900">Acme Global Corporation</div>
+            <div class="text-slate-600">750 7th Avenue, 18th Floor</div>
+            <div class="text-slate-600">New York, NY 10019, USA</div>
+            <div class="text-slate-600">accounts@acmeglobal.com</div>
+          </div>
+        </div>
+
+        <!-- LINE ITEMS TABLE -->
+        <div class="overflow-hidden rounded-md border border-slate-200 shadow-sm my-6">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-[#0078D4] text-white">
+              <tr>
+                <th class="py-2.5 px-3 font-semibold w-10 text-center">#</th>
+                <th class="py-2.5 px-3 font-semibold">Description</th>
+                <th class="py-2.5 px-3 font-semibold text-center w-16">Qty</th>
+                <th class="py-2.5 px-3 font-semibold text-right w-24">Rate</th>
+                <th class="py-2.5 px-3 font-semibold text-right w-20">Tax</th>
+                <th class="py-2.5 px-3 font-semibold text-right w-28">Amount</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 bg-white/95">
+              <tr class="hover:bg-slate-50/80">
+                <td class="py-3 px-3 text-center text-slate-400">1</td>
+                <td class="py-3 px-3">
+                  <div class="font-semibold text-slate-800">Enterprise Cloud Document Platform</div>
+                  <div class="text-[11px] text-slate-500">Annual license subscription with multi-tenant security architecture</div>
+                </td>
+                <td class="py-3 px-3 text-center text-slate-700">1</td>
+                <td class="py-3 px-3 text-right text-slate-700">$2,400.00</td>
+                <td class="py-3 px-3 text-right text-slate-500">10%</td>
+                <td class="py-3 px-3 text-right font-semibold text-slate-900">$2,400.00</td>
+              </tr>
+              <tr class="hover:bg-slate-50/80">
+                <td class="py-3 px-3 text-center text-slate-400">2</td>
+                <td class="py-3 px-3">
+                  <div class="font-semibold text-slate-800">Microsoft Azure & Dynamics Integration</div>
+                  <div class="text-[11px] text-slate-500">Custom automated webhook sync and active directory synchronization</div>
+                </td>
+                <td class="py-3 px-3 text-center text-slate-700">1</td>
+                <td class="py-3 px-3 text-right text-slate-700">$850.00</td>
+                <td class="py-3 px-3 text-right text-slate-500">10%</td>
+                <td class="py-3 px-3 text-right font-semibold text-slate-900">$850.00</td>
+              </tr>
+              <tr class="hover:bg-slate-50/80">
+                <td class="py-3 px-3 text-center text-slate-400">3</td>
+                <td class="py-3 px-3">
+                  <div class="font-semibold text-slate-800">Dedicated 24/7 Enterprise SLA Support</div>
+                  <div class="text-[11px] text-slate-500">Priority 15-minute response SLA with quarterly executive review</div>
+                </td>
+                <td class="py-3 px-3 text-center text-slate-700">1</td>
+                <td class="py-3 px-3 text-right text-slate-700">$500.00</td>
+                <td class="py-3 px-3 text-right text-slate-500">10%</td>
+                <td class="py-3 px-3 text-right font-semibold text-slate-900">$500.00</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- TOTALS CALCULATION -->
+        <div class="flex justify-end my-4">
+          <div class="w-72 space-y-2 text-xs">
+            <div class="flex justify-between text-slate-600">
+              <span>Subtotal:</span>
+              <span class="font-semibold text-slate-800">$3,750.00</span>
+            </div>
+            <div class="flex justify-between text-slate-600">
+              <span>Tax (10%):</span>
+              <span class="font-semibold text-slate-800">$375.00</span>
+            </div>
+            <div class="flex justify-between text-slate-600">
+              <span>Enterprise Discount:</span>
+              <span class="font-semibold text-emerald-600">-$125.00</span>
+            </div>
+            <div class="flex justify-between items-center py-2 px-3 bg-[#0078D4] text-white rounded font-bold text-sm shadow-sm mt-2">
+              <span>Grand Total:</span>
+              <span class="text-base font-extrabold tracking-tight">$4,000.00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FOOTER: PAYMENT DETAILS & SIGNATURE -->
+      <div class="pt-8 border-t border-slate-200/90 grid grid-cols-1 sm:grid-cols-2 gap-6 items-end text-xs">
+        <!-- Banking details -->
+        <div class="space-y-1.5">
+          <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400">Remittance & Payment Details</span>
+          <div class="bg-slate-50/90 rounded border border-slate-200/70 p-3 space-y-1 text-slate-600">
+            <div class="flex gap-2">
+              <span class="text-slate-400 w-24">Beneficiary:</span>
+              <span class="font-medium text-slate-800">Times Digitals Inc.</span>
+            </div>
+            <div class="flex gap-2">
+              <span class="text-slate-400 w-24">Bank:</span>
+              <span class="font-medium text-slate-800">JPMorgan Chase Bank, N.A.</span>
+            </div>
+            <div class="flex gap-2">
+              <span class="text-slate-400 w-24">Account No:</span>
+              <span class="font-mono text-slate-800">9876 5432 1098</span>
+            </div>
+            <div class="flex gap-2">
+              <span class="text-slate-400 w-24">Routing / SWIFT:</span>
+              <span class="font-mono text-slate-800">CHASUS33XXX</span>
+            </div>
+          </div>
+          <p class="text-[11px] text-slate-500 italic mt-2">Thank you for choosing Times Digitals as your trusted document solutions provider.</p>
+        </div>
+
+        <!-- Signature -->
+        <div class="sm:text-right space-y-2 flex flex-col items-start sm:items-end">
+          <div class="h-14 flex items-center">
+            <span class="font-script text-4xl text-blue-950 font-normal select-none -rotate-2">
+              Alexandre Vance
+            </span>
+          </div>
+          <div class="w-48 border-t border-slate-400 pt-1">
+            <div class="font-semibold text-slate-800 text-[11px]">Authorized Signatory</div>
+            <div class="text-[10px] text-slate-500">Times Digitals Enterprise Finance</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Real-time Watermark Generation Script -->
+  <script>
+    const watermarkLayer = document.getElementById('watermark-layer');
+    const opacitySlider = document.getElementById('opacitySlider');
+    const sizeSlider = document.getElementById('sizeSlider');
+    const rotSlider = document.getElementById('rotSlider');
+    const gapSlider = document.getElementById('gapSlider');
+
+    const opacityVal = document.getElementById('opacityVal');
+    const sizeVal = document.getElementById('sizeVal');
+    const rotVal = document.getElementById('rotVal');
+    const gapVal = document.getElementById('gapVal');
+
+    const logoSvg = `
+      <svg viewBox="0 0 120 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%;">
+        <path d="M15 15C15 11.6863 17.6863 9 21 9H65C83.7777 9 99 24.2223 99 43C99 61.7777 83.7777 77 65 77H42V91H21C17.6863 91 15 88.3137 15 85V15Z" fill="#0078D4"/>
+        <path d="M42 31H65C71.6274 31 77 36.3726 77 43C77 49.6274 71.6274 55 65 55H42V31Z" fill="#005A9E"/>
+      </svg>
+    `;
+
+    function renderLogoTiling() {
+      const opacity = parseFloat(opacitySlider.value);
+      const size = parseInt(sizeSlider.value);
+      const rotation = parseInt(rotSlider.value);
+      const gap = parseInt(gapSlider.value);
+
+      opacityVal.textContent = Math.round(opacity * 100) + '%';
+      sizeVal.textContent = size + 'px';
+      rotVal.textContent = rotation + '°';
+      gapVal.textContent = gap + 'px';
+
+      const sheet = document.getElementById('invoiceSheet');
+      const width = sheet.offsetWidth || 896;
+      const height = sheet.offsetHeight || 1050;
+
+      const xStep = gap;
+      const yStep = Math.round(gap * 0.85);
+
+      const cols = Math.ceil(width / xStep) + 2;
+      const rows = Math.ceil(height / yStep) + 2;
+
+      let html = '';
+
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const stagger = (r % 2 === 1) ? Math.round(xStep / 2) : 0;
+          const left = c * xStep + stagger - 20;
+          const top = r * yStep - 20;
+
+          html += `
+            <div style="
+              position: absolute;
+              left: ${left}px;
+              top: ${top}px;
+              width: ${size}px;
+              height: ${Math.round(size * 0.83)}px;
+              opacity: ${opacity};
+              transform: rotate(${rotation}deg);
+              transition: transform 0.1s ease, opacity 0.1s ease;
+            ">
+              ${logoSvg}
+            </div>
+          `;
+        }
+      }
+
+      watermarkLayer.innerHTML = html;
+    }
+
+    [opacitySlider, sizeSlider, rotSlider, gapSlider].forEach(slider => {
+      slider.addEventListener('input', renderLogoTiling);
+    });
+
+    window.addEventListener('resize', renderLogoTiling);
+    setTimeout(renderLogoTiling, 50);
+  </script>
+
+</body>
+</html>

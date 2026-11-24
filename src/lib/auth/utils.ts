@@ -39,8 +39,25 @@ export async function getUserCompany() {
   if (!company) {
     company = await prisma.company.create({
       data: {
-        name: `${user.name || "My"}'s Company`,
+        name: "Times Digitals",
+        address: "Times Digitals Tower, Suite 400, Redmond, WA 98052, USA",
+        email: "billing@timesdigitals.com",
+        phone: "+1 (800) 555-0199",
+        website: "https://timesdigitals.com",
+        logoUrl: "/logo-v3.jpg",
         ownerId: user.id,
+      }
+    })
+  } else if (company.name.includes("'s Company") || company.name.includes("My Company") || company.name.toLowerCase().includes("sufian")) {
+    company = await prisma.company.update({
+      where: { id: company.id },
+      data: {
+        name: "Times Digitals",
+        address: company.address || "Times Digitals Tower, Suite 400, Redmond, WA 98052, USA",
+        email: company.email || "billing@timesdigitals.com",
+        phone: company.phone || "+1 (800) 555-0199",
+        website: company.website || "https://timesdigitals.com",
+        logoUrl: company.logoUrl || "/logo-v3.jpg",
       }
     })
   }

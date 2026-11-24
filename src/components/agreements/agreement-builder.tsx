@@ -42,33 +42,33 @@ export function AgreementBuilder({ clients, company }: AgreementBuilderProps) {
     const [previewReady, setPreviewReady] = useState(false)
     const [isSaving, setIsSaving] = useState(false)
     const [data, setData] = useState<AgreementFormValues>(() => ({
-        title: "Service Agreement",
+        title: "Master Services Agreement (MSA)",
         agreementNumber: `AGR-${new Date().getFullYear()}-${Math.floor(
             1000 + Math.random() * 9000
         )}`,
         type: "SERVICE_AGREEMENT",
         clientId: "",
-        clientName: "",
-        clientEmail: "",
-        clientAddress: "",
-        clientCompany: "",
+        clientName: "Acme Global Corporation",
+        clientEmail: "accounts@acmeglobal.com",
+        clientAddress: "750 7th Avenue, 18th Floor, New York, NY 10019, USA",
+        clientCompany: "Acme Global Corporation",
         effectiveDate: new Date().toISOString().slice(0, 10),
         expiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
             .toISOString()
             .slice(0, 10),
-        value: "",
-        currency: "INR",
+        value: "6000",
+        currency: "USD",
         paymentTerms: "Net 30",
-        scope: "",
+        scope: "Times Digitals shall design, provision, configure, and maintain enterprise document workflows, custom Microsoft Dynamics 365 synchronizers, and digital signature automation infrastructure under the agreed service level standards.",
         clauses: DEFAULT_CLAUSES_BY_TYPE.SERVICE_AGREEMENT,
-        notes: "",
+        notes: "Governed by the standard commercial master service provisions of Times Digitals Inc.",
         companyDetails: {
-            name: company?.name || "",
-            address: company?.address || "",
-            email: company?.email || "",
-            phone: company?.phone || "",
-            taxId: company?.taxId || "",
-            logoUrl: company?.logoUrl || "",
+            name: company?.name || "Times Digitals",
+            address: company?.address || "Times Digitals Tower, Suite 400, Redmond, WA 98052, USA",
+            email: company?.email || "legal@timesdigitals.com",
+            phone: company?.phone || "+1 (800) 555-0199",
+            taxId: company?.taxId || "US-EIN-98-7654321",
+            logoUrl: company?.logoUrl || "/logo-v3.jpg",
         },
     }))
 

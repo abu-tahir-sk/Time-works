@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
-import { CalendarIcon, Plus, Trash2, User, FileText, List, CreditCard, Sparkles } from "lucide-react"
+import { CalendarIcon, Plus, Trash2, User, FileText, List, CreditCard, Sparkles, Building2 } from "lucide-react"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Calendar } from "@/components/ui/calendar"
 import { format } from "date-fns"
@@ -42,7 +42,93 @@ export function QuotationEditor({ form, clients, onAddClient }: QuotationEditorP
   return (
     <Form {...form}>
       <form className="space-y-6">
-        <Accordion defaultValue={["client", "items"]} className="w-full space-y-4">
+        <Accordion defaultValue={["company", "client", "items"]} className="w-full space-y-4">
+          
+          {/* COMPANY / SENDER DETAILS (FROM) */}
+          <AccordionItem value="company" className="bg-card border rounded-lg px-4 border-b-0 shadow-sm">
+            <AccordionTrigger className="hover:no-underline py-4">
+              <SectionHeader
+                icon={Building2}
+                title="Company Details (From / Sender)"
+                description="Your company name, branding, address & contact"
+              />
+            </AccordionTrigger>
+            <AccordionContent className="pb-4 pt-2">
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="companyDetails.name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xs text-muted-foreground">Company Name *</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Times Digitals" className="h-10 font-medium" {...field} value={field.value || ""} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="companyDetails.taxId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xs text-muted-foreground">Tax ID / VAT / GST / EIN</FormLabel>
+                        <FormControl>
+                          <Input placeholder="US-EIN-98-7654321" className="h-10" {...field} value={field.value || ""} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="companyDetails.email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xs text-muted-foreground">Company Email</FormLabel>
+                        <FormControl>
+                          <Input type="email" placeholder="billing@timesdigitals.com" className="h-10" {...field} value={field.value || ""} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="companyDetails.phone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xs text-muted-foreground">Company Phone</FormLabel>
+                        <FormControl>
+                          <Input placeholder="+1 (800) 555-0199" className="h-10" {...field} value={field.value || ""} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <FormField
+                  control={form.control}
+                  name="companyDetails.address"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-xs text-muted-foreground">Business Address</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Times Digitals Tower, Suite 400, Redmond, WA 98052, USA" className="min-h-[70px] resize-y" {...field} value={field.value || ""} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </AccordionContent>
+          </AccordionItem>
 
           {/* 1. Client & Quotation Metadata */}
           <AccordionItem value="client" className="bg-card border rounded-lg px-4 border-b-0 shadow-sm">

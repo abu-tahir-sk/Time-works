@@ -1,6 +1,6 @@
 "use server"
 
-import { requireUser } from "@/lib/auth/utils"
+import { requireUser, getUserCompany } from "@/lib/auth/utils"
 import { prisma } from "@/lib/prisma"
 import { quotationSchema, QuotationFormValues } from "@/lib/quotations/schema"
 import { revalidatePath } from "next/cache"
@@ -27,6 +27,22 @@ export async function createOrUpdateQuotation(data: QuotationFormValues) {
             terms: validatedData.terms,
             template: validatedData.template,
             designSettings: validatedData.designSettings ? JSON.parse(JSON.stringify(validatedData.designSettings)) : null,
+        }
+
+        // Update company details if provided
+        if (validatedData.companyDetails) {
+            const company = await getUserCompany()
+            await prisma.company.update({
+                where: { id: company.id },
+                data: {
+                    name: validatedData.companyDetails.name || company.name,
+                    address: validatedData.companyDetails.address,
+                    email: validatedData.companyDetails.email,
+                    phone: validatedData.companyDetails.phone,
+                    taxId: validatedData.companyDetails.taxId,
+                    logoUrl: validatedData.companyDetails.logoUrl,
+                }
+            })
         }
 
         if (validatedData.id) {

@@ -259,7 +259,7 @@ export function AgreementPdf({ data, company }: AgreementPdfProps) {
               <Image src={companyInfo.logoUrl} style={styles.companyLogo} />
             )}
             <Text style={styles.companyName}>
-              {companyInfo?.name || "DocuFlow Enterprise"}
+              {companyInfo?.name || "Times Digitals"}
             </Text>
             {companyInfo?.address && (
               <Text style={styles.companyText}>{companyInfo.address}</Text>

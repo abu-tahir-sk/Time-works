@@ -69,11 +69,40 @@ export function InvoicePdf({ data, company, clients }: any) {
     },
   }
 
+  const companyDetails = data?.companyDetails || {}
+  const rawCompanyName = companyDetails.name || company?.name
+  const resolvedCompanyName =
+    rawCompanyName && !rawCompanyName.includes("'s Company")
+      ? rawCompanyName
+      : "Times Digitals"
+
+  const mergedCompany = {
+    ...company,
+    ...companyDetails,
+    name: resolvedCompanyName,
+    address:
+      companyDetails.address ||
+      company?.address ||
+      "Times Digitals Tower, Suite 400, Redmond, WA 98052, USA",
+    email:
+      companyDetails.email ||
+      company?.email ||
+      "billing@timesdigitals.com",
+    phone:
+      companyDetails.phone ||
+      company?.phone ||
+      "+1 (800) 555-0199",
+    logoUrl:
+      companyDetails.logoUrl ||
+      company?.logoUrl ||
+      "/logo-v3.jpg",
+  }
+
   return (
     <Document>
       <TemplateComponent
         data={data}
-        company={{ ...company, ...(data?.companyDetails || {}) }}
+        company={mergedCompany}
         clients={clients}
         totals={totals}
         ds={ds}
