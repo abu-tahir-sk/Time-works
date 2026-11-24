@@ -93,3 +93,74 @@ export async function deleteClient(id: string) {
     return { success: false, error: error.message || "Failed to delete client" }
   }
 }
+
+export async function getClientsWithLedger() {
+  try {
+    const company = await getUserCompany()
+
+    const rawClients = await prisma.client.findMany({
+      where: { companyId: company.id },
+      include: {
+        invoices: {
+          select: {
+            id: true,
+            invoiceNumber: true,
+            total: true,
+            amountPaid: true,
+            currency: true,
+            status: true,
+            issueDate: true,
+            dueDate: true,
+          },
+          orderBy: { issueDate: "desc" },
+        },
+        quotations: {
+          select: {
+            id: true,
+            quotationNumber: true,
+            status: true,
+            issueDate: true,
+          },
+          orderBy: { issueDate: "desc" },
+        },
+        agreements: {
+          select: {
+            id: true,
+            agreementNumber: true,
+            title: true,
+            status: true,
+            effectiveDate: true,
+          },
+          orderBy: { effectiveDate: "desc" },
+        },
+      },
+      orderBy: { name: "asc" },
+    })
+
+    const clients = rawClients.map((c) => {
+      let totalInvoiced = 0
+      let totalPaid = 0
+
+      c.invoices.forEach((inv) => {
+        totalInvoiced += inv.total || 0
+        totalPaid += inv.amountPaid || 0
+      })
+
+      const balanceDue = Math.max(0, totalInvoiced - totalPaid)
+      const pendingInvoices = c.invoices.filter((i) => i.status !== "PAID" && i.status !== "CANCELLED").length
+
+      return {
+        ...c,
+        totalInvoiced,
+        totalPaid,
+        balanceDue,
+        pendingInvoices,
+      }
+    })
+
+    return { success: true, clients }
+  } catch (error: any) {
+    console.error("Failed to fetch clients ledger:", error)
+    return { success: false, error: error.message || "Failed to fetch clients ledger", clients: [] }
+  }
+}
