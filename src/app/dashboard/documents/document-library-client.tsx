@@ -720,24 +720,24 @@ export function DocumentLibraryClient({
             up here automatically — no uploads needed.
           </p>
           <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
-            <Button render={<Link href="/dashboard/invoices/new" />}>
-              <FileSpreadsheet className="h-4 w-4" />
-              New invoice
-            </Button>
-            <Button
-              variant="outline"
-              render={<Link href="/dashboard/quotations/new" />}
-            >
-              <FileSignature className="h-4 w-4" />
-              New quotation
-            </Button>
-            <Button
-              variant="outline"
-              render={<Link href="/dashboard/agreements/new" />}
-            >
-              <Handshake className="h-4 w-4" />
-              New agreement
-            </Button>
+            <Link href="/dashboard/invoices/new">
+              <Button>
+                <FileSpreadsheet className="h-4 w-4" />
+                New invoice
+              </Button>
+            </Link>
+            <Link href="/dashboard/quotations/new">
+              <Button variant="outline">
+                <FileSignature className="h-4 w-4" />
+                New quotation
+              </Button>
+            </Link>
+            <Link href="/dashboard/agreements/new">
+              <Button variant="outline">
+                <Handshake className="h-4 w-4" />
+                New agreement
+              </Button>
+            </Link>
           </div>
         </div>
       ) : filteredDocuments.length === 0 ? (
