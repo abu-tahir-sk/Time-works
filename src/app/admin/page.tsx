@@ -1,6 +1,8 @@
 import { getAdminOverview, getAdminUsersList } from "@/actions/admin"
 import { AdminClient } from "../dashboard/admin/admin-client"
 
+export const dynamic = "force-dynamic"
+
 export const metadata = {
   title: "Admin Portal | DocuFlow Enterprise",
   description: "Enterprise Super Admin Control Center: User management, subscription tiers, and platform telemetry.",

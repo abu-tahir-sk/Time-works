@@ -10,6 +10,9 @@ export function ModernTemplate({ data, company, clients, totals, ds }: any) {
     const sizes = ds.typography.sizes;
     const vis = ds.visibility;
 
+    const isQuote = !!data.quotationNumber;
+    const documentTitle = isQuote ? "QUOTATION" : (data.title || "INVOICE");
+
     const styles = StyleSheet.create({
         page: { padding: 0, fontFamily: getFontFamily(ds.typography.fontFamily), backgroundColor: '#ffffff', paddingBottom: 0 },
         logo: { width: Math.min(ds.layout.logoSize || 60, 60), height: 'auto', objectFit: 'contain', marginBottom: 6 },
@@ -51,7 +54,7 @@ export function ModernTemplate({ data, company, clients, totals, ds }: any) {
                     <CompanyInfo company={company} vis={vis} styles={styles} />
                 </View>
                 <View style={styles.invoiceMetaCol}>
-                    <Text style={styles.invoiceTitle}>INVOICE</Text>
+                    <Text style={styles.invoiceTitle}>{documentTitle}</Text>
                     <InvoiceMeta data={data} vis={vis} styles={styles} />
                 </View>
             </View>

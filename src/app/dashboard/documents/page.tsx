@@ -4,6 +4,8 @@ import { AlertCircle } from "lucide-react"
 import { getDocumentLibrary } from "@/actions/documents"
 import { DocumentLibraryClient } from "./document-library-client"
 
+export const dynamic = "force-dynamic"
+
 export const metadata: Metadata = {
   title: "Documents | DocuFlow",
   description: "All your business documents, organised in one place.",

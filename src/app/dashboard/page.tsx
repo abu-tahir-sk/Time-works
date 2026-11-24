@@ -21,6 +21,8 @@ import { getCompanyFinancialOverview } from "@/actions/expenses"
 import { requireUser, getUserCompany } from "@/lib/auth/utils"
 import { formatMoney } from "@/lib/utils"
 
+export const dynamic = "force-dynamic"
+
 export const metadata = {
   title: "Executive Dashboard | DocuFlow Enterprise",
   description: "Company Financial Overview, Ledger, Invoices, and Business Analytics.",

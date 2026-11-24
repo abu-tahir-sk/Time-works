@@ -71,12 +71,14 @@ export const ClientInfo = ({ client, vis, styles }: any) => {
 };
 
 export const InvoiceMeta = ({ data, vis, styles }: any) => {
+    const isQuote = !!data.quotationNumber;
+    const numberVal = data.quotationNumber || data.invoiceNumber;
     return (
         <View style={styles.metaContainer || {}}>
-            {vis.showInvoiceNumber !== false && data.invoiceNumber && (
+            {vis.showInvoiceNumber !== false && numberVal && (
                 <View style={styles.metaGrid}>
-                    <Text style={styles.metaLabel}>Invoice No:</Text>
-                    <Text style={styles.metaValue}>{data.invoiceNumber}</Text>
+                    <Text style={styles.metaLabel}>{isQuote ? "Quote No:" : "Invoice No:"}</Text>
+                    <Text style={styles.metaValue}>{numberVal}</Text>
                 </View>
             )}
             {vis.showIssueDate !== false && data.issueDate && (
@@ -85,10 +87,10 @@ export const InvoiceMeta = ({ data, vis, styles }: any) => {
                     <Text style={styles.metaValue}>{format(new Date(data.issueDate), "MMM dd, yyyy")}</Text>
                 </View>
             )}
-            {vis.showDueDate !== false && data.dueDate && (
+            {vis.showDueDate !== false && (data.dueDate || data.validUntil) && (
                 <View style={styles.metaGrid}>
-                    <Text style={styles.metaLabel}>Due Date:</Text>
-                    <Text style={styles.metaValue}>{format(new Date(data.dueDate), "MMM dd, yyyy")}</Text>
+                    <Text style={styles.metaLabel}>{isQuote ? "Valid Until:" : "Due Date:"}</Text>
+                    <Text style={styles.metaValue}>{format(new Date(data.dueDate || data.validUntil), "MMM dd, yyyy")}</Text>
                 </View>
             )}
             {vis.showStatus !== false && vis.status !== false && data.status && (
