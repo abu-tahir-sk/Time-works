@@ -93,7 +93,7 @@ export function Navbar() {
           </div>
 
           {/* CENTER: Navigation Links (Desktop) */}
-          <nav className="hidden md:flex items-center gap-1 bg-muted/40 dark:bg-muted/20 border border-border/40 px-2.5 py-1 rounded-full shadow-2xs">
+          <nav className="hidden md:flex items-center gap-5 lg:gap-6">
             {navLinks.map((link) => {
               const isActive = pathname === link.href
               return (
@@ -101,13 +101,16 @@ export function Navbar() {
                   key={link.href}
                   href={link.href}
                   className={cn(
-                    "px-3 py-1 text-xs font-medium rounded-full transition-all duration-200",
+                    "relative py-1 text-sm font-medium transition-colors",
                     isActive
-                      ? "bg-[#0078D4] text-white font-semibold shadow-2xs"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted/80"
+                      ? "text-[#0078D4] dark:text-[#2899f5] font-semibold"
+                      : "text-muted-foreground hover:text-foreground"
                   )}
                 >
                   {link.label}
+                  {isActive && (
+                    <span className="absolute inset-x-0 -bottom-2 h-0.5 bg-[#0078D4] rounded-full" />
+                  )}
                 </Link>
               )
             })}
