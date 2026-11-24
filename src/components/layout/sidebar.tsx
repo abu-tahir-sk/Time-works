@@ -12,6 +12,14 @@ import { signOut, useSession } from "next-auth/react"
 export function Sidebar() {
   const pathname = usePathname()
   const { data: session } = useSession()
+  const isSuperAdmin = session?.user?.email?.toLowerCase() === "abutahir2626@gmail.com"
+
+  const visibleSections = SIDEBAR_SECTIONS.filter((section) => {
+    if (section.group === "Administration" && !isSuperAdmin) {
+      return false
+    }
+    return true
+  })
 
   return (
     <div className="hidden border-r border-border/80 bg-background/95 backdrop-blur-md md:block w-64 lg:w-72 shrink-0 select-none shadow-[1px_0_0_0_rgba(0,0,0,0.04)]">
@@ -36,7 +44,7 @@ export function Sidebar() {
 
         {/* Navigation by Sections */}
         <div className="flex-1 overflow-y-auto py-3 px-3 space-y-4">
-          {SIDEBAR_SECTIONS.map((section, sIndex) => (
+          {visibleSections.map((section, sIndex) => (
             <div key={sIndex} className="space-y-1">
               <div className="px-3 pb-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/70">
                 {section.group}
@@ -99,16 +107,18 @@ export function Sidebar() {
             <Settings className="h-3.5 w-3.5" />
             <span>Workspace Settings</span>
           </Link>
-          <Link
-            href="/admin"
-            className="flex items-center justify-between rounded-md px-3 py-1.5 text-xs text-muted-foreground hover:bg-muted hover:text-foreground transition-all"
-          >
-            <div className="flex items-center gap-2.5">
-              <Sparkles className="h-3.5 w-3.5 text-[#0078D4]" />
-              <span>Admin Portal</span>
-            </div>
-            <ChevronRight className="h-3 w-3 text-muted-foreground/60" />
-          </Link>
+          {isSuperAdmin && (
+            <Link
+              href="/admin"
+              className="flex items-center justify-between rounded-md px-3 py-1.5 text-xs text-muted-foreground hover:bg-muted hover:text-foreground transition-all"
+            >
+              <div className="flex items-center gap-2.5">
+                <Sparkles className="h-3.5 w-3.5 text-[#0078D4]" />
+                <span>Admin Portal</span>
+              </div>
+              <ChevronRight className="h-3 w-3 text-muted-foreground/60" />
+            </Link>
+          )}
           <button
             onClick={() => signOut({ callbackUrl: "/login" })}
             className="flex w-full items-center gap-2.5 rounded-md px-3 py-1.5 text-xs text-red-600/90 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition-all cursor-pointer"

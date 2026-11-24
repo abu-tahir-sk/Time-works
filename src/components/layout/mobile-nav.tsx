@@ -10,10 +10,12 @@ import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { siteConfig } from "@/config/site"
 import Image from "next/image"
+import { useSession } from "next-auth/react"
 import { SIDEBAR_ITEMS } from "@/lib/constants"
 
 export function MobileNav() {
   const [open, setOpen] = React.useState(false)
+  const { data: session } = useSession()
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -44,7 +46,9 @@ export function MobileNav() {
           <MobileLink href="/dashboard/quotations" onOpenChange={setOpen}>Quotations</MobileLink>
           <MobileLink href="/dashboard/expenses" onOpenChange={setOpen}>Ledger & Expenses</MobileLink>
           <MobileLink href="/dashboard/agreements" onOpenChange={setOpen}>Agreements</MobileLink>
-          <MobileLink href="/admin" onOpenChange={setOpen}>Admin Portal</MobileLink>
+          {session?.user?.email?.toLowerCase() === "abutahir2626@gmail.com" && (
+            <MobileLink href="/admin" onOpenChange={setOpen}>Admin Portal</MobileLink>
+          )}
         </div>
         <div className="mt-6 border-t pt-4">
           <h4 className="mb-2 font-medium text-sm text-muted-foreground">Dashboard Menu</h4>

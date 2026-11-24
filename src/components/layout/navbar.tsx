@@ -43,6 +43,8 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
+  const isSuperAdmin = session?.user?.email?.toLowerCase() === "abutahir2626@gmail.com"
+
   const navLinks = [
     { href: "/", label: "Home" },
     { href: "/features", label: "Features" },
@@ -50,7 +52,7 @@ export function Navbar() {
     { href: "/dashboard/quotations", label: "Quotations" },
     { href: "/dashboard/expenses", label: "Ledger" },
     { href: "/dashboard/agreements", label: "Agreements" },
-    { href: "/admin", label: "Admin" },
+    ...(isSuperAdmin ? [{ href: "/admin", label: "Admin" }] : []),
   ]
 
   return (

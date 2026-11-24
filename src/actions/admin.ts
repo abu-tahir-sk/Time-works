@@ -2,11 +2,11 @@
 
 import { revalidatePath } from "next/cache"
 import { prisma } from "@/lib/prisma"
-import { requireUser } from "@/lib/auth/utils"
+import { requireSuperAdmin } from "@/lib/auth/utils"
 
 export async function getAdminOverview() {
   try {
-    const user = await requireUser()
+    const user = await requireSuperAdmin()
 
     // Fetch system-wide counts
     const [
@@ -112,7 +112,7 @@ export async function getAdminOverview() {
 
 export async function getAdminUsersList(searchQuery?: string, planFilter?: string) {
   try {
-    const user = await requireUser()
+    const user = await requireSuperAdmin()
 
     const whereClause: any = {}
 
@@ -160,7 +160,7 @@ export async function getAdminUsersList(searchQuery?: string, planFilter?: strin
 
 export async function updateUserPlan(userId: string, newPlan: "FREE" | "PRO" | "ENTERPRISE", newRole?: "USER" | "ADMIN") {
   try {
-    const user = await requireUser()
+    const user = await requireSuperAdmin()
 
     const data: any = { plan: newPlan }
     if (newRole) {

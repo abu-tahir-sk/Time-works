@@ -41,8 +41,8 @@ model User {
   emailVerified DateTime?
   passwordHash  String?
   image         String?
-  role          String    @default("ADMIN") // ADMIN, USER
-  plan          String    @default("PRO")   // FREE, PRO, ENTERPRISE
+  role          String    @default("USER") // ADMIN, USER
+  plan          String    @default("FREE")   // FREE, PRO, ENTERPRISE
   planExpiresAt DateTime?
   accounts      Account[]
   sessions      Session[]

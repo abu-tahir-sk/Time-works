@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button"
 import { getCompanyFinancialOverview } from "@/actions/expenses"
 import { requireUser, getUserCompany } from "@/lib/auth/utils"
 import { formatMoney } from "@/lib/utils"
+import { getUserDocumentUsage } from "@/lib/subscriptions/limits"
 
 export const dynamic = "force-dynamic"
 
@@ -29,10 +30,11 @@ export const metadata = {
 }
 
 export default async function DashboardPage() {
-  const [user, company, financialData] = await Promise.all([
-    requireUser(),
+  const user = await requireUser()
+  const [company, financialData, quota] = await Promise.all([
     getUserCompany(),
     getCompanyFinancialOverview(),
+    getUserDocumentUsage(user.id),
   ])
 
   const { summary, currency, recentInvoices, recentExpenses, categoryTotals } = financialData
@@ -76,6 +78,75 @@ export default async function DashboardPage() {
             </Button>
           </Link>
         </div>
+      </div>
+
+      {/* Subscription & PDF Generation Quota Status Banner */}
+      <div className="rounded-lg border border-border/80 bg-card p-4 shadow-xs">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className={`w-9 h-9 rounded-md flex items-center justify-center shrink-0 ${
+              quota.isUnlimited
+                ? "bg-[#0078D4]/10 text-[#0078D4]"
+                : quota.canCreate
+                ? "bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400"
+                : "bg-red-50 dark:bg-red-950/50 text-red-600 dark:text-red-400"
+            }`}>
+              <Sparkles className="h-4.5 w-4.5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-foreground">
+                  {quota.plan === "FREE" ? "Free Starter Plan" : quota.plan === "PRO" ? "Pro Business Subscription" : "Enterprise Suite"}
+                </span>
+                <span className={`text-[10px] font-semibold px-2 py-0.2 rounded-full uppercase tracking-wider ${
+                  quota.isUnlimited
+                    ? "bg-[#0078D4]/15 text-[#0078D4]"
+                    : quota.canCreate
+                    ? "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300"
+                    : "bg-red-100 dark:bg-red-950/60 text-red-700 dark:text-red-300"
+                }`}>
+                  {quota.isUnlimited ? "Unlimited PDFs" : `${quota.remaining} of 20 Left`}
+                </span>
+              </div>
+              <p className="text-[11px] text-muted-foreground mt-0.5">
+                {quota.isUnlimited ? (
+                  "Your active subscription grants unlimited PDF document generation across Invoices, Quotations, and Agreements."
+                ) : quota.canCreate ? (
+                  `You have generated ${quota.totalDocuments} of ${quota.limit} PDF documents allowed on the Free tier (${quota.counts.invoices} invoices, ${quota.counts.quotations} quotes, ${quota.counts.agreements} agreements).`
+                ) : (
+                  `Free quota limit reached (20/20 documents used). Upgrade to Pro to continue creating invoices, quotes, and contracts.`
+                )}
+              </p>
+            </div>
+          </div>
+
+          {!quota.isUnlimited && (
+            <div className="flex items-center gap-2 self-start sm:self-auto shrink-0">
+              <Link href="/#pricing">
+                <Button size="sm" className="h-8 text-xs bg-[#0078D4] hover:bg-[#106EBE] text-white font-semibold">
+                  Upgrade to Pro
+                </Button>
+              </Link>
+            </div>
+          )}
+        </div>
+
+        {!quota.isUnlimited && (
+          <div className="mt-3 pt-3 border-t border-border/60">
+            <div className="flex items-center justify-between text-[11px] text-muted-foreground mb-1">
+              <span>Usage Progress</span>
+              <span className="font-mono font-medium text-foreground">{quota.totalDocuments} / {quota.limit} Documents</span>
+            </div>
+            <div className="w-full h-1.5 rounded-full bg-muted overflow-hidden">
+              <div
+                className={`h-full rounded-full transition-all ${
+                  quota.totalDocuments >= 20 ? "bg-red-500" : quota.totalDocuments >= 15 ? "bg-amber-500" : "bg-[#0078D4]"
+                }`}
+                style={{ width: `${Math.min(100, Math.round((quota.totalDocuments / quota.limit) * 100))}%` }}
+              />
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Primary Financial Metric Cards (Microsoft Fluent 2) */}

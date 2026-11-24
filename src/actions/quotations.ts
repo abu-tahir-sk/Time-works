@@ -4,6 +4,7 @@ import { requireUser, getUserCompany } from "@/lib/auth/utils"
 import { prisma } from "@/lib/prisma"
 import { quotationSchema, QuotationFormValues } from "@/lib/quotations/schema"
 import { revalidatePath } from "next/cache"
+import { checkUserCanCreateDocument } from "@/lib/subscriptions/limits"
 
 export async function createOrUpdateQuotation(data: QuotationFormValues) {
     try {
@@ -43,6 +44,13 @@ export async function createOrUpdateQuotation(data: QuotationFormValues) {
                     logoUrl: validatedData.companyDetails.logoUrl,
                 }
             })
+        }
+
+        if (!validatedData.id) {
+            const limitCheck = await checkUserCanCreateDocument(user.id)
+            if (!limitCheck.allowed) {
+                return { success: false, error: limitCheck.message }
+            }
         }
 
         if (validatedData.id) {

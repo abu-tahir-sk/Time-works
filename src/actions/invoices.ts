@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma"
 import { getUserCompany } from "@/lib/auth/utils"
 import { invoiceSchema } from "@/lib/invoices/schema"
 import { calculateInvoiceTotals, InvoiceItemData } from "@/lib/invoices/calculations"
+import { checkUserCanCreateDocument } from "@/lib/subscriptions/limits"
 import { revalidatePath } from "next/cache"
 
 async function generateInvoiceNumber(companyId: string): Promise<string> {
@@ -80,6 +81,13 @@ export async function createOrUpdateInvoice(data: any) {
           taxId: parsedData.companyDetails.taxId,
         }
       })
+    }
+
+    if (!parsedData.id) {
+      const limitCheck = await checkUserCanCreateDocument(company.ownerId)
+      if (!limitCheck.allowed) {
+        throw new Error(limitCheck.message)
+      }
     }
 
     let invoice;

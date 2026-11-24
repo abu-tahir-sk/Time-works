@@ -3,7 +3,7 @@
 import React from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import {
   ShieldCheck,
   Users,
@@ -26,7 +26,26 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 export default function AdminPortalLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
-  const { data: session } = useSession()
+  const router = useRouter()
+  const { data: session, status } = useSession()
+
+  React.useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/login")
+    } else if (
+      status === "authenticated" &&
+      session?.user?.email?.toLowerCase() !== "abutahir2626@gmail.com"
+    ) {
+      router.push("/dashboard")
+    }
+  }, [status, session, router])
+
+  if (
+    status === "authenticated" &&
+    session?.user?.email?.toLowerCase() !== "abutahir2626@gmail.com"
+  ) {
+    return null
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-[#f0f2f5] dark:bg-[#0f1117] font-sans text-foreground antialiased select-none">

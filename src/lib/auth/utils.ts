@@ -2,6 +2,13 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth/config"
 import { prisma } from "@/lib/prisma"
 
+export const SUPER_ADMIN_EMAIL = "abutahir2626@gmail.com"
+
+export function isSuperAdmin(user?: { email?: string | null; role?: string | null } | null): boolean {
+  if (!user?.email) return false
+  return user.email.toLowerCase() === SUPER_ADMIN_EMAIL.toLowerCase() && user.role === "ADMIN"
+}
+
 export async function getCurrentUser() {
   const session = await getServerSession(authOptions)
   return session?.user
@@ -22,6 +29,14 @@ export async function requireUser() {
   }
   
   return dbUser
+}
+
+export async function requireSuperAdmin() {
+  const user = await requireUser()
+  if (user.email?.toLowerCase() !== SUPER_ADMIN_EMAIL.toLowerCase() || user.role !== "ADMIN") {
+    throw new Error("Forbidden: Super Admin access required.")
+  }
+  return user
 }
 
 /**
