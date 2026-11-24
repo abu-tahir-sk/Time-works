@@ -63,7 +63,7 @@ export async function getUserCompany() {
         ownerId: user.id,
       }
     })
-  } else if (company.name.includes("'s Company") || company.name.includes("My Company") || company.name.toLowerCase().includes("sufian") || company.name === "Times Digitals" || company.name === "DocuFlow") {
+  } else if (company.name.includes("'s Company") || company.name.includes("My Company") || company.name.toLowerCase().includes("sufian") || company.name === "Times Digitals" || company.name === "Times Tigitails" || company.name === "DocuFlow") {
     company = await prisma.company.update({
       where: { id: company.id },
       data: {

@@ -6,7 +6,6 @@ import {
   View,
   StyleSheet,
   Image,
-  Font,
 } from "@react-pdf/renderer"
 import { format } from "date-fns"
 import { WatermarkLayer } from "../invoices/templates/WatermarkLayer"
@@ -19,14 +18,14 @@ interface AgreementPdfProps {
 
 const styles = StyleSheet.create({
   page: {
-    paddingTop: 24,
-    paddingBottom: 24,
-    paddingHorizontal: 28,
+    paddingTop: 28,
+    paddingBottom: 28,
+    paddingHorizontal: 32,
     fontFamily: "Helvetica",
     backgroundColor: "#ffffff",
     color: "#1e293b",
-    fontSize: 7.5,
-    lineHeight: 1.25,
+    fontSize: 8,
+    lineHeight: 1.3,
     position: "relative",
   },
   header: {
@@ -35,8 +34,12 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     borderBottomWidth: 1.2,
     borderBottomColor: "#c82020",
-    paddingBottom: 8,
-    marginBottom: 8,
+    paddingBottom: 10,
+    marginBottom: 10,
+  },
+  companyCol: {
+    width: "52%",
+    paddingRight: 10,
   },
   companyLogo: {
     width: 48,
@@ -46,17 +49,19 @@ const styles = StyleSheet.create({
     marginBottom: 3,
   },
   companyName: {
-    fontSize: 11,
+    fontSize: 12,
     fontFamily: "Helvetica-Bold",
     color: "#0f172a",
-    marginBottom: 1,
-  },
-  companyText: {
-    fontSize: 7,
-    color: "#64748b",
+    marginBottom: 2,
     lineHeight: 1.2,
   },
-  metaRight: {
+  companyText: {
+    fontSize: 7.5,
+    color: "#64748b",
+    lineHeight: 1.25,
+  },
+  metaCol: {
+    width: "46%",
     alignItems: "flex-end",
   },
   docBadge: {
@@ -80,102 +85,105 @@ const styles = StyleSheet.create({
     fontFamily: "Helvetica-Bold",
     color: "#c82020",
     textAlign: "right",
-    marginBottom: 2,
+    lineHeight: 1.2,
+    marginBottom: 4,
   },
   metaRow: {
     flexDirection: "row",
     justifyContent: "flex-end",
-    marginBottom: 1.5,
+    marginBottom: 2,
   },
   metaLabel: {
-    fontSize: 7,
+    fontSize: 7.5,
     color: "#64748b",
-    width: 70,
+    width: 75,
     textAlign: "right",
-    paddingRight: 4,
+    paddingRight: 5,
   },
   metaValue: {
-    fontSize: 7,
+    fontSize: 7.5,
     fontFamily: "Helvetica-Bold",
     color: "#0f172a",
-    width: 80,
+    width: 90,
     textAlign: "right",
   },
   partiesGrid: {
     flexDirection: "row",
     justifyContent: "space-between",
     backgroundColor: "#f8fafc",
-    borderWidth: 0.6,
+    borderWidth: 0.75,
     borderColor: "#e2e8f0",
     borderRadius: 4,
-    padding: 6,
-    marginBottom: 7,
+    padding: 7,
+    marginBottom: 8,
   },
   partyBox: {
     flex: 1,
-    paddingRight: 8,
+    paddingRight: 6,
   },
   partyHeader: {
-    fontSize: 6.5,
+    fontSize: 6.8,
     fontFamily: "Helvetica-Bold",
     color: "#64748b",
     textTransform: "uppercase",
-    marginBottom: 1.5,
+    letterSpacing: 0.4,
+    marginBottom: 2,
   },
   partyName: {
-    fontSize: 8.5,
+    fontSize: 9,
     fontFamily: "Helvetica-Bold",
     color: "#0f172a",
-    marginBottom: 1,
+    marginBottom: 1.5,
   },
   partyDetail: {
-    fontSize: 7,
+    fontSize: 7.2,
     color: "#475569",
-    lineHeight: 1.2,
-  },
-  scopeText: {
-    fontSize: 7,
-    color: "#334155",
     lineHeight: 1.25,
   },
   commercialBox: {
     flexDirection: "row",
     justifyContent: "space-between",
     backgroundColor: "#f0fdf4",
-    borderWidth: 0.6,
+    borderWidth: 0.75,
     borderColor: "#bbf7d0",
     borderRadius: 4,
-    padding: 5,
-    marginBottom: 7,
+    padding: 6,
+    marginBottom: 8,
   },
   commercialItem: {
     flex: 1,
   },
   commercialLabel: {
-    fontSize: 6.5,
+    fontSize: 6.8,
     color: "#166534",
     textTransform: "uppercase",
     fontFamily: "Helvetica-Bold",
+    letterSpacing: 0.4,
   },
   commercialValue: {
-    fontSize: 9,
+    fontSize: 9.5,
     fontFamily: "Helvetica-Bold",
     color: "#15803d",
     marginTop: 1,
   },
   section: {
-    marginBottom: 6,
+    marginBottom: 8,
   },
   sectionTitle: {
-    fontSize: 8,
+    fontSize: 8.5,
     fontFamily: "Helvetica-Bold",
     color: "#c82020",
     textTransform: "uppercase",
     letterSpacing: 0.4,
-    borderBottomWidth: 0.6,
+    borderBottomWidth: 0.75,
     borderBottomColor: "#e2e8f0",
     paddingBottom: 2,
     marginBottom: 4,
+  },
+  scopeText: {
+    fontSize: 7.5,
+    color: "#334155",
+    lineHeight: 1.3,
   },
   clausesGrid: {
     flexDirection: "row",
@@ -185,46 +193,54 @@ const styles = StyleSheet.create({
     width: "48.5%",
   },
   clauseCard: {
-    marginBottom: 4,
+    marginBottom: 4.5,
   },
   clauseHeading: {
-    fontSize: 7,
-    fontFamily: "Helvetica-Bold",
-    color: "#0f172a",
-    marginBottom: 1,
-  },
-  clauseBody: {
-    fontSize: 6.5,
-    color: "#334155",
-    lineHeight: 1.2,
-  },
-  signaturesContainer: {
-    marginTop: 8,
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  sigBlock: {
-    width: "44%",
-    borderTopWidth: 0.75,
-    borderTopColor: "#94a3b8",
-    paddingTop: 3,
-  },
-  sigTitle: {
     fontSize: 7.5,
     fontFamily: "Helvetica-Bold",
     color: "#0f172a",
     marginBottom: 1,
   },
-  sigSub: {
-    fontSize: 6.5,
+  clauseBody: {
+    fontSize: 7,
+    color: "#334155",
+    lineHeight: 1.25,
+  },
+  witnessText: {
+    fontSize: 7,
+    fontFamily: "Helvetica-Oblique",
     color: "#64748b",
-    lineHeight: 1.15,
+    marginTop: 4,
+    marginBottom: 6,
+    textAlign: "center",
+  },
+  signaturesContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 2,
+  },
+  sigBlock: {
+    width: "46%",
+    borderTopWidth: 0.75,
+    borderTopColor: "#94a3b8",
+    paddingTop: 4,
+  },
+  sigTitle: {
+    fontSize: 8,
+    fontFamily: "Helvetica-Bold",
+    color: "#0f172a",
+    marginBottom: 1,
+  },
+  sigSub: {
+    fontSize: 7,
+    color: "#64748b",
+    lineHeight: 1.2,
   },
   footer: {
     position: "absolute",
-    bottom: 10,
-    left: 28,
-    right: 28,
+    bottom: 12,
+    left: 32,
+    right: 32,
     flexDirection: "row",
     justifyContent: "space-between",
     borderTopWidth: 0.5,
@@ -302,12 +318,12 @@ export function AgreementPdf({ data, company }: AgreementPdfProps) {
         <WatermarkLayer
           ds={defaultDesignSettings}
           companyLogo={companyInfo?.logoUrl}
-          companyName={companyInfo?.name || "CONFIDENTIAL"}
+          companyName={companyInfo?.name || "TIMES WORKS"}
         />
 
         {/* Corporate Header */}
         <View style={styles.header}>
-          <View style={{ flex: 1, paddingRight: 15 }}>
+          <View style={styles.companyCol}>
             {companyInfo?.logoUrl && (
               <Image src={companyInfo.logoUrl} style={styles.companyLogo} />
             )}
@@ -327,12 +343,12 @@ export function AgreementPdf({ data, company }: AgreementPdfProps) {
             )}
           </View>
 
-          <View style={styles.metaRight}>
+          <View style={styles.metaCol}>
             <View style={styles.docBadge}>
               <Text style={styles.docBadgeText}>{agreementTypeLabel}</Text>
             </View>
             <Text style={styles.agreementTitle}>
-              {data?.title || "Legal Agreement"}
+              {data?.title || "Master Services Agreement"}
             </Text>
 
             <View style={styles.metaRow}>
@@ -357,10 +373,10 @@ export function AgreementPdf({ data, company }: AgreementPdfProps) {
           <View style={styles.partyBox}>
             <Text style={styles.partyHeader}>Party 1 (Service Provider)</Text>
             <Text style={styles.partyName}>
-              {companyInfo?.name || "Service Provider"}
+              {companyInfo?.name || "Times Works"}
             </Text>
             <Text style={styles.partyDetail}>
-              {companyInfo?.address || "Registered Corporate Office"}
+              {companyInfo?.address || "Times Works Tower, Redmond, WA 98052"}
             </Text>
             {companyInfo?.email && (
               <Text style={styles.partyDetail}>{companyInfo.email}</Text>
@@ -448,11 +464,16 @@ export function AgreementPdf({ data, company }: AgreementPdfProps) {
           )}
         </View>
 
+        {/* Witness Execution Statement */}
+        <Text style={styles.witnessText}>
+          IN WITNESS WHEREOF, the duly authorized representatives of the Parties have executed this Agreement as of the Effective Date.
+        </Text>
+
         {/* Signatures & Execution */}
         <View style={styles.signaturesContainer}>
           <View style={styles.sigBlock}>
             <Text style={styles.sigTitle}>
-              For {companyInfo?.name || "Service Provider"}
+              For {companyInfo?.name || "Times Works"}
             </Text>
             <Text style={styles.sigSub}>Authorized Representative</Text>
             <Text style={styles.sigSub}>Date: {effectiveDateStr}</Text>
@@ -470,9 +491,9 @@ export function AgreementPdf({ data, company }: AgreementPdfProps) {
         {/* Footer */}
         <View style={styles.footer} fixed>
           <Text style={styles.footerText}>
-            {companyInfo?.name || "Times Works"} • {data?.agreementNumber}
+            {companyInfo?.name || "Times Works"} • {data?.agreementNumber || "AGR-2026-001"}
           </Text>
-          <Text style={styles.footerText}>Legally Binding Agreement</Text>
+          <Text style={styles.footerText}>Legally Binding Agreement • Page 1 of 1</Text>
         </View>
       </Page>
     </Document>

@@ -63,7 +63,7 @@ export function QuotationEditor({ form, clients, onAddClient }: QuotationEditorP
                       <FormItem>
                         <FormLabel className="text-xs text-muted-foreground">Company Name *</FormLabel>
                         <FormControl>
-                          <Input placeholder="Times Digitals" className="h-10 font-medium" {...field} value={field.value || ""} />
+                          <Input placeholder="Times Works" className="h-10 font-medium" {...field} value={field.value || ""} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -120,7 +120,7 @@ export function QuotationEditor({ form, clients, onAddClient }: QuotationEditorP
                     <FormItem>
                       <FormLabel className="text-xs text-muted-foreground">Business Address</FormLabel>
                       <FormControl>
-                        <Textarea placeholder="Times Digitals Tower, Suite 400, Redmond, WA 98052, USA" className="min-h-[70px] resize-y" {...field} value={field.value || ""} />
+                        <Textarea placeholder="Times Works Tower, Suite 400, Redmond, WA 98052, USA" className="min-h-[70px] resize-y" {...field} value={field.value || ""} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

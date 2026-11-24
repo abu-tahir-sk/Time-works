@@ -66,7 +66,7 @@ export function WatermarkSettings() {
       : -30
 
   const currentGap = typeof watermark.gap === "number" ? watermark.gap : 85
-  const currentText = watermark.text?.content || companyName || "Times Digitals"
+  const currentText = watermark.text?.content || companyName || "Times Works"
   const currentTextColor = watermark.text?.color || "#0f172a"
   const uploadedLogo = watermark.logo?.url || ""
   const effectiveLogo = uploadedLogo || companyLogo || ""
@@ -365,7 +365,7 @@ export function WatermarkSettings() {
                 <Input
                   value={currentText}
                   onChange={(e) => setText(e.target.value)}
-                  placeholder="e.g. Times Digitals, CONFIDENTIAL, PAID, ORIGINAL"
+                  placeholder="e.g. Times Works, CONFIDENTIAL, PAID, ORIGINAL"
                   className="h-9 text-xs bg-background"
                 />
               </div>
