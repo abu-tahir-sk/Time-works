@@ -20,6 +20,7 @@ import {
   ArrowUpRight,
   ShieldCheck,
   Sparkles,
+  AlertCircle,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -388,21 +389,44 @@ export function PaymentsClient({ initialPayments, invoices, company }: PaymentsC
 
           <form onSubmit={handleRecordPayment} className="space-y-4 pt-2">
             {/* Invoice Selector */}
-            <div className="space-y-1">
-              <Label className="text-xs font-semibold">Select Invoice *</Label>
-              <Select value={selectedInvoiceId} onValueChange={(val) => handleInvoiceChange(val || "")}>
-                <SelectTrigger className="h-9 text-xs rounded-xl">
-                  <SelectValue placeholder="Choose an invoice..." />
-                </SelectTrigger>
-                <SelectContent className="max-h-56">
-                  {invoices.map((inv) => (
-                    <SelectItem key={inv.id} value={inv.id}>
-                      {inv.invoiceNumber} — {inv.client?.name} ({formatMoney(inv.total, inv.currency || "USD")})
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            {invoices.length === 0 ? (
+              <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-3.5 text-xs space-y-2.5">
+                <div className="flex items-center gap-2 text-amber-700 dark:text-amber-400 font-semibold">
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  <span>No Invoices Available</span>
+                </div>
+                <p className="text-muted-foreground text-[11px] leading-relaxed">
+                  You do not have any invoices in your workspace yet. Please create an invoice first to record client payments.
+                </p>
+                <div>
+                  <Link href="/dashboard/invoices/new">
+                    <Button
+                      size="sm"
+                      className="h-8 text-xs bg-[#c82020] hover:bg-[#a81a1a] text-white font-semibold rounded-lg"
+                    >
+                      <Plus className="w-3.5 h-3.5 mr-1" />
+                      Create New Invoice
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-1">
+                <Label className="text-xs font-semibold">Select Invoice *</Label>
+                <Select value={selectedInvoiceId || undefined} onValueChange={(val) => handleInvoiceChange(val || "")}>
+                  <SelectTrigger className="h-9 text-xs rounded-xl">
+                    <SelectValue placeholder="Choose an invoice..." />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-56 z-[100]">
+                    {invoices.map((inv) => (
+                      <SelectItem key={inv.id} value={inv.id}>
+                        {inv.invoiceNumber} — {inv.client?.name || "Client"} ({formatMoney(inv.total, inv.currency || "USD")}) {inv.status === "DRAFT" ? "• Draft" : ""}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
 
             {selectedInvoice && (
               <div className="p-3 rounded-xl bg-muted/30 border border-border/60 text-xs space-y-1">
@@ -500,8 +524,8 @@ export function PaymentsClient({ initialPayments, invoices, company }: PaymentsC
               <Button
                 type="submit"
                 size="sm"
-                disabled={isPending}
-                className="h-8.5 text-xs rounded-xl bg-[#c82020] hover:bg-[#a81a1a] text-white font-semibold"
+                disabled={isPending || invoices.length === 0}
+                className="h-8.5 text-xs rounded-xl bg-[#c82020] hover:bg-[#a81a1a] text-white font-semibold disabled:opacity-50"
               >
                 {isPending ? "Recording..." : "Record Payment"}
               </Button>

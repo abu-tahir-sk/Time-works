@@ -54,7 +54,7 @@ export async function getInvoicesForPayment() {
       where: {
         companyId: company.id,
         status: {
-          notIn: ["DRAFT", "CANCELLED", "REFUNDED"],
+          notIn: ["CANCELLED", "REFUNDED"],
         },
       },
       select: {
