@@ -29,14 +29,7 @@ export default async function InvoicesPage() {
   const invoices = res.invoices || []
 
   return (
-    <div className="flex flex-col gap-6 w-full p-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Invoices</h1>
-        <p className="text-muted-foreground">
-          Manage and track all your invoices in one place.
-        </p>
-      </div>
-      
+    <div className="flex flex-col gap-6 w-full">
       <InvoiceListClient initialInvoices={invoices} />
     </div>
   )

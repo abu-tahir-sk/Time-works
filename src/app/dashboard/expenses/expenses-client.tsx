@@ -202,7 +202,7 @@ export function ExpensesClient({
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex flex-wrap items-center gap-2.5">
           <Button
             variant="outline"
             size="sm"
@@ -507,19 +507,19 @@ export function ExpensesClient({
               </CardDescription>
             </div>
 
-            <div className="flex items-center gap-2">
-              <div className="relative">
+            <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+              <div className="relative flex-1 sm:flex-initial">
                 <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
                 <Input
                   placeholder="Filter expenses..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="h-8.5 w-48 text-xs pl-8"
+                  className="h-8.5 w-full sm:w-48 text-xs pl-8"
                 />
               </div>
 
               <Select value={categoryFilter} onValueChange={(val) => setCategoryFilter(val || "ALL")}>
-                <SelectTrigger className="h-8.5 w-36 text-xs">
+                <SelectTrigger className="h-8.5 w-full sm:w-36 text-xs">
                   <SelectValue placeholder="All Categories" />
                 </SelectTrigger>
                 <SelectContent>

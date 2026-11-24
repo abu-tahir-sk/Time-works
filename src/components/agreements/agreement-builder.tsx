@@ -41,6 +41,7 @@ export function AgreementBuilder({ clients, company }: AgreementBuilderProps) {
     const router = useRouter()
     const [previewReady, setPreviewReady] = useState(false)
     const [isSaving, setIsSaving] = useState(false)
+    const [activeTab, setActiveTab] = useState<"edit" | "preview">("edit")
     const [data, setData] = useState<AgreementFormValues>(() => ({
         title: "Master Services Agreement (MSA)",
         agreementNumber: `AGR-${new Date().getFullYear()}-${Math.floor(
@@ -147,8 +148,34 @@ export function AgreementBuilder({ clients, company }: AgreementBuilderProps) {
 
     return (
         <div className="flex h-full flex-col md:flex-row overflow-hidden bg-background">
+            {/* Mobile Tab Switcher */}
+            <div className="md:hidden flex border-b bg-background shrink-0">
+                <button
+                    type="button"
+                    onClick={() => setActiveTab("edit")}
+                    className={`flex-1 py-3 text-sm font-semibold transition-colors ${
+                        activeTab === "edit"
+                            ? "border-b-2 border-[#0078D4] text-[#0078D4]"
+                            : "text-muted-foreground"
+                    }`}
+                >
+                    Edit Agreement
+                </button>
+                <button
+                    type="button"
+                    onClick={() => setActiveTab("preview")}
+                    className={`flex-1 py-3 text-sm font-semibold transition-colors ${
+                        activeTab === "preview"
+                            ? "border-b-2 border-[#0078D4] text-[#0078D4]"
+                            : "text-muted-foreground"
+                    }`}
+                >
+                    Live PDF Preview
+                </button>
+            </div>
+
             {/* Left: form */}
-            <div className="w-full md:w-1/2 flex-col overflow-y-auto border-r bg-background">
+            <div className={`w-full md:w-1/2 flex-col overflow-y-auto border-r bg-background ${activeTab === "preview" ? "hidden md:flex" : "flex"}`}>
                 <div className="flex items-center justify-between p-4 border-b sticky top-0 bg-background/95 backdrop-blur z-10">
                     <div>
                         <h2 className="text-lg font-semibold tracking-tight">
@@ -466,7 +493,7 @@ export function AgreementBuilder({ clients, company }: AgreementBuilderProps) {
             </div>
 
             {/* Right: PDF preview */}
-            <div className="w-full md:w-1/2 flex-col overflow-y-auto bg-white">
+            <div className={`w-full md:w-1/2 flex-col overflow-y-auto bg-white ${activeTab === "edit" ? "hidden md:flex" : "flex"}`}>
                 <div className="p-4 border-b bg-background flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <FileText className="h-4 w-4" />

@@ -104,8 +104,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground/70" />
                 <Input
                   type="search"
-                  placeholder="Search invoices, clients, expenses, accounts... (Ctrl+K)"
-                  className="w-full h-9 rounded-md bg-muted/40 dark:bg-muted/20 border-border/70 pl-8.5 pr-14 text-xs shadow-none focus-visible:bg-background focus-visible:ring-1 focus-visible:ring-[#0078D4]"
+                  placeholder="Search workspace..."
+                  className="w-full h-8.5 sm:h-9 rounded-md bg-muted/40 dark:bg-muted/20 border-border/70 pl-8.5 pr-3 sm:pr-14 text-xs shadow-none focus-visible:bg-background focus-visible:ring-1 focus-visible:ring-[#0078D4]"
                 />
                 <kbd className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 hidden sm:inline-flex h-5 select-none items-center gap-1 rounded border border-border/80 bg-background px-1.5 font-mono text-[10px] font-medium text-muted-foreground shadow-2xs">
                   ⌘K
@@ -113,19 +113,19 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               </div>
             </div>
 
-            <div className="flex items-center gap-2 ml-auto">
+            <div className="flex items-center gap-1.5 sm:gap-2 ml-auto">
               {/* Quick Create Dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger
                   render={
                     <Button
                       size="sm"
-                      className="hidden sm:inline-flex items-center gap-1.5 h-8.5 px-3 bg-[#0078D4] hover:bg-[#106EBE] text-white text-xs font-semibold rounded-md shadow-xs transition-colors"
+                      className="inline-flex items-center gap-1.5 h-8.5 px-2.5 sm:px-3 bg-[#0078D4] hover:bg-[#106EBE] text-white text-xs font-semibold rounded-md shadow-xs transition-colors"
                     />
                   }
                 >
                   <Plus className="h-3.5 w-3.5 stroke-[2.5]" />
-                  <span>New</span>
+                  <span className="hidden sm:inline">New</span>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48 text-xs">
                   <DropdownMenuLabel className="text-[11px] font-semibold text-muted-foreground">

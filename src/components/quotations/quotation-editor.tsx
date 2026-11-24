@@ -312,7 +312,7 @@ export function QuotationEditor({ form, clients, onAddClient }: QuotationEditorP
                             )}
                           />
                         </div>
-                        <div className="col-span-3 md:col-span-2">
+                        <div className="col-span-4 sm:col-span-3 md:col-span-2">
                           <FormField
                             control={form.control}
                             name={`items.${index}.quantity`}
@@ -326,7 +326,7 @@ export function QuotationEditor({ form, clients, onAddClient }: QuotationEditorP
                             )}
                           />
                         </div>
-                        <div className="col-span-4 md:col-span-2">
+                        <div className="col-span-4 sm:col-span-4 md:col-span-2">
                           <FormField
                             control={form.control}
                             name={`items.${index}.unitPrice`}
@@ -340,8 +340,8 @@ export function QuotationEditor({ form, clients, onAddClient }: QuotationEditorP
                             )}
                           />
                         </div>
-                        <div className="col-span-5 md:col-span-2 flex flex-col justify-end">
-                          <div className="h-9 flex items-center justify-end px-3 bg-muted/30 rounded-md border text-xs font-semibold">
+                        <div className="col-span-4 sm:col-span-5 md:col-span-2 flex flex-col justify-end">
+                          <div className="h-9 flex items-center justify-end px-2 sm:px-3 bg-muted/30 rounded-md border text-xs sm:text-sm font-semibold font-mono">
                             {form.watch("currency") === "USD" ? "$" : "₹"} {total}
                           </div>
                         </div>

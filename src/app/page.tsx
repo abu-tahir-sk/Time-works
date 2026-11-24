@@ -117,8 +117,8 @@ export default function HomePage() {
           </div>
 
           {/* Tab Switcher */}
-          <div className="flex justify-center mb-6">
-            <div className="inline-flex p-1 rounded-lg bg-muted/60 border border-border/70 shadow-2xs">
+          <div className="flex justify-center mb-6 overflow-x-auto max-w-full pb-2">
+            <div className="inline-flex p-1 rounded-lg bg-muted/60 border border-border/70 shadow-2xs shrink-0">
               <button
                 onClick={() => setActiveTab("invoices")}
                 className={`flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-md transition-all ${
@@ -205,8 +205,8 @@ export default function HomePage() {
                     </div>
                   </div>
 
-                  <div className="border rounded-md overflow-hidden text-xs">
-                    <table className="w-full text-left">
+                  <div className="border rounded-md overflow-x-auto text-xs">
+                    <table className="w-full text-left min-w-[500px]">
                       <thead className="bg-muted/40 border-b text-[11px] font-semibold text-muted-foreground">
                         <tr>
                           <th className="p-3">Invoice #</th>
@@ -287,8 +287,8 @@ export default function HomePage() {
                     <span className="text-xs font-mono font-bold text-emerald-600">84% Approval Rate</span>
                   </div>
 
-                  <div className="border rounded-md overflow-hidden text-xs">
-                    <table className="w-full text-left">
+                  <div className="border rounded-md overflow-x-auto text-xs">
+                    <table className="w-full text-left min-w-[500px]">
                       <thead className="bg-muted/40 border-b text-[11px] font-semibold text-muted-foreground">
                         <tr>
                           <th className="p-3">Quote #</th>

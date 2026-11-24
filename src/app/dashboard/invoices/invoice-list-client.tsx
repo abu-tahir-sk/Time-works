@@ -214,26 +214,27 @@ export function InvoiceListClient({ initialInvoices }: { initialInvoices: any[] 
 
       {/* Filter and Search Bar */}
       <div className="flex flex-col sm:flex-row justify-between gap-3">
-        <div className="flex flex-1 items-center gap-2">
+        <div className="flex flex-col sm:flex-row flex-1 items-stretch sm:items-center gap-2">
           <div className="relative flex-1 max-w-sm">
             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
             <Input
               placeholder="Search by invoice # or client..."
-              className="h-8.5 text-xs pl-8"
+              className="h-8.5 text-xs pl-8 w-full"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
 
-          {/* Quick Status Filter Pills */}
-          <div className="hidden md:flex items-center gap-1 bg-muted/60 p-0.5 rounded-md border border-border/60">
+          {/* Quick Status Filter Pills (Accessible and swipeable on all screens) */}
+          <div className="flex items-center gap-1 bg-muted/60 p-1 rounded-md border border-border/60 overflow-x-auto max-w-full">
             {(["ALL", "PAID", "SENT", "PARTIALLY_PAID", "OVERDUE", "DRAFT"] as const).map((tab) => (
               <button
                 key={tab}
+                type="button"
                 onClick={() => setStatusFilter(tab)}
-                className={`px-2 py-1 text-[10px] font-semibold rounded transition-colors ${
+                className={`px-2.5 py-1 text-[11px] font-semibold rounded whitespace-nowrap transition-colors ${
                   statusFilter === tab
-                    ? "bg-background text-foreground shadow-2xs"
+                    ? "bg-background text-[#0078D4] shadow-2xs"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -245,9 +246,10 @@ export function InvoiceListClient({ initialInvoices }: { initialInvoices: any[] 
       </div>
 
       {/* Invoices Table Card */}
-      <Card className="border border-border/80 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+      <Card className="border border-border/80 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
         <CardContent className="p-0">
-          <Table>
+          <div className="overflow-x-auto">
+            <Table className="min-w-[700px]">
             <TableHeader className="bg-muted/40 border-b border-border/80">
               <TableRow className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
                 <TableHead className="py-2.5 px-4">Invoice #</TableHead>
@@ -329,6 +331,7 @@ export function InvoiceListClient({ initialInvoices }: { initialInvoices: any[] 
               )}
             </TableBody>
           </Table>
+          </div>
         </CardContent>
       </Card>
     </div>

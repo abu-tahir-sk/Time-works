@@ -282,8 +282,8 @@ export function InvoiceEditor({ form, clients, onAddClient }: InvoiceEditorProps
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                       </Button>
-                      <div className="grid grid-cols-12 gap-4">
-                        <div className="col-span-12 md:col-span-12">
+                      <div className="grid grid-cols-12 gap-3 sm:gap-4">
+                        <div className="col-span-12">
                           <FormField
                             control={form.control}
                             name={`items.${index}.description`}
@@ -297,7 +297,7 @@ export function InvoiceEditor({ form, clients, onAddClient }: InvoiceEditorProps
                             )}
                           />
                         </div>
-                        <div className="col-span-3">
+                        <div className="col-span-4 sm:col-span-3">
                           <FormField
                             control={form.control}
                             name={`items.${index}.quantity`}
@@ -311,7 +311,7 @@ export function InvoiceEditor({ form, clients, onAddClient }: InvoiceEditorProps
                             )}
                           />
                         </div>
-                        <div className="col-span-4">
+                        <div className="col-span-4 sm:col-span-4">
                           <FormField
                             control={form.control}
                             name={`items.${index}.unitPrice`}
@@ -325,8 +325,8 @@ export function InvoiceEditor({ form, clients, onAddClient }: InvoiceEditorProps
                             )}
                           />
                         </div>
-                        <div className="col-span-5 flex flex-col justify-end">
-                          <div className="h-9 flex items-center justify-end px-3 bg-muted/30 rounded-md border text-sm font-medium">
+                        <div className="col-span-4 sm:col-span-5 flex flex-col justify-end">
+                          <div className="h-9 flex items-center justify-end px-2 sm:px-3 bg-muted/30 rounded-md border text-xs sm:text-sm font-medium font-mono">
                             {form.watch("currency") === "USD" ? "$" : (form.watch("currency") === "EUR" ? "€" : "₹")} {total}
                           </div>
                         </div>
