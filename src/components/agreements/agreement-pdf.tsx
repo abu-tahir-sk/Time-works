@@ -19,206 +19,220 @@ interface AgreementPdfProps {
 
 const styles = StyleSheet.create({
   page: {
-    paddingTop: 40,
-    paddingBottom: 50,
-    paddingHorizontal: 40,
+    paddingTop: 24,
+    paddingBottom: 24,
+    paddingHorizontal: 28,
     fontFamily: "Helvetica",
     backgroundColor: "#ffffff",
     color: "#1e293b",
-    fontSize: 9,
-    lineHeight: 1.5,
+    fontSize: 7.5,
+    lineHeight: 1.25,
     position: "relative",
   },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
-    borderBottomWidth: 1.5,
+    borderBottomWidth: 1.2,
     borderBottomColor: "#c82020",
-    paddingBottom: 16,
-    marginBottom: 20,
+    paddingBottom: 8,
+    marginBottom: 8,
   },
   companyLogo: {
-    width: 65,
+    width: 48,
     height: "auto",
-    maxHeight: 50,
+    maxHeight: 32,
     objectFit: "contain",
-    marginBottom: 6,
+    marginBottom: 3,
   },
   companyName: {
-    fontSize: 13,
+    fontSize: 11,
     fontFamily: "Helvetica-Bold",
     color: "#0f172a",
-    marginBottom: 2,
+    marginBottom: 1,
   },
   companyText: {
-    fontSize: 8,
+    fontSize: 7,
     color: "#64748b",
-    lineHeight: 1.3,
+    lineHeight: 1.2,
   },
   metaRight: {
     alignItems: "flex-end",
   },
   docBadge: {
     backgroundColor: "#fef2f2",
-    borderWidth: 1,
+    borderWidth: 0.75,
     borderColor: "#c82020",
     borderRadius: 3,
-    paddingVertical: 2,
-    paddingHorizontal: 8,
-    marginBottom: 6,
+    paddingVertical: 1.5,
+    paddingHorizontal: 6,
+    marginBottom: 3,
   },
   docBadgeText: {
-    fontSize: 8,
+    fontSize: 7,
     fontFamily: "Helvetica-Bold",
     color: "#c82020",
     textTransform: "uppercase",
-    letterSpacing: 0.5,
+    letterSpacing: 0.4,
   },
   agreementTitle: {
-    fontSize: 16,
+    fontSize: 13,
     fontFamily: "Helvetica-Bold",
     color: "#c82020",
     textAlign: "right",
-    marginBottom: 4,
+    marginBottom: 2,
   },
   metaRow: {
     flexDirection: "row",
     justifyContent: "flex-end",
-    marginBottom: 2,
+    marginBottom: 1.5,
   },
   metaLabel: {
-    fontSize: 8,
+    fontSize: 7,
     color: "#64748b",
-    width: 80,
+    width: 70,
     textAlign: "right",
-    paddingRight: 6,
+    paddingRight: 4,
   },
   metaValue: {
-    fontSize: 8,
+    fontSize: 7,
     fontFamily: "Helvetica-Bold",
     color: "#0f172a",
-    width: 90,
+    width: 80,
     textAlign: "right",
-  },
-  section: {
-    marginBottom: 14,
-  },
-  sectionTitle: {
-    fontSize: 10,
-    fontFamily: "Helvetica-Bold",
-    color: "#c82020",
-    textTransform: "uppercase",
-    letterSpacing: 0.5,
-    borderBottomWidth: 0.75,
-    borderBottomColor: "#e2e8f0",
-    paddingBottom: 3,
-    marginBottom: 8,
   },
   partiesGrid: {
     flexDirection: "row",
     justifyContent: "space-between",
     backgroundColor: "#f8fafc",
-    borderWidth: 0.75,
+    borderWidth: 0.6,
     borderColor: "#e2e8f0",
     borderRadius: 4,
-    padding: 10,
-    marginBottom: 14,
+    padding: 6,
+    marginBottom: 7,
   },
   partyBox: {
     flex: 1,
-    paddingRight: 10,
+    paddingRight: 8,
   },
   partyHeader: {
-    fontSize: 8,
+    fontSize: 6.5,
     fontFamily: "Helvetica-Bold",
     color: "#64748b",
     textTransform: "uppercase",
-    marginBottom: 3,
+    marginBottom: 1.5,
   },
   partyName: {
-    fontSize: 9.5,
+    fontSize: 8.5,
     fontFamily: "Helvetica-Bold",
     color: "#0f172a",
-    marginBottom: 2,
+    marginBottom: 1,
   },
   partyDetail: {
-    fontSize: 8,
+    fontSize: 7,
     color: "#475569",
-    lineHeight: 1.3,
+    lineHeight: 1.2,
   },
   scopeText: {
-    fontSize: 8.5,
+    fontSize: 7,
     color: "#334155",
-    lineHeight: 1.5,
+    lineHeight: 1.25,
   },
   commercialBox: {
     flexDirection: "row",
     justifyContent: "space-between",
     backgroundColor: "#f0fdf4",
-    borderWidth: 0.75,
+    borderWidth: 0.6,
     borderColor: "#bbf7d0",
     borderRadius: 4,
-    padding: 8,
-    marginBottom: 12,
+    padding: 5,
+    marginBottom: 7,
   },
   commercialItem: {
     flex: 1,
   },
   commercialLabel: {
-    fontSize: 7.5,
+    fontSize: 6.5,
     color: "#166534",
     textTransform: "uppercase",
     fontFamily: "Helvetica-Bold",
   },
   commercialValue: {
-    fontSize: 10,
+    fontSize: 9,
     fontFamily: "Helvetica-Bold",
     color: "#15803d",
-    marginTop: 2,
+    marginTop: 1,
   },
-  clausesList: {
-    marginTop: 4,
+  section: {
+    marginBottom: 6,
   },
-  clauseItem: {
-    marginBottom: 8,
-    lineHeight: 1.45,
+  sectionTitle: {
+    fontSize: 8,
+    fontFamily: "Helvetica-Bold",
+    color: "#c82020",
+    textTransform: "uppercase",
+    letterSpacing: 0.4,
+    borderBottomWidth: 0.6,
+    borderBottomColor: "#e2e8f0",
+    paddingBottom: 2,
+    marginBottom: 4,
+  },
+  clausesGrid: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  clauseCol: {
+    width: "48.5%",
+  },
+  clauseCard: {
+    marginBottom: 4,
+  },
+  clauseHeading: {
+    fontSize: 7,
+    fontFamily: "Helvetica-Bold",
+    color: "#0f172a",
+    marginBottom: 1,
+  },
+  clauseBody: {
+    fontSize: 6.5,
+    color: "#334155",
+    lineHeight: 1.2,
   },
   signaturesContainer: {
-    marginTop: 20,
+    marginTop: 8,
     flexDirection: "row",
     justifyContent: "space-between",
   },
   sigBlock: {
-    width: "45%",
-    borderTopWidth: 1,
+    width: "44%",
+    borderTopWidth: 0.75,
     borderTopColor: "#94a3b8",
-    paddingTop: 6,
+    paddingTop: 3,
   },
   sigTitle: {
-    fontSize: 8.5,
+    fontSize: 7.5,
     fontFamily: "Helvetica-Bold",
     color: "#0f172a",
-    marginBottom: 2,
+    marginBottom: 1,
   },
   sigSub: {
-    fontSize: 7.5,
+    fontSize: 6.5,
     color: "#64748b",
-    lineHeight: 1.3,
+    lineHeight: 1.15,
   },
   footer: {
     position: "absolute",
-    bottom: 20,
-    left: 40,
-    right: 40,
+    bottom: 10,
+    left: 28,
+    right: 28,
     flexDirection: "row",
     justifyContent: "space-between",
     borderTopWidth: 0.5,
     borderTopColor: "#cbd5e1",
-    paddingTop: 5,
+    paddingTop: 3,
   },
   footerText: {
-    fontSize: 7.5,
+    fontSize: 6.5,
     color: "#94a3b8",
   },
 })
@@ -232,12 +246,51 @@ export function AgreementPdf({ data, company }: AgreementPdfProps) {
     ? format(new Date(data.expiryDate), "MMMM dd, yyyy")
     : "Until Terminated"
 
-  // Process clauses into clean paragraphs or numbered list
+  // Process clauses into structured title + body items and split into 2 columns for a single page fit
   const clausesText: string = data?.clauses || ""
-  const clauseLines = clausesText
+  const rawLines = clausesText
     .split("\n")
     .map((l) => l.trim())
     .filter(Boolean)
+
+  interface ClauseItem {
+    title?: string
+    body: string
+  }
+
+  const clausesList: ClauseItem[] = []
+  let pendingTitle = ""
+  let pendingBody: string[] = []
+
+  for (const line of rawLines) {
+    const isHeading =
+      /^\d+\.\s+[A-Z0-9\s,&/'-]+$/.test(line) ||
+      (/^[A-Z0-9\s,&/'-]{4,}$/.test(line) && line.length < 50)
+
+    if (isHeading) {
+      if (pendingTitle || pendingBody.length > 0) {
+        clausesList.push({
+          title: pendingTitle,
+          body: pendingBody.join(" "),
+        })
+      }
+      pendingTitle = line
+      pendingBody = []
+    } else {
+      pendingBody.push(line)
+    }
+  }
+
+  if (pendingTitle || pendingBody.length > 0) {
+    clausesList.push({
+      title: pendingTitle,
+      body: pendingBody.join(" "),
+    })
+  }
+
+  const midPoint = Math.ceil(clausesList.length / 2)
+  const col1Clauses = clausesList.slice(0, midPoint)
+  const col2Clauses = clausesList.slice(midPoint)
 
   const agreementTypeLabel =
     (data?.type || "SERVICE_AGREEMENT").replace(/_/g, " ")
@@ -259,7 +312,7 @@ export function AgreementPdf({ data, company }: AgreementPdfProps) {
               <Image src={companyInfo.logoUrl} style={styles.companyLogo} />
             )}
             <Text style={styles.companyName}>
-              {companyInfo?.name || "Times Digitals"}
+              {companyInfo?.name || "Times Works"}
             </Text>
             {companyInfo?.address && (
               <Text style={styles.companyText}>{companyInfo.address}</Text>
@@ -359,29 +412,44 @@ export function AgreementPdf({ data, company }: AgreementPdfProps) {
           </View>
         )}
 
-        {/* Section 2: Terms & Conditions / Clauses */}
+        {/* Section 2: Terms & Conditions / Clauses (2-Column Grid) */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>
             2. Terms, Conditions & Covenants
           </Text>
-          <View style={styles.clausesList}>
-            {clauseLines.length > 0 ? (
-              clauseLines.map((clause, idx) => (
-                <Text key={idx} style={styles.clauseItem}>
-                  {clause}
-                </Text>
-              ))
-            ) : (
-              <Text style={styles.scopeText}>
-                The parties agree to perform all obligations in good faith in
-                accordance with standard enterprise terms.
-              </Text>
-            )}
-          </View>
+          {clausesList.length > 0 ? (
+            <View style={styles.clausesGrid}>
+              <View style={styles.clauseCol}>
+                {col1Clauses.map((c, idx) => (
+                  <View key={`c1-${idx}`} style={styles.clauseCard}>
+                    {c.title ? (
+                      <Text style={styles.clauseHeading}>{c.title}</Text>
+                    ) : null}
+                    <Text style={styles.clauseBody}>{c.body}</Text>
+                  </View>
+                ))}
+              </View>
+              <View style={styles.clauseCol}>
+                {col2Clauses.map((c, idx) => (
+                  <View key={`c2-${idx}`} style={styles.clauseCard}>
+                    {c.title ? (
+                      <Text style={styles.clauseHeading}>{c.title}</Text>
+                    ) : null}
+                    <Text style={styles.clauseBody}>{c.body}</Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+          ) : (
+            <Text style={styles.scopeText}>
+              The parties agree to perform all obligations in good faith in
+              accordance with standard enterprise terms.
+            </Text>
+          )}
         </View>
 
         {/* Signatures & Execution */}
-        <View style={styles.signaturesContainer} wrap={false}>
+        <View style={styles.signaturesContainer}>
           <View style={styles.sigBlock}>
             <Text style={styles.sigTitle}>
               For {companyInfo?.name || "Service Provider"}
@@ -402,7 +470,7 @@ export function AgreementPdf({ data, company }: AgreementPdfProps) {
         {/* Footer */}
         <View style={styles.footer} fixed>
           <Text style={styles.footerText}>
-            {companyInfo?.name || "DocuFlow"} • {data?.agreementNumber}
+            {companyInfo?.name || "Times Works"} • {data?.agreementNumber}
           </Text>
           <Text style={styles.footerText}>Legally Binding Agreement</Text>
         </View>
