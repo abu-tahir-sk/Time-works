@@ -18,15 +18,15 @@ export async function sendVerificationEmail(email: string, otp: string) {
         <div style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px; background-color: #f9fafb; color: #111827;">
           <div style="background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 16px; padding: 40px; text-align: center; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);">
             
-            <h2 style="color: #111827; font-size: 28px; font-weight: 700; margin-top: 0; margin-bottom: 20px; letter-spacing: -0.5px;">Welcome to DocuFlow</h2>
+            <h2 style="color: #111827; font-size: 28px; font-weight: 700; margin-top: 0; margin-bottom: 20px; letter-spacing: -0.5px;">Welcome to Times Works</h2>
             
             <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin-bottom: 30px;">
               Thank you for registering. Please use the following One-Time Password (OTP) to verify your login or email address. 
               This code will expire in 10 minutes.
             </p>
             
-            <div style="background-color: #f0f6ff; border: 1px solid #bfdbfe; padding: 24px; border-radius: 12px; margin: 30px 0;">
-              <h1 style="margin: 0; font-size: 42px; letter-spacing: 12px; color: #0078D4; font-weight: 800;">${otp}</h1>
+            <div style="background-color: #fef2f2; border: 1px solid #fecaca; padding: 24px; border-radius: 12px; margin: 30px 0;">
+              <h1 style="margin: 0; font-size: 42px; letter-spacing: 12px; color: #c82020; font-weight: 800;">${otp}</h1>
             </div>
             
             <p style="color: #6b7280; font-size: 14px; margin-top: 40px; padding-top: 20px; border-top: 1px solid #f3f4f6;">
@@ -70,7 +70,7 @@ export async function sendPasswordResetEmail(email: string, token: string) {
             </p>
             
             <div style="text-align: center; margin: 30px 0;">
-              <a href="${resetLink}" style="background-color: #0078D4; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px; display: inline-block; box-shadow: 0 4px 6px rgba(0, 120, 212, 0.2);">
+              <a href="${resetLink}" style="background-color: #c82020; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px; display: inline-block; box-shadow: 0 4px 6px rgba(200, 32, 32, 0.2);">
                 Reset Password
               </a>
             </div>

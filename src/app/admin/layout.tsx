@@ -49,16 +49,16 @@ export default function AdminPortalLayout({ children }: { children: React.ReactN
 
   return (
     <div className="min-h-screen flex flex-col bg-[#f0f2f5] dark:bg-[#0f1117] font-sans text-foreground antialiased select-none">
-      {/* Top Microsoft 365 Admin Header */}
-      <header className="h-12 bg-[#0078D4] dark:bg-[#0b1329] text-white flex items-center justify-between px-4 sm:px-6 shadow-sm z-30 shrink-0">
+      {/* Top Admin Header */}
+      <header className="h-12 bg-[#c82020] dark:bg-[#1a0808] text-white flex items-center justify-between px-4 sm:px-6 shadow-sm z-30 shrink-0">
         <div className="flex items-center gap-3">
           <Link href="/admin" className="flex items-center gap-2.5 font-semibold text-sm tracking-tight text-white hover:opacity-95">
             <div className="w-6 h-6 rounded bg-white/20 flex items-center justify-center">
               <ShieldCheck className="h-4 w-4 text-white" />
             </div>
-            <span>Microsoft 365 Admin Center</span>
+            <span>Times Works Admin Center</span>
             <span className="hidden sm:inline-block text-[10px] font-semibold uppercase px-1.5 py-0.5 rounded bg-white/20 text-white/90">
-              DocuFlow Governance
+              Governance Portal
             </span>
           </Link>
         </div>
@@ -124,11 +124,11 @@ export default function AdminPortalLayout({ children }: { children: React.ReactN
               href="/admin"
               className={`flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors ${
                 pathname === "/admin"
-                  ? "bg-[#eff6fc] dark:bg-blue-950/40 text-[#0078D4] dark:text-blue-400 font-semibold"
+                  ? "bg-rose-50 dark:bg-rose-950/40 text-[#c82020] dark:text-rose-400 font-semibold"
                   : "text-muted-foreground hover:bg-muted/70 hover:text-foreground"
               }`}
             >
-              <ShieldCheck className="h-4 w-4 text-[#0078D4]" />
+              <ShieldCheck className="h-4 w-4 text-[#c82020]" />
               <span>Admin Overview</span>
             </Link>
 

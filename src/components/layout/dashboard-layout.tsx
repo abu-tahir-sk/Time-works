@@ -105,7 +105,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 <Input
                   type="search"
                   placeholder="Search workspace..."
-                  className="w-full h-8.5 sm:h-9 rounded-md bg-muted/40 dark:bg-muted/20 border-border/70 pl-8.5 pr-3 sm:pr-14 text-xs shadow-none focus-visible:bg-background focus-visible:ring-1 focus-visible:ring-[#0078D4]"
+                  className="w-full h-8.5 sm:h-9 rounded-md bg-muted/40 dark:bg-muted/20 border-border/70 pl-8.5 pr-3 sm:pr-14 text-xs shadow-none focus-visible:bg-background focus-visible:ring-1 focus-visible:ring-[#c82020]"
                 />
                 <kbd className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 hidden sm:inline-flex h-5 select-none items-center gap-1 rounded border border-border/80 bg-background px-1.5 font-mono text-[10px] font-medium text-muted-foreground shadow-2xs">
                   ⌘K
@@ -120,7 +120,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                   render={
                     <Button
                       size="sm"
-                      className="inline-flex items-center gap-1.5 h-8.5 px-2.5 sm:px-3 bg-[#0078D4] hover:bg-[#106EBE] text-white text-xs font-semibold rounded-md shadow-xs transition-colors"
+                      className="inline-flex items-center gap-1.5 h-8.5 px-2.5 sm:px-3 bg-[#c82020] hover:bg-[#a81a1a] text-white text-xs font-semibold rounded-md shadow-xs transition-colors"
                     />
                   }
                 >
@@ -133,7 +133,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem className="cursor-pointer" render={<Link href="/dashboard/invoices/new" />}>
-                    <FileSpreadsheet className="h-3.5 w-3.5 mr-2 text-[#0078D4]" />
+                    <FileSpreadsheet className="h-3.5 w-3.5 mr-2 text-[#c82020]" />
                     <span>Create Invoice</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem className="cursor-pointer" render={<Link href="/dashboard/quotations/new" />}>
@@ -182,7 +182,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="rounded-full h-8.5 w-8.5 p-0 overflow-hidden ring-1 ring-border/80 hover:ring-[#0078D4]"
+                      className="rounded-full h-8.5 w-8.5 p-0 overflow-hidden ring-1 ring-border/80 hover:ring-[#c82020]"
                     />
                   }
                 >

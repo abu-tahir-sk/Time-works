@@ -193,7 +193,7 @@ export function ExpensesClient({
             <h1 className="text-2xl font-bold tracking-tight text-foreground">
               Company Accounts & Ledger
             </h1>
-            <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[#0078D4]/10 text-[#0078D4] border border-[#0078D4]/20">
+            <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[#c82020]/10 text-[#c82020] border border-[#c82020]/20">
               General Ledger
             </span>
           </div>
@@ -218,7 +218,7 @@ export function ExpensesClient({
               render={
                 <Button
                   size="sm"
-                  className="h-9 px-3.5 bg-[#0078D4] hover:bg-[#106EBE] text-white text-xs font-semibold shadow-xs"
+                  className="h-9 px-3.5 bg-[#c82020] hover:bg-[#a81a1a] text-white text-xs font-semibold shadow-xs"
                 />
               }
             >
@@ -228,7 +228,7 @@ export function ExpensesClient({
             <DialogContent className="sm:max-w-[480px]">
               <DialogHeader>
                 <DialogTitle className="text-base font-bold flex items-center gap-2">
-                  <Receipt className="h-4 w-4 text-[#0078D4]" />
+                  <Receipt className="h-4 w-4 text-[#c82020]" />
                   Record Business Expense
                 </DialogTitle>
                 <DialogDescription className="text-xs">
@@ -338,7 +338,7 @@ export function ExpensesClient({
                     type="submit"
                     size="sm"
                     disabled={isPending}
-                    className="h-8.5 text-xs bg-[#0078D4] hover:bg-[#106EBE] text-white"
+                    className="h-8.5 text-xs bg-[#c82020] hover:bg-[#a81a1a] text-white"
                   >
                     {isPending ? "Saving..." : "Save Expense"}
                   </Button>
@@ -403,7 +403,7 @@ export function ExpensesClient({
             <div
               className={`h-7 w-7 rounded-md flex items-center justify-center ${
                 financialSummary.netProfit >= 0
-                  ? "bg-blue-50 text-[#0078D4] dark:bg-blue-950/50"
+                  ? "bg-rose-50 text-[#c82020] dark:bg-rose-950/50"
                   : "bg-red-50 text-red-600 dark:bg-red-950/50"
               }`}
             >

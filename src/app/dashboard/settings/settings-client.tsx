@@ -396,7 +396,7 @@ export function SettingsClient({ initialCompany, user }: SettingsClientProps) {
                 </div>
                 <div>
                   <span className="text-[10px] uppercase font-bold text-muted-foreground block">Security Level</span>
-                  <span className="inline-flex items-center gap-1 font-bold text-blue-600">
+                  <span className="inline-flex items-center gap-1 font-bold text-[#c82020] dark:text-rose-400">
                     <ShieldCheck className="w-3.5 h-3.5" />
                     Enterprise Isolation
                   </span>

@@ -32,7 +32,7 @@ export type WatermarkType =
 
 const PRESET_TEXT_COLORS = [
   { name: "Slate", hex: "#0f172a" },
-  { name: "Microsoft Blue", hex: "#0078D4" },
+  { name: "Times Works Crimson", hex: "#c82020" },
   { name: "Dark Navy", hex: "#1e3a8a" },
   { name: "Red", hex: "#dc2626" },
   { name: "Emerald", hex: "#059669" },
@@ -211,7 +211,7 @@ export function WatermarkSettings() {
       <div className="flex items-center justify-between pb-3 border-b border-border/70">
         <div>
           <h4 className="text-sm font-bold text-foreground flex items-center gap-2">
-            <Stamp className="h-4 w-4 text-[#0078D4]" />
+            <Stamp className="h-4 w-4 text-[#c82020]" />
             Document Watermark
           </h4>
           <p className="text-xs text-muted-foreground mt-0.5">
@@ -275,7 +275,7 @@ export function WatermarkSettings() {
                 className={cn(
                   "py-2 px-2.5 text-xs font-medium rounded-md border transition-all text-center flex flex-col items-center justify-center gap-1.5",
                   active
-                    ? "bg-[#0078D4] text-white border-[#0078D4] shadow-xs font-semibold"
+                    ? "bg-[#c82020] text-white border-[#c82020] shadow-xs font-semibold"
                     : "bg-muted/40 hover:bg-muted text-muted-foreground border-border/80 hover:text-foreground"
                 )}
               >
@@ -297,7 +297,7 @@ export function WatermarkSettings() {
           {isLogoMode && (
             <div className="bg-muted/20 border border-border/70 rounded-lg p-3 space-y-2.5">
               <Label className="text-xs font-semibold flex items-center gap-1.5 text-foreground">
-                <ImageIcon className="h-3.5 w-3.5 text-[#0078D4]" />
+                <ImageIcon className="h-3.5 w-3.5 text-[#c82020]" />
                 Watermark Logo Source
               </Label>
               <div className="flex items-center gap-3">
@@ -359,7 +359,7 @@ export function WatermarkSettings() {
             <div className="bg-muted/20 border border-border/70 rounded-lg p-3 space-y-3">
               <div className="space-y-1.5">
                 <Label className="text-xs font-semibold flex items-center gap-1.5 text-foreground">
-                  <Type className="h-3.5 w-3.5 text-[#0078D4]" />
+                  <Type className="h-3.5 w-3.5 text-[#c82020]" />
                   Watermark Text
                 </Label>
                 <Input
@@ -399,7 +399,7 @@ export function WatermarkSettings() {
                       className={cn(
                         "w-5.5 h-5.5 rounded-full border transition-transform hover:scale-110",
                         currentTextColor === col.hex
-                          ? "ring-2 ring-[#0078D4] ring-offset-2 scale-105"
+                          ? "ring-2 ring-[#c82020] ring-offset-2 scale-105"
                           : "border-border"
                       )}
                       style={{ backgroundColor: col.hex }}
@@ -421,10 +421,10 @@ export function WatermarkSettings() {
               <div className="bg-muted/20 border border-border/70 rounded-lg p-3 space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-semibold flex items-center gap-1 text-foreground">
-                    <Droplets className="h-3.5 w-3.5 text-[#0078D4]" />
+                    <Droplets className="h-3.5 w-3.5 text-[#c82020]" />
                     Opacity
                   </span>
-                  <span className="text-xs font-bold font-mono text-[#0078D4] bg-[#0078D4]/10 px-2 py-0.5 rounded">
+                  <span className="text-xs font-bold font-mono text-[#c82020] bg-[#c82020]/10 px-2 py-0.5 rounded">
                     {opacityPct}%
                   </span>
                 </div>
@@ -449,10 +449,10 @@ export function WatermarkSettings() {
               <div className="bg-muted/20 border border-border/70 rounded-lg p-3 space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-semibold flex items-center gap-1 text-foreground">
-                    <Maximize2 className="h-3.5 w-3.5 text-[#0078D4]" />
+                    <Maximize2 className="h-3.5 w-3.5 text-[#c82020]" />
                     Scale / Size
                   </span>
-                  <span className="text-xs font-bold font-mono text-[#0078D4] bg-[#0078D4]/10 px-2 py-0.5 rounded">
+                  <span className="text-xs font-bold font-mono text-[#c82020] bg-[#c82020]/10 px-2 py-0.5 rounded">
                     {currentSize}px
                   </span>
                 </div>
@@ -477,7 +477,7 @@ export function WatermarkSettings() {
               <div className="bg-muted/20 border border-border/70 rounded-lg p-3 space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-semibold flex items-center gap-1 text-foreground">
-                    <RotateCw className="h-3.5 w-3.5 text-[#0078D4]" />
+                    <RotateCw className="h-3.5 w-3.5 text-[#c82020]" />
                     Rotation
                   </span>
                   <div className="flex items-center gap-1.5">
@@ -490,7 +490,7 @@ export function WatermarkSettings() {
                       <RotateCcw className="h-3 w-3" />
                       0°
                     </button>
-                    <span className="text-xs font-bold font-mono text-[#0078D4] bg-[#0078D4]/10 px-2 py-0.5 rounded">
+                    <span className="text-xs font-bold font-mono text-[#c82020] bg-[#c82020]/10 px-2 py-0.5 rounded">
                       {currentRotation}°
                     </span>
                   </div>
@@ -517,10 +517,10 @@ export function WatermarkSettings() {
                 <div className="bg-muted/20 border border-border/70 rounded-lg p-3 space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold flex items-center gap-1 text-foreground">
-                      <Grid className="h-3.5 w-3.5 text-[#0078D4]" />
+                      <Grid className="h-3.5 w-3.5 text-[#c82020]" />
                       Tile Spacing / Density
                     </span>
-                    <span className="text-xs font-bold font-mono text-[#0078D4] bg-[#0078D4]/10 px-2 py-0.5 rounded">
+                    <span className="text-xs font-bold font-mono text-[#c82020] bg-[#c82020]/10 px-2 py-0.5 rounded">
                       {currentGap}px
                     </span>
                   </div>

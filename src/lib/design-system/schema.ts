@@ -131,11 +131,11 @@ export const defaultDesignSettings: DesignSettings = {
     gap: 90,
     type: "LOGO",
     text: {
-      content: "TIMES DIGITALS",
+      content: "TIMES WORKS",
       fontFamily: "Inter, sans-serif",
       fontSize: 48,
       fontWeight: 700,
-      color: "#0078D4",
+      color: "#c82020",
       opacity: 0.06,
       rotation: -20,
       position: "CENTER",
@@ -160,12 +160,12 @@ export const defaultDesignSettings: DesignSettings = {
     }
   },
   colors: {
-    primary: "#0078D4",
+    primary: "#c82020",
     secondary: "#475569",
-    invoiceTitle: "#0078D4",
-    tableHeader: "#0078D4",
+    invoiceTitle: "#c82020",
+    tableHeader: "#c82020",
     tableText: "#1e293b",
-    totalAmount: "#0078D4",
+    totalAmount: "#c82020",
     footer: "#64748b"
   },
   typography: {

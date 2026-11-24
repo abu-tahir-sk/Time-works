@@ -98,11 +98,11 @@ export function AdminClient({ stats, initialUsers }: AdminClientProps) {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/70 pb-5">
         <div className="space-y-1">
           <div className="flex items-center gap-2.5">
-            <div className="h-8 w-8 rounded-md bg-[#0078D4] flex items-center justify-center text-white shadow-xs">
+            <div className="h-8 w-8 rounded-md bg-[#c82020] flex items-center justify-center text-white shadow-xs">
               <ShieldCheck className="h-5 w-5" />
             </div>
             <h1 className="text-2xl font-bold tracking-tight text-foreground">
-              Microsoft 365 Admin Center
+              Times Works Admin Center
             </h1>
             <span className="text-[11px] font-semibold px-2 py-0.5 rounded bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300 border border-purple-200 dark:border-purple-800">
               Super Admin
@@ -129,7 +129,7 @@ export function AdminClient({ stats, initialUsers }: AdminClientProps) {
             <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
               Total Users
             </span>
-            <div className="h-7 w-7 rounded-md bg-blue-50 dark:bg-blue-950 flex items-center justify-center text-[#0078D4]">
+            <div className="h-7 w-7 rounded-md bg-rose-50 dark:bg-rose-950 flex items-center justify-center text-[#c82020]">
               <Users className="h-4 w-4" />
             </div>
           </CardHeader>
@@ -223,12 +223,12 @@ export function AdminClient({ stats, initialUsers }: AdminClientProps) {
           </div>
         </div>
 
-        <div className="p-4 rounded-lg border-2 border-[#0078D4]/30 bg-blue-50/20 dark:bg-blue-950/20 space-y-2 relative">
-          <span className="absolute top-3 right-3 text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-[#0078D4] text-white">
+        <div className="p-4 rounded-lg border-2 border-[#c82020]/30 bg-rose-50/20 dark:bg-rose-950/20 space-y-2 relative">
+          <span className="absolute top-3 right-3 text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-[#c82020] text-white">
             Popular
           </span>
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-[#0078D4] uppercase">Professional Tier</span>
+            <span className="text-xs font-bold text-[#c82020] uppercase">Professional Tier</span>
             <span className="text-xs font-mono font-semibold">{stats.proUsersCount} active</span>
           </div>
           <div className="text-xl font-bold text-foreground">$29 / month</div>
@@ -237,7 +237,7 @@ export function AdminClient({ stats, initialUsers }: AdminClientProps) {
           </p>
           <div className="w-full bg-muted rounded-full h-1.5 overflow-hidden">
             <div
-              className="bg-[#0078D4] h-full"
+              className="bg-[#c82020] h-full"
               style={{
                 width: `${stats.totalUsers > 0 ? (stats.proUsersCount / stats.totalUsers) * 100 : 0}%`,
               }}
@@ -274,7 +274,7 @@ export function AdminClient({ stats, initialUsers }: AdminClientProps) {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <CardTitle className="text-sm font-bold flex items-center gap-2">
-                <UserCheck className="h-4 w-4 text-[#0078D4]" />
+                <UserCheck className="h-4 w-4 text-[#c82020]" />
                 User Accounts & Subscription Roster
               </CardTitle>
               <CardDescription className="text-xs">
@@ -366,7 +366,7 @@ export function AdminClient({ stats, initialUsers }: AdminClientProps) {
                               u.plan === "ENTERPRISE"
                                 ? "bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300 border border-purple-300"
                                 : u.plan === "PRO"
-                                ? "bg-blue-100 text-[#0078D4] dark:bg-blue-950 dark:text-blue-300 border border-blue-200"
+                                ? "bg-rose-100 text-[#c82020] dark:bg-rose-950 dark:text-rose-300 border border-rose-200"
                                 : "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 border border-gray-200 dark:border-gray-700"
                             }`}
                           >
@@ -403,7 +403,7 @@ export function AdminClient({ stats, initialUsers }: AdminClientProps) {
                               </DropdownMenuLabel>
                               <DropdownMenuItem
                                 onClick={() => handlePlanChange(u.id, "PRO")}
-                                className="cursor-pointer text-[#0078D4]"
+                                className="cursor-pointer text-[#c82020]"
                               >
                                 <Crown className="h-3.5 w-3.5 mr-2" /> Upgrade to PRO ($29)
                               </DropdownMenuItem>
@@ -452,7 +452,7 @@ export function AdminClient({ stats, initialUsers }: AdminClientProps) {
         <CardContent className="p-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
             <div className="flex items-center gap-3 p-3 rounded-md border border-border/60 bg-muted/20">
-              <Database className="h-5 w-5 text-[#0078D4]" />
+              <Database className="h-5 w-5 text-[#c82020]" />
               <div>
                 <p className="text-xs font-bold text-foreground">Neon PostgreSQL</p>
                 <p className="text-[11px] text-emerald-600 font-medium">Connected & Synced</p>

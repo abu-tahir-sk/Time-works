@@ -177,7 +177,7 @@ export function InvoiceBuilder({ clients, company, initialData }: InvoiceBuilder
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              <FileText className="w-3.5 h-3.5 text-blue-600" />
+              <FileText className="w-3.5 h-3.5 text-[#c82020]" />
               <span>Paper Sheet</span>
             </button>
             <button

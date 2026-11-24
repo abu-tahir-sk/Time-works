@@ -30,13 +30,13 @@ export default function HomePage() {
   const [activeTab, setActiveTab] = useState<"invoices" | "ledger" | "quotes" | "admin">("invoices")
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#faf9f8] dark:bg-[#111318] text-foreground font-sans selection:bg-[#0078D4]/20 selection:text-[#0078D4]">
+    <div className="min-h-screen flex flex-col bg-[#faf9f8] dark:bg-[#111318] text-foreground font-sans selection:bg-[#c82020]/20 selection:text-[#c82020]">
       <Navbar />
 
       <main className="flex-1">
-        {/* 1. HERO SECTION (Microsoft 365 / Azure Style) */}
-        <section className="relative pt-24 pb-16 md:pt-32 md:pb-24 border-b border-border/60 bg-linear-to-b from-[#f3f6fa] via-[#faf9f8] to-background dark:from-[#131a28] dark:via-[#111318] dark:to-background overflow-hidden">
-          {/* Subtle Microsoft Grid Background */}
+        {/* 1. HERO SECTION (Times Works Professional Style) */}
+        <section className="relative pt-24 pb-16 md:pt-32 md:pb-24 border-b border-border/60 bg-linear-to-b from-[#fef2f2]/60 via-[#faf9f8] to-background dark:from-[#1f1113] dark:via-[#111318] dark:to-background overflow-hidden">
+          {/* Subtle Grid Background */}
           <div
             className="absolute inset-0 opacity-[0.03] dark:opacity-[0.07] pointer-events-none"
             style={{
@@ -48,7 +48,7 @@ export default function HomePage() {
 
           <div className="relative max-w-6xl mx-auto px-4 sm:px-6 text-center space-y-6">
             {/* Enterprise Announcement Pill */}
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-[#0078D4]/10 text-[#0078D4] border border-[#0078D4]/20 shadow-2xs">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-[#c82020]/10 text-[#c82020] border border-[#c82020]/20 shadow-2xs">
               <Sparkles className="h-3.5 w-3.5" />
               <span>Times Works Business Suite</span>
               <span className="text-muted-foreground/60">•</span>
@@ -68,7 +68,7 @@ export default function HomePage() {
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
               <Link href="/register">
-                <Button className="h-11 px-7 bg-[#0078D4] hover:bg-[#106EBE] text-white text-sm font-semibold rounded-md shadow-sm transition-all hover:shadow-md flex items-center gap-2">
+                <Button className="h-11 px-7 bg-[#c82020] hover:bg-[#a81a1a] text-white text-sm font-semibold rounded-md shadow-sm transition-all hover:shadow-md flex items-center gap-2">
                   <span>Start Free Trial</span>
                   <ArrowRight className="h-4 w-4" />
                 </Button>
@@ -86,19 +86,19 @@ export default function HomePage() {
             {/* Trust Points */}
             <div className="pt-6 flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-xs text-muted-foreground">
               <div className="flex items-center gap-1.5">
-                <CheckCircle2 className="h-4 w-4 text-[#0078D4]" />
+                <CheckCircle2 className="h-4 w-4 text-[#c82020]" />
                 <span>Single-page PDF rendering</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <CheckCircle2 className="h-4 w-4 text-[#0078D4]" />
+                <CheckCircle2 className="h-4 w-4 text-[#c82020]" />
                 <span>Serverless PostgreSQL storage</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <CheckCircle2 className="h-4 w-4 text-[#0078D4]" />
+                <CheckCircle2 className="h-4 w-4 text-[#c82020]" />
                 <span>Two-Factor Authentication</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <CheckCircle2 className="h-4 w-4 text-[#0078D4]" />
+                <CheckCircle2 className="h-4 w-4 text-[#c82020]" />
                 <span>Custom watermark controls</span>
               </div>
             </div>
@@ -123,7 +123,7 @@ export default function HomePage() {
                 onClick={() => setActiveTab("invoices")}
                 className={`flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-md transition-all ${
                   activeTab === "invoices"
-                    ? "bg-background text-[#0078D4] shadow-xs"
+                    ? "bg-background text-[#c82020] shadow-xs"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -134,7 +134,7 @@ export default function HomePage() {
                 onClick={() => setActiveTab("ledger")}
                 className={`flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-md transition-all ${
                   activeTab === "ledger"
-                    ? "bg-background text-[#0078D4] shadow-xs"
+                    ? "bg-background text-[#c82020] shadow-xs"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -145,7 +145,7 @@ export default function HomePage() {
                 onClick={() => setActiveTab("quotes")}
                 className={`flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-md transition-all ${
                   activeTab === "quotes"
-                    ? "bg-background text-[#0078D4] shadow-xs"
+                    ? "bg-background text-[#c82020] shadow-xs"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -156,7 +156,7 @@ export default function HomePage() {
                 onClick={() => setActiveTab("admin")}
                 className={`flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-md transition-all ${
                   activeTab === "admin"
-                    ? "bg-background text-[#0078D4] shadow-xs"
+                    ? "bg-background text-[#c82020] shadow-xs"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -199,8 +199,8 @@ export default function HomePage() {
                       <p className="text-[10px] text-amber-700 dark:text-amber-300 uppercase font-semibold">Pending Due</p>
                       <p className="text-xl font-bold font-mono text-amber-600 mt-0.5">$8,850.00</p>
                     </div>
-                    <div className="p-3 rounded-md border bg-blue-50/30 dark:bg-blue-950/20">
-                      <p className="text-[10px] text-[#0078D4] uppercase font-semibold">Active Clients</p>
+                    <div className="p-3 rounded-md border bg-rose-50/30 dark:bg-rose-950/20">
+                      <p className="text-[10px] text-[#c82020] uppercase font-semibold">Active Clients</p>
                       <p className="text-xl font-bold font-mono text-foreground mt-0.5">34</p>
                     </div>
                   </div>
@@ -218,7 +218,7 @@ export default function HomePage() {
                       </thead>
                       <tbody className="divide-y font-sans">
                         <tr>
-                          <td className="p-3 font-semibold text-[#0078D4]">INV-2026-081</td>
+                          <td className="p-3 font-semibold text-[#c82020]">INV-2026-081</td>
                           <td className="p-3 font-medium">Acme Global Technologies</td>
                           <td className="p-3 text-muted-foreground">Nov 22, 2026</td>
                           <td className="p-3 font-mono font-bold">$12,400.00</td>
@@ -229,7 +229,7 @@ export default function HomePage() {
                           </td>
                         </tr>
                         <tr>
-                          <td className="p-3 font-semibold text-[#0078D4]">INV-2026-082</td>
+                          <td className="p-3 font-semibold text-[#c82020]">INV-2026-082</td>
                           <td className="p-3 font-medium">Summit Consulting Group</td>
                           <td className="p-3 text-muted-foreground">Nov 23, 2026</td>
                           <td className="p-3 font-mono font-bold">$4,850.00</td>
@@ -331,7 +331,7 @@ export default function HomePage() {
                     </div>
                     <div className="p-3 rounded-md border bg-card">
                       <p className="text-[10px] text-muted-foreground uppercase font-semibold">System Health</p>
-                      <p className="text-xl font-bold font-mono text-[#0078D4] mt-0.5">100%</p>
+                      <p className="text-xl font-bold font-mono text-[#c82020] mt-0.5">100%</p>
                     </div>
                   </div>
                 </div>
@@ -355,7 +355,7 @@ export default function HomePage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
               {/* Feature 1 */}
               <div className="p-5 rounded-lg border border-border/80 bg-card space-y-3 shadow-xs">
-                <div className="w-9 h-9 rounded-md bg-[#0078D4]/10 text-[#0078D4] flex items-center justify-center">
+                <div className="w-9 h-9 rounded-md bg-[#c82020]/10 text-[#c82020] flex items-center justify-center">
                   <FileSpreadsheet className="h-5 w-5" />
                 </div>
                 <h3 className="text-sm font-bold text-foreground">Precision Billing</h3>
@@ -404,7 +404,7 @@ export default function HomePage() {
         <section id="pricing" className="py-20 md:py-24 border-t border-border/60 bg-linear-to-b from-[#f8fafc] to-background dark:from-[#0d1117] dark:to-background">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 space-y-12">
             <div className="text-center max-w-2xl mx-auto space-y-3">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#0078D4]/10 text-[#0078D4] border border-[#0078D4]/20">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#c82020]/10 text-[#c82020] border border-[#c82020]/20">
                 <CreditCard className="h-3.5 w-3.5" />
                 <span>Subscription Plans & Benefits</span>
               </div>
@@ -436,23 +436,23 @@ export default function HomePage() {
 
                   <div className="pt-3 border-t border-border/60 space-y-2.5 text-xs text-muted-foreground">
                     <div className="flex items-start gap-2">
-                      <CheckCircle2 className="h-4 w-4 text-[#0078D4] shrink-0 mt-0.5" />
+                      <CheckCircle2 className="h-4 w-4 text-[#c82020] shrink-0 mt-0.5" />
                       <span className="text-foreground font-medium">Max 20 PDF document generations (Invoices, Quotations, Agreements combined)</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <CheckCircle2 className="h-4 w-4 text-[#0078D4] shrink-0 mt-0.5" />
+                      <CheckCircle2 className="h-4 w-4 text-[#c82020] shrink-0 mt-0.5" />
                       <span>Single-page PDF guarantee & standard template</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <CheckCircle2 className="h-4 w-4 text-[#0078D4] shrink-0 mt-0.5" />
+                      <CheckCircle2 className="h-4 w-4 text-[#c82020] shrink-0 mt-0.5" />
                       <span>Full access to workspace & financial dashboard</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <CheckCircle2 className="h-4 w-4 text-[#0078D4] shrink-0 mt-0.5" />
+                      <CheckCircle2 className="h-4 w-4 text-[#c82020] shrink-0 mt-0.5" />
                       <span>Standard client management & ledger overview</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <CheckCircle2 className="h-4 w-4 text-[#0078D4] shrink-0 mt-0.5" />
+                      <CheckCircle2 className="h-4 w-4 text-[#c82020] shrink-0 mt-0.5" />
                       <span>PostgreSQL cloud sync & 2FA security</span>
                     </div>
                   </div>
@@ -468,14 +468,14 @@ export default function HomePage() {
               </div>
 
               {/* Plan 2: Pro Business (Featured) */}
-              <div className="rounded-xl border-2 border-[#0078D4] bg-card p-6 flex flex-col justify-between shadow-md relative ring-4 ring-[#0078D4]/10">
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-[#0078D4] text-white text-[10px] font-bold uppercase tracking-wider shadow-xs">
+              <div className="rounded-xl border-2 border-[#c82020] bg-card p-6 flex flex-col justify-between shadow-md relative ring-4 ring-[#c82020]/10">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-[#c82020] text-white text-[10px] font-bold uppercase tracking-wider shadow-xs">
                   Most Popular
                 </div>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold uppercase tracking-wider text-[#0078D4]">Pro Business</span>
-                    <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[#0078D4]/15 text-[#0078D4]">Unlimited PDFs</span>
+                    <span className="text-xs font-bold uppercase tracking-wider text-[#c82020]">Pro Business</span>
+                    <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[#c82020]/15 text-[#c82020]">Unlimited PDFs</span>
                   </div>
                   <div>
                     <div className="flex items-baseline gap-1">
@@ -489,27 +489,27 @@ export default function HomePage() {
 
                   <div className="pt-3 border-t border-border/60 space-y-2.5 text-xs text-muted-foreground">
                     <div className="flex items-start gap-2">
-                      <CheckCircle2 className="h-4 w-4 text-[#0078D4] shrink-0 mt-0.5" />
+                      <CheckCircle2 className="h-4 w-4 text-[#c82020] shrink-0 mt-0.5" />
                       <span className="text-foreground font-semibold">Unlimited PDF document generations (No 20-doc cap)</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <CheckCircle2 className="h-4 w-4 text-[#0078D4] shrink-0 mt-0.5" />
+                      <CheckCircle2 className="h-4 w-4 text-[#c82020] shrink-0 mt-0.5" />
                       <span className="text-foreground font-medium">Logo Tiling & Text Watermarking (Pattern, angle, opacity)</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <CheckCircle2 className="h-4 w-4 text-[#0078D4] shrink-0 mt-0.5" />
+                      <CheckCircle2 className="h-4 w-4 text-[#c82020] shrink-0 mt-0.5" />
                       <span>Full Company Ledger, P&L analytics & expense categorization</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <CheckCircle2 className="h-4 w-4 text-[#0078D4] shrink-0 mt-0.5" />
+                      <CheckCircle2 className="h-4 w-4 text-[#c82020] shrink-0 mt-0.5" />
                       <span>Instant Quotation to Invoice conversion</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <CheckCircle2 className="h-4 w-4 text-[#0078D4] shrink-0 mt-0.5" />
+                      <CheckCircle2 className="h-4 w-4 text-[#c82020] shrink-0 mt-0.5" />
                       <span>Custom brand assets, signatures, and payment bank details</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <CheckCircle2 className="h-4 w-4 text-[#0078D4] shrink-0 mt-0.5" />
+                      <CheckCircle2 className="h-4 w-4 text-[#c82020] shrink-0 mt-0.5" />
                       <span>High-speed priority PDF rendering engine</span>
                     </div>
                   </div>
@@ -517,7 +517,7 @@ export default function HomePage() {
 
                 <div className="pt-6">
                   <Link href="/register" className="w-full block">
-                    <Button className="w-full h-10 text-xs font-semibold bg-[#0078D4] hover:bg-[#106EBE] text-white shadow-xs">
+                    <Button className="w-full h-10 text-xs font-semibold bg-[#c82020] hover:bg-[#a81a1a] text-white shadow-xs">
                       Upgrade to Pro
                     </Button>
                   </Link>
@@ -578,17 +578,17 @@ export default function HomePage() {
         </section>
 
         {/* 5. CALL TO ACTION SECTION */}
-        <section className="py-16 md:py-20 border-t border-border/60 bg-linear-to-r from-[#0078D4] to-[#106EBE] text-white">
+        <section className="py-16 md:py-20 border-t border-border/60 bg-linear-to-r from-[#c82020] to-[#991b1b] text-white">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-5">
             <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-white">
               Ready to Upgrade Your Financial Workspace?
             </h2>
             <p className="text-sm sm:text-base text-white/90 max-w-xl mx-auto leading-relaxed">
-              Join thousands of businesses managing their documents, expenses, and invoices with modern Microsoft Fluent precision.
+              Join thousands of businesses managing their documents, expenses, and invoices with modern Times Works precision.
             </p>
             <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
               <Link href="/register">
-                <Button className="h-11 px-8 bg-white hover:bg-white/95 text-[#0078D4] text-sm font-bold rounded-md shadow-md transition-all">
+                <Button className="h-11 px-8 bg-white hover:bg-white/95 text-[#c82020] text-sm font-bold rounded-md shadow-md transition-all">
                   Create Free Account
                 </Button>
               </Link>

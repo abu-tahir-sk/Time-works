@@ -42,7 +42,7 @@ export default async function QuotationsPage() {
         </div>
 
         <Link href="/dashboard/quotations/new">
-          <Button size="sm" className="h-9 px-3.5 bg-[#0078D4] hover:bg-[#106EBE] text-white text-xs font-semibold shadow-xs">
+          <Button size="sm" className="h-9 px-3.5 bg-[#c82020] hover:bg-[#a81a1a] text-white text-xs font-semibold shadow-xs">
             <Plus className="h-4 w-4 mr-1.5" /> New Quotation
           </Button>
         </Link>
@@ -55,7 +55,7 @@ export default async function QuotationsPage() {
             <CardTitle className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               Total Quotations
             </CardTitle>
-            <div className="h-7 w-7 rounded-md bg-blue-50 dark:bg-blue-950 flex items-center justify-center text-[#0078D4]">
+            <div className="h-7 w-7 rounded-md bg-rose-50 dark:bg-rose-950 flex items-center justify-center text-[#c82020]">
               <FileSignature className="h-4 w-4" />
             </div>
           </CardHeader>
@@ -105,7 +105,7 @@ export default async function QuotationsPage() {
       {/* Quotations List */}
       {quotations.length === 0 ? (
         <Card className="border border-dashed border-border/80 rounded-lg text-center p-12 space-y-3 bg-muted/10">
-          <div className="p-3 bg-[#0078D4]/10 rounded-full w-12 h-12 mx-auto flex items-center justify-center text-[#0078D4]">
+          <div className="p-3 bg-[#c82020]/10 rounded-full w-12 h-12 mx-auto flex items-center justify-center text-[#c82020]">
             <FileSignature className="h-6 w-6" />
           </div>
           <div className="space-y-1">
@@ -115,7 +115,7 @@ export default async function QuotationsPage() {
             </p>
           </div>
           <Link href="/dashboard/quotations/new">
-            <Button size="sm" className="h-8.5 text-xs bg-[#0078D4] hover:bg-[#106EBE] text-white">
+            <Button size="sm" className="h-8.5 text-xs bg-[#c82020] hover:bg-[#a81a1a] text-white">
               Create First Quotation
             </Button>
           </Link>
@@ -139,7 +139,7 @@ export default async function QuotationsPage() {
                 {quotations.map((quote) => (
                   <tr key={quote.id} className="hover:bg-muted/30 transition-colors">
                     <td className="py-3 px-4 font-bold text-foreground">
-                      <Link href={`/quote/${quote.id}`} target="_blank" className="hover:text-[#0078D4] hover:underline flex items-center gap-1">
+                      <Link href={`/quote/${quote.id}`} target="_blank" className="hover:text-[#c82020] hover:underline flex items-center gap-1">
                         {quote.quotationNumber}
                       </Link>
                     </td>
@@ -161,7 +161,7 @@ export default async function QuotationsPage() {
                     </td>
                     <td className="py-3 px-4 text-right">
                       <Link href={`/quote/${quote.id}`} target="_blank">
-                        <Button variant="ghost" size="sm" className="h-7 text-[11px] px-2 text-[#0078D4] hover:bg-blue-50 dark:hover:bg-blue-950/40">
+                        <Button variant="ghost" size="sm" className="h-7 text-[11px] px-2 text-[#c82020] hover:bg-rose-50 dark:hover:bg-rose-950/40">
                           Client View <ExternalLink className="h-3 w-3 ml-1" />
                         </Button>
                       </Link>

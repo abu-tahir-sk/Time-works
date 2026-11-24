@@ -105,13 +105,13 @@ export function Navbar() {
                   className={cn(
                     "relative py-1 text-sm font-medium transition-colors",
                     isActive
-                      ? "text-[#0078D4] dark:text-[#2899f5] font-semibold"
+                      ? "text-[#c82020] dark:text-rose-400 font-semibold"
                       : "text-muted-foreground hover:text-foreground"
                   )}
                 >
                   {link.label}
                   {isActive && (
-                    <span className="absolute inset-x-0 -bottom-2 h-0.5 bg-[#0078D4] rounded-full" />
+                    <span className="absolute inset-x-0 -bottom-2 h-0.5 bg-[#c82020] rounded-full" />
                   )}
                 </Link>
               )
@@ -127,7 +127,7 @@ export function Navbar() {
                 <Link href="/dashboard">
                   <Button
                     size="sm"
-                    className="h-9 px-3.5 bg-[#0078D4] hover:bg-[#106EBE] text-white text-xs font-semibold rounded-md shadow-2xs transition-all flex items-center gap-1.5"
+                    className="h-9 px-3.5 bg-[#c82020] hover:bg-[#a81a1a] text-white text-xs font-semibold rounded-md shadow-2xs transition-all flex items-center gap-1.5"
                   >
                     <LayoutDashboard className="h-3.5 w-3.5" />
                     <span className="hidden sm:inline">Workspace</span>
@@ -137,7 +137,7 @@ export function Navbar() {
                 {/* User quick badge */}
                 <Link
                   href="/dashboard"
-                  className="w-8 h-8 rounded-full bg-[#0078D4]/15 border border-[#0078D4]/30 flex items-center justify-center text-xs font-bold text-[#0078D4] hover:ring-2 hover:ring-[#0078D4]/40 transition"
+                  className="w-8 h-8 rounded-full bg-[#c82020]/10 border border-[#c82020]/30 flex items-center justify-center text-xs font-bold text-[#c82020] hover:ring-2 hover:ring-[#c82020]/40 transition"
                   title={session.user.name || session.user.email || "Account"}
                 >
                   {(session.user.name?.[0] || session.user.email?.[0] || "U").toUpperCase()}
@@ -154,7 +154,7 @@ export function Navbar() {
                 <Link href="/register">
                   <Button
                     size="sm"
-                    className="h-8 sm:h-9 px-3.5 bg-[#0078D4] hover:bg-[#106EBE] text-white text-xs font-semibold rounded-md shadow-2xs hover:shadow-xs transition-all flex items-center gap-1.5"
+                    className="h-8 sm:h-9 px-3.5 bg-[#c82020] hover:bg-[#a81a1a] text-white text-xs font-semibold rounded-md shadow-2xs hover:shadow-xs transition-all flex items-center gap-1.5"
                   >
                     <span>Start Free</span>
                     <ArrowRight className="h-3.5 w-3.5" />

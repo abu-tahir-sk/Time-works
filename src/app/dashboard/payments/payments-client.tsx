@@ -168,7 +168,7 @@ export function PaymentsClient({ initialPayments, invoices, company }: PaymentsC
       case "UPI":
         return "bg-purple-50 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 border-purple-200 dark:border-purple-800"
       case "CARD":
-        return "bg-blue-50 text-[#0078D4] dark:bg-blue-950/60 dark:text-blue-300 border-blue-200 dark:border-blue-800"
+        return "bg-rose-50 text-[#c82020] dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800"
       case "CASH":
         return "bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border-amber-200 dark:border-amber-800"
       case "CHEQUE":

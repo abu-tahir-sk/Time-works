@@ -49,7 +49,7 @@ export default async function DashboardPage() {
             <h1 className="text-2xl font-bold tracking-tight text-foreground">
               Welcome back, {user.name || "Business Leader"}
             </h1>
-            <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[#0078D4]/10 text-[#0078D4] border border-[#0078D4]/20">
+            <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[#c82020]/10 text-[#c82020] border border-[#c82020]/20">
               {company.name}
             </span>
           </div>
@@ -58,10 +58,10 @@ export default async function DashboardPage() {
           </p>
         </div>
 
-        {/* Quick Microsoft Action Bar */}
+        {/* Quick Action Bar */}
         <div className="flex items-center gap-2">
           <Link href="/dashboard/invoices/new">
-            <Button size="sm" className="h-8.5 text-xs bg-[#0078D4] hover:bg-[#106EBE] text-white shadow-xs font-semibold">
+            <Button size="sm" className="h-8.5 text-xs bg-[#c82020] hover:bg-[#a81a1a] text-white shadow-xs font-semibold">
               <Plus className="h-3.5 w-3.5 mr-1" />
               New Invoice
             </Button>
@@ -80,7 +80,7 @@ export default async function DashboardPage() {
           </Link>
           <Link href="/dashboard/analytics">
             <Button size="sm" variant="outline" className="h-8.5 text-xs border-border/80 shadow-2xs hover:bg-muted font-medium">
-              <BarChart3 className="h-3.5 w-3.5 mr-1 text-[#0078D4]" />
+              <BarChart3 className="h-3.5 w-3.5 mr-1 text-[#c82020]" />
               Analytics
             </Button>
           </Link>
@@ -93,7 +93,7 @@ export default async function DashboardPage() {
           <div className="flex items-center gap-3">
             <div className={`w-9 h-9 rounded-md flex items-center justify-center shrink-0 ${
               quota.isUnlimited
-                ? "bg-[#0078D4]/10 text-[#0078D4]"
+                ? "bg-[#c82020]/10 text-[#c82020]"
                 : quota.canCreate
                 ? "bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400"
                 : "bg-red-50 dark:bg-red-950/50 text-red-600 dark:text-red-400"
@@ -107,7 +107,7 @@ export default async function DashboardPage() {
                 </span>
                 <span className={`text-[10px] font-semibold px-2 py-0.2 rounded-full uppercase tracking-wider ${
                   quota.isUnlimited
-                    ? "bg-[#0078D4]/15 text-[#0078D4]"
+                    ? "bg-[#c82020]/15 text-[#c82020]"
                     : quota.canCreate
                     ? "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300"
                     : "bg-red-100 dark:bg-red-950/60 text-red-700 dark:text-red-300"
@@ -130,7 +130,7 @@ export default async function DashboardPage() {
           {!quota.isUnlimited && (
             <div className="flex items-center gap-2 self-start sm:self-auto shrink-0">
               <Link href="/#pricing">
-                <Button size="sm" className="h-8 text-xs bg-[#0078D4] hover:bg-[#106EBE] text-white font-semibold">
+                <Button size="sm" className="h-8 text-xs bg-[#c82020] hover:bg-[#a81a1a] text-white font-semibold">
                   Upgrade to Pro
                 </Button>
               </Link>
@@ -147,7 +147,7 @@ export default async function DashboardPage() {
             <div className="w-full h-1.5 rounded-full bg-muted overflow-hidden">
               <div
                 className={`h-full rounded-full transition-all ${
-                  quota.totalDocuments >= 20 ? "bg-red-500" : quota.totalDocuments >= 15 ? "bg-amber-500" : "bg-[#0078D4]"
+                  quota.totalDocuments >= 20 ? "bg-red-500" : quota.totalDocuments >= 15 ? "bg-amber-500" : "bg-[#c82020]"
                 }`}
                 style={{ width: `${Math.min(100, Math.round((quota.totalDocuments / quota.limit) * 100))}%` }}
               />
@@ -209,7 +209,7 @@ export default async function DashboardPage() {
             <div
               className={`h-7 w-7 rounded-md flex items-center justify-center ${
                 summary.netProfit >= 0
-                  ? "bg-blue-50 text-[#0078D4] dark:bg-blue-950/50"
+                  ? "bg-rose-50 text-[#c82020] dark:bg-rose-950/50"
                   : "bg-red-50 text-red-600 dark:bg-red-950/50"
               }`}
             >
@@ -266,7 +266,7 @@ export default async function DashboardPage() {
             </div>
             <Link
               href="/dashboard/expenses"
-              className="text-xs text-[#0078D4] hover:underline font-semibold flex items-center gap-1"
+              className="text-xs text-[#c82020] hover:underline font-semibold flex items-center gap-1"
             >
               Open Full Ledger <ChevronRight className="h-3 w-3" />
             </Link>
@@ -311,14 +311,14 @@ export default async function DashboardPage() {
           <CardHeader className="py-3 px-4 border-b border-border/60 flex flex-row items-center justify-between">
             <div>
               <CardTitle className="text-sm font-bold flex items-center gap-2">
-                <FileSpreadsheet className="h-4 w-4 text-[#0078D4]" />
+                <FileSpreadsheet className="h-4 w-4 text-[#c82020]" />
                 Recent Invoices
               </CardTitle>
               <CardDescription className="text-[11px]">Latest client billing and payment status</CardDescription>
             </div>
             <Link
               href="/dashboard/invoices"
-              className="text-xs font-semibold text-[#0078D4] hover:underline"
+              className="text-xs font-semibold text-[#c82020] hover:underline"
             >
               View all
             </Link>
@@ -374,7 +374,7 @@ export default async function DashboardPage() {
             </div>
             <Link
               href="/dashboard/expenses"
-              className="text-xs font-semibold text-[#0078D4] hover:underline"
+              className="text-xs font-semibold text-[#c82020] hover:underline"
             >
               View ledger
             </Link>
@@ -414,15 +414,15 @@ export default async function DashboardPage() {
       </div>
 
       {/* Super Admin Center Quick Banner */}
-      <Card className="border-2 border-[#0078D4]/20 bg-linear-to-r from-blue-50/50 via-background to-purple-50/50 dark:from-blue-950/20 dark:to-purple-950/20 p-4 rounded-lg shadow-xs">
+      <Card className="border-2 border-[#c82020]/20 bg-linear-to-r from-rose-50/50 via-background to-purple-50/50 dark:from-rose-950/20 dark:to-purple-950/20 p-4 rounded-lg shadow-xs">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-lg bg-[#0078D4] text-white flex items-center justify-center shrink-0 shadow-xs">
+            <div className="h-10 w-10 rounded-lg bg-[#c82020] text-white flex items-center justify-center shrink-0 shadow-xs">
               <ShieldCheck className="h-6 w-6" />
             </div>
             <div>
               <p className="text-sm font-bold text-foreground">
-                Microsoft 365 Admin Center Portal
+                Times Works Admin Governance Portal
               </p>
               <p className="text-xs text-muted-foreground">
                 Super Admin governance: view premium users, upgrade accounts to Pro/Enterprise, and monitor platform health.
@@ -430,7 +430,7 @@ export default async function DashboardPage() {
             </div>
           </div>
           <Link href="/dashboard/admin" className="shrink-0">
-            <Button size="sm" className="h-8.5 text-xs bg-[#0078D4] hover:bg-[#106EBE] text-white font-semibold">
+            <Button size="sm" className="h-8.5 text-xs bg-[#c82020] hover:bg-[#a81a1a] text-white font-semibold">
               Open Admin Center
             </Button>
           </Link>

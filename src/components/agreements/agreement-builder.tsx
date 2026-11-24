@@ -155,7 +155,7 @@ export function AgreementBuilder({ clients, company }: AgreementBuilderProps) {
                     onClick={() => setActiveTab("edit")}
                     className={`flex-1 py-3 text-sm font-semibold transition-colors ${
                         activeTab === "edit"
-                            ? "border-b-2 border-[#0078D4] text-[#0078D4]"
+                            ? "border-b-2 border-[#c82020] text-[#c82020]"
                             : "text-muted-foreground"
                     }`}
                 >
@@ -166,7 +166,7 @@ export function AgreementBuilder({ clients, company }: AgreementBuilderProps) {
                     onClick={() => setActiveTab("preview")}
                     className={`flex-1 py-3 text-sm font-semibold transition-colors ${
                         activeTab === "preview"
-                            ? "border-b-2 border-[#0078D4] text-[#0078D4]"
+                            ? "border-b-2 border-[#c82020] text-[#c82020]"
                             : "text-muted-foreground"
                     }`}
                 >

@@ -85,10 +85,10 @@ const KIND_META: Record<
     label: "Invoice",
     short: "Invoice",
     icon: FileSpreadsheet,
-    tint: "bg-blue-500/10 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400",
+    tint: "bg-[#c82020]/10 text-[#c82020] dark:bg-rose-950/40 dark:text-rose-400",
     gradient:
-      "bg-gradient-to-br from-blue-500/15 via-blue-500/5 to-transparent",
-    text: "text-blue-600 dark:text-blue-400",
+      "bg-gradient-to-br from-[#c82020]/15 via-[#c82020]/5 to-transparent",
+    text: "text-[#c82020] dark:text-rose-400",
   },
   QUOTATION: {
     label: "Quotation",
@@ -123,8 +123,8 @@ const STATUS_META: Record<
   SENT: {
     label: "Sent",
     className:
-      "border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-300",
-    dot: "bg-blue-500",
+      "border-rose-200 bg-rose-50 text-[#c82020] dark:border-rose-900 dark:bg-rose-950/30 dark:text-rose-300",
+    dot: "bg-[#c82020]",
   },
   VIEWED: {
     label: "Viewed",
@@ -394,7 +394,7 @@ export function DocumentLibraryClient({
       note: "Live and ready to share",
       icon: ShieldCheck,
       iconClass:
-        "bg-blue-500/10 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400",
+        "bg-[#c82020]/10 text-[#c82020] dark:bg-rose-950/40 dark:text-rose-400",
     },
   ]
 

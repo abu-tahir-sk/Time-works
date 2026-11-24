@@ -214,7 +214,7 @@ export function ClientsClient({ initialClients, company }: ClientsClientProps) {
             <CardTitle className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               Total Customers
             </CardTitle>
-            <div className="h-7 w-7 rounded-lg bg-blue-50 dark:bg-blue-950 flex items-center justify-center text-blue-600">
+            <div className="h-7 w-7 rounded-lg bg-rose-50 dark:bg-rose-950 flex items-center justify-center text-[#c82020]">
               <Users className="h-4 w-4" />
             </div>
           </CardHeader>
@@ -443,7 +443,7 @@ export function ClientsClient({ initialClients, company }: ClientsClientProps) {
                                   <FileText className="mr-2 h-3.5 w-3.5 text-[#c82020]" /> View Statement
                                 </DropdownMenuItem>
                                 <DropdownMenuItem onClick={() => openEditModal(client)} className="cursor-pointer">
-                                  <Edit className="mr-2 h-3.5 w-3.5 text-blue-600" /> Edit Customer
+                                  <Edit className="mr-2 h-3.5 w-3.5 text-[#c82020]" /> Edit Customer
                                 </DropdownMenuItem>
                                 {client.phone && (
                                   <DropdownMenuItem

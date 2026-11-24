@@ -76,7 +76,7 @@ export function FinancialAnalyticsView({ initialData }: FinancialAnalyticsViewPr
             <h1 className="text-2xl font-bold tracking-tight text-foreground">
               Financial Analytics & Cash Flow
             </h1>
-            <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[#0078D4]/10 text-[#0078D4] border border-[#0078D4]/20">
+            <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[#c82020]/10 text-[#c82020] border border-[#c82020]/20">
               {data.companyName}
             </span>
           </div>
@@ -104,7 +104,7 @@ export function FinancialAnalyticsView({ initialData }: FinancialAnalyticsViewPr
                   disabled={isPending}
                   className={`px-2.5 py-1 text-xs font-semibold rounded-sm transition-all cursor-pointer ${
                     active
-                      ? "bg-[#0078D4] text-white shadow-2xs"
+                      ? "bg-[#c82020] text-white shadow-2xs"
                       : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
                   }`}
                 >
@@ -125,7 +125,7 @@ export function FinancialAnalyticsView({ initialData }: FinancialAnalyticsViewPr
           </Button>
 
           <Link href="/dashboard/invoices/new" className="print:hidden">
-            <Button size="sm" className="h-8 text-xs bg-[#0078D4] hover:bg-[#106EBE] text-white shadow-xs font-semibold">
+            <Button size="sm" className="h-8 text-xs bg-[#c82020] hover:bg-[#a81a1a] text-white shadow-xs font-semibold">
               <Plus className="h-3.5 w-3.5 mr-1" />
               New Invoice
             </Button>
@@ -135,7 +135,7 @@ export function FinancialAnalyticsView({ initialData }: FinancialAnalyticsViewPr
 
       {/* Loading Overlay */}
       {isPending && (
-        <div className="flex items-center justify-center p-2 text-xs text-[#0078D4] bg-[#0078D4]/5 rounded-md border border-[#0078D4]/20">
+        <div className="flex items-center justify-center p-2 text-xs text-[#c82020] bg-[#c82020]/5 rounded-md border border-[#c82020]/20">
           <RefreshCw className="h-3.5 w-3.5 animate-spin mr-2" />
           <span>Refreshing financial analytics...</span>
         </div>
@@ -149,7 +149,7 @@ export function FinancialAnalyticsView({ initialData }: FinancialAnalyticsViewPr
             <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
               Gross Invoiced
             </span>
-            <div className="h-7 w-7 rounded-md bg-[#0078D4]/10 flex items-center justify-center text-[#0078D4]">
+            <div className="h-7 w-7 rounded-md bg-[#c82020]/10 flex items-center justify-center text-[#c82020]">
               <FileSpreadsheet className="h-4 w-4" />
             </div>
           </CardHeader>
@@ -277,7 +277,7 @@ export function FinancialAnalyticsView({ initialData }: FinancialAnalyticsViewPr
         <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4">
           <div>
             <CardTitle className="text-sm font-bold text-foreground flex items-center gap-2">
-              <BarChart3 className="h-4 w-4 text-[#0078D4]" />
+              <BarChart3 className="h-4 w-4 text-[#c82020]" />
               <span>Monthly Cash Inflow vs Operating Expenses</span>
             </CardTitle>
             <CardDescription className="text-xs text-muted-foreground mt-0.5">
@@ -288,7 +288,7 @@ export function FinancialAnalyticsView({ initialData }: FinancialAnalyticsViewPr
           {/* Metric Selector Legend */}
           <div className="flex items-center gap-3 text-xs">
             <div className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded-xs bg-[#0078D4]" />
+              <div className="w-3 h-3 rounded-xs bg-[#c82020]" />
               <span className="text-muted-foreground">Invoiced</span>
             </div>
             <div className="flex items-center gap-1.5">
@@ -325,7 +325,7 @@ export function FinancialAnalyticsView({ initialData }: FinancialAnalyticsViewPr
                       {/* Hover Tooltip Card */}
                       <div className="absolute -top-28 left-1/2 -translate-x-1/2 hidden group-hover:flex flex-col bg-popover text-popover-foreground text-[10px] p-2 rounded-md shadow-lg border border-border z-30 pointer-events-none whitespace-nowrap min-w-[130px]">
                         <span className="font-bold border-b border-border pb-1 mb-1">{m.fullLabel}</span>
-                        <div className="flex justify-between text-[#0078D4]">
+                        <div className="flex justify-between text-[#c82020]">
                           <span>Invoiced:</span>
                           <span className="font-mono font-medium">{formatMoney(m.invoiced, currency)}</span>
                         </div>
@@ -347,7 +347,7 @@ export function FinancialAnalyticsView({ initialData }: FinancialAnalyticsViewPr
                       <div className="w-full flex items-end justify-center gap-0.5 sm:gap-1 h-full pb-1">
                         {/* Invoiced Bar */}
                         <div
-                          className="flex-1 max-w-[12px] bg-[#0078D4]/40 hover:bg-[#0078D4] rounded-t-xs transition-all"
+                          className="flex-1 max-w-[12px] bg-[#c82020]/40 hover:bg-[#c82020] rounded-t-xs transition-all"
                           style={{ height: `${m.invoiced > 0 ? invoicedHeight : 2}%` }}
                         />
                         {/* Collected Bar */}
@@ -578,7 +578,7 @@ export function FinancialAnalyticsView({ initialData }: FinancialAnalyticsViewPr
               <div className="h-48 flex flex-col items-center justify-center text-xs text-muted-foreground">
                 <Receipt className="h-8 w-8 text-muted-foreground/40 mb-2" />
                 No expenses recorded for this period.
-                <Link href="/dashboard/expenses" className="mt-2 text-[#0078D4] hover:underline font-semibold">
+                <Link href="/dashboard/expenses" className="mt-2 text-[#c82020] hover:underline font-semibold">
                   Record an expense in Ledger
                 </Link>
               </div>
@@ -586,7 +586,7 @@ export function FinancialAnalyticsView({ initialData }: FinancialAnalyticsViewPr
               <div className="space-y-3.5">
                 {expenseCategories.slice(0, 6).map((cat, idx) => {
                   const colors = [
-                    "bg-[#0078D4]",
+                    "bg-[#c82020]",
                     "bg-purple-500",
                     "bg-amber-500",
                     "bg-emerald-500",
@@ -642,7 +642,7 @@ export function FinancialAnalyticsView({ initialData }: FinancialAnalyticsViewPr
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <CardTitle className="text-sm font-bold text-foreground flex items-center gap-2">
-                <Users className="h-4 w-4 text-[#0078D4]" />
+                <Users className="h-4 w-4 text-[#c82020]" />
                 <span>Client Revenue Leaderboard</span>
               </CardTitle>
               <span className="text-xs font-semibold text-muted-foreground">
@@ -768,7 +768,7 @@ export function FinancialAnalyticsView({ initialData }: FinancialAnalyticsViewPr
 
             <div className="pt-2 flex items-center gap-2">
               <Link href="/dashboard/quotations/new" className="flex-1">
-                <Button size="sm" className="w-full text-xs h-8 bg-[#0078D4] hover:bg-[#106EBE] text-white font-semibold">
+                <Button size="sm" className="w-full text-xs h-8 bg-[#c82020] hover:bg-[#a81a1a] text-white font-semibold">
                   <Plus className="h-3 w-3 mr-1" /> Create Quotation
                 </Button>
               </Link>
