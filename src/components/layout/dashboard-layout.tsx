@@ -41,7 +41,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const { data: session } = useSession()
 
   return (
-    <div className="flex min-h-screen w-full flex-col bg-[#faf9f8] dark:bg-[#121212] font-sans antialiased text-foreground">
+    <div className="flex min-h-screen w-full flex-col bg-[#faf9f8] dark:bg-[#121212] font-sans antialiased text-foreground overflow-x-hidden">
       <div className="flex flex-1 overflow-hidden">
         <Sidebar />
         <div className="flex flex-col flex-1 overflow-hidden min-w-0">
@@ -241,7 +241,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           </header>
 
           {/* Main Content Area */}
-          <main className="flex-1 overflow-auto p-4 md:p-6 lg:p-7 min-w-0">
+          <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-6 lg:p-7 min-w-0">
             {children}
           </main>
         </div>

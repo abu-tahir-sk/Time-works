@@ -28,7 +28,7 @@ export default async function InvoiceDetailsPage({ params }: { params: { id: str
   const clients = clientsRes.success && clientsRes.clients ? clientsRes.clients : []
 
   return (
-    <div className="w-full">
+    <div className="w-full max-w-full overflow-x-hidden">
       <InvoiceDetailsClient 
         initialInvoice={invoiceRes.invoice} 
         company={company} 

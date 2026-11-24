@@ -29,7 +29,7 @@ export default async function EditInvoicePage({ params }: { params: { id: string
   const invoice = invoiceRes.invoice
 
   return (
-    <div className="w-full">
+    <div className="w-full max-w-full overflow-x-hidden">
       <InvoiceBuilder clients={clients} company={company} initialData={invoice} />
     </div>
   )

@@ -128,7 +128,7 @@ export function InvoiceBuilder({ clients, company, initialData }: InvoiceBuilder
   }
 
   return (
-    <div className="w-full font-sans select-none space-y-6 pb-20">
+    <div className="w-full max-w-full overflow-x-hidden font-sans select-none space-y-6 pb-20">
       {/* 1. Header Bar matching Image 1: "New Invoice (Professional)" */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/70 pb-4">
         <div>

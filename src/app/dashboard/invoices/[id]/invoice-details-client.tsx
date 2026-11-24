@@ -248,9 +248,9 @@ export function InvoiceDetailsClient({ initialInvoice, company, clients }: Invoi
       </div>
 
       {/* 3. Main Two-Column View (CherryWorks Paper Invoice + Side Telemetry) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start w-full min-w-0">
         {/* Left: Beautiful Paper Invoice Document Card (8 Cols) */}
-        <div className="lg:col-span-8 bg-white dark:bg-[#181a20] rounded-2xl shadow-sm border border-border/60 p-6 sm:p-10 space-y-8 relative print:border-none print:shadow-none print:p-0">
+        <div className="xl:col-span-8 w-full min-w-0 bg-white dark:bg-[#181a20] rounded-2xl shadow-sm border border-border/60 p-6 sm:p-10 space-y-8 relative print:border-none print:shadow-none print:p-0">
           
           {/* Document Header */}
           <div className="flex flex-col sm:flex-row justify-between items-start gap-6 border-b border-border/60 pb-8">
@@ -366,8 +366,8 @@ export function InvoiceDetailsClient({ initialInvoice, company, clients }: Invoi
           </div>
 
           {/* Line Items Table */}
-          <div className="border border-border/60 rounded-xl overflow-hidden shadow-2xs">
-            <table className="w-full text-left text-xs">
+          <div className="overflow-x-auto w-full border border-border/60 rounded-xl shadow-2xs">
+            <table className="w-full min-w-[500px] text-left text-xs">
               <thead className="bg-muted/40 border-b border-border/60 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
                 <tr>
                   <th className="py-3 px-4">DESCRIPTION</th>
@@ -479,7 +479,7 @@ export function InvoiceDetailsClient({ initialInvoice, company, clients }: Invoi
         </div>
 
         {/* Right: Side Telemetry Panels (4 Cols - Timeline & Portal) */}
-        <div className="lg:col-span-4 space-y-6 print:hidden">
+        <div className="xl:col-span-4 w-full min-w-0 space-y-6 print:hidden">
           
           {/* Card 1: Invoice Timeline */}
           <div className="bg-white dark:bg-[#181a20] rounded-2xl shadow-sm border border-border/60 p-5 space-y-4">

@@ -91,16 +91,16 @@ export function InvoiceEditor({ form, clients, onAddClient, onCreateInvoice, isS
     <Form {...form}>
       <form className="w-full">
         {/* Two-Column Layout (Matching Screenshot 1) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start w-full min-w-0">
           
           {/* LEFT COLUMN: Main Invoice Form Cards (8 Cols) */}
-          <div className="lg:col-span-8 space-y-6">
+          <div className="xl:col-span-8 space-y-6 w-full min-w-0">
             
             {/* Card 1: Invoice Details (Matching Screenshot 1) */}
             <div className="bg-white dark:bg-[#181a20] rounded-2xl shadow-sm border border-border/60 p-6 space-y-4">
               <h2 className="text-base font-bold text-foreground">Invoice Details</h2>
 
-              <div className="grid grid-cols-1 sm:grid-cols-5 gap-3.5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3.5">
                 {/* 1. Invoice Number */}
                 <div className="sm:col-span-1">
                   <FormField
@@ -361,8 +361,8 @@ export function InvoiceEditor({ form, clients, onAddClient, onCreateInvoice, isS
                 </Button>
               </div>
 
-              <div className="border border-border/60 rounded-xl overflow-hidden shadow-2xs">
-                <table className="w-full text-left text-xs">
+              <div className="overflow-x-auto w-full border border-border/60 rounded-xl shadow-2xs">
+                <table className="w-full min-w-[500px] text-left text-xs">
                   <thead className="bg-muted/40 border-b border-border/60 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
                     <tr>
                       <th className="py-2.5 px-3">Description</th>
@@ -536,7 +536,7 @@ export function InvoiceEditor({ form, clients, onAddClient, onCreateInvoice, isS
           </div>
 
           {/* RIGHT COLUMN: Sticky Summary Card (Matching Screenshot 1) (4 Cols) */}
-          <div className="lg:col-span-4 sticky top-6 space-y-4">
+          <div className="xl:col-span-4 xl:sticky top-6 space-y-4 w-full min-w-0">
             <div className="bg-white dark:bg-[#181a20] rounded-2xl shadow-sm border border-border/60 p-6 space-y-5">
               <h2 className="text-base font-bold text-foreground">Summary</h2>
 
