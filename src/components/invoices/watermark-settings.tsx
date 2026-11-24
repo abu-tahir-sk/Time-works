@@ -282,10 +282,10 @@ export function WatermarkSettings() {
             </div>
           )}
 
-          {/* 5. Tene Barano / Komano Sliders */}
+          {/* 5. Watermark Sliders */}
           <div className="space-y-4 pt-1">
             <h5 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              Adjust Sliders (টেনে বাড়ানো / কমানো)
+              Adjust Sliders
             </h5>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

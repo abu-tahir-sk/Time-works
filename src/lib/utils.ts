@@ -6,7 +6,7 @@ export function formatMoney(amount: number, currency = "INR"): string {
     USD: "$",
     EUR: "€",
     GBP: "£",
-    BDT: "৳",
+    BDT: "BDT ",
   }
   const symbol = symbolMap[currency] || `${currency} `
   return `${symbol}${Number(amount || 0).toLocaleString(undefined, {

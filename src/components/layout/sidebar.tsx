@@ -100,12 +100,12 @@ export function Sidebar() {
             <span>Workspace Settings</span>
           </Link>
           <Link
-            href="/dashboard/admin"
+            href="/admin"
             className="flex items-center justify-between rounded-md px-3 py-1.5 text-xs text-muted-foreground hover:bg-muted hover:text-foreground transition-all"
           >
             <div className="flex items-center gap-2.5">
               <Sparkles className="h-3.5 w-3.5 text-[#0078D4]" />
-              <span>Admin Center</span>
+              <span>Admin Portal</span>
             </div>
             <ChevronRight className="h-3 w-3 text-muted-foreground/60" />
           </Link>

@@ -233,7 +233,7 @@ export function AdminClient({ stats, initialUsers }: AdminClientProps) {
           </div>
           <div className="text-xl font-bold text-foreground">$29 / month</div>
           <p className="text-[11px] text-muted-foreground">
-            Full Company Ledger (হিসাব-পাতি), Watermarks, Custom Branding
+            Full Company Ledger, Custom Watermarks, and Advanced Branding
           </p>
           <div className="w-full bg-muted rounded-full h-1.5 overflow-hidden">
             <div

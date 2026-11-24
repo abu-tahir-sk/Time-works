@@ -13,7 +13,19 @@ import {
   Wallet,
 } from "lucide-react"
 
-export const SIDEBAR_SECTIONS = [
+export interface SidebarItem {
+  title: string
+  href: string
+  icon: any
+  badge?: string
+}
+
+export interface SidebarSection {
+  group: string
+  items: SidebarItem[]
+}
+
+export const SIDEBAR_SECTIONS: SidebarSection[] = [
   {
     group: "Overview",
     items: [
@@ -60,27 +72,26 @@ export const SIDEBAR_SECTIONS = [
     ],
   },
   {
-    group: "Company Accounts (হিসাব)",
+    group: "Finance & Accounts",
     items: [
       {
-        title: "Expenses & Ledger",
+        title: "Company Ledger",
         href: "/dashboard/expenses",
         icon: Receipt,
-        badge: "Hisab",
       },
       {
-        title: "Analytics & P&L",
+        title: "Financial Analytics",
         href: "/dashboard/analytics",
         icon: BarChart3,
       },
     ],
   },
   {
-    group: "Platform Administration",
+    group: "Administration",
     items: [
       {
-        title: "Admin Center",
-        href: "/dashboard/admin",
+        title: "Admin Portal",
+        href: "/admin",
         icon: ShieldCheck,
         badge: "Admin",
       },

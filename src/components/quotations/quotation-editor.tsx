@@ -44,7 +44,7 @@ export function QuotationEditor({ form, clients, onAddClient }: QuotationEditorP
       <form className="space-y-6">
         <Accordion defaultValue={["client", "items"]} className="w-full space-y-4">
 
-          {/* ১. ক্লায়েন্ট এবং কোটেশন মেটাডাটা */}
+          {/* 1. Client & Quotation Metadata */}
           <AccordionItem value="client" className="bg-card border rounded-lg px-4 border-b-0 shadow-sm">
             <AccordionTrigger className="hover:no-underline py-4">
               <SectionHeader icon={User} title="Client & Quote Details" description="Select client, quote ID and validity" />
@@ -187,7 +187,7 @@ export function QuotationEditor({ form, clients, onAddClient }: QuotationEditorP
             </AccordionContent>
           </AccordionItem>
 
-          {/* ২. লাইন আইটেমস (পণ্য বা সার্ভিস) */}
+          {/* 2. Line Items (Products or Services) */}
           <AccordionItem value="items" className="bg-card border rounded-lg px-4 border-b-0 shadow-sm">
             <AccordionTrigger className="hover:no-underline py-4">
               <SectionHeader icon={List} title="Items & Pricing" description="Proposed services, quantities and rates" />
@@ -274,7 +274,7 @@ export function QuotationEditor({ form, clients, onAddClient }: QuotationEditorP
                 </Button>
               </div>
 
-              {/* গ্লোবাল ডিসকাউন্ট */}
+              {/* Global Discount */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-6 border-t mt-6">
                 <FormField
                   control={form.control}
@@ -310,7 +310,7 @@ export function QuotationEditor({ form, clients, onAddClient }: QuotationEditorP
             </AccordionContent>
           </AccordionItem>
 
-          {/* ৩. কারেন্সি, টার্মস এবং নোটস */}
+          {/* 3. Currency, Terms and Notes */}
           <AccordionItem value="terms" className="bg-card border rounded-lg px-4 border-b-0 shadow-sm">
             <AccordionTrigger className="hover:no-underline py-4">
               <SectionHeader icon={CreditCard} title="Terms & Notes" description="Currency & validity conditions" />

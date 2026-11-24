@@ -99,7 +99,7 @@ export default async function DashboardPage() {
           </CardContent>
         </Card>
 
-        {/* Company Expenses (হিসাব-পাতি) */}
+        {/* Company Expenses */}
         <Card className="border border-border/80 shadow-[0_1.6px_3.6px_0_rgba(0,0,0,0.06)] bg-card rounded-lg">
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0 pt-4 px-4">
             <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
@@ -181,7 +181,7 @@ export default async function DashboardPage() {
           <div className="flex items-center justify-between">
             <div>
               <CardTitle className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Company Cash Flow Balance (ইনকাম বনাম খরচ)
+                Company Cash Flow Balance
               </CardTitle>
             </div>
             <Link
@@ -288,7 +288,7 @@ export default async function DashboardPage() {
             <div>
               <CardTitle className="text-sm font-bold flex items-center gap-2">
                 <Receipt className="h-4 w-4 text-amber-500" />
-                Recent Company Expenses (খরচ)
+                Recent Company Expenses
               </CardTitle>
               <CardDescription className="text-[11px]">Latest operating costs and bills</CardDescription>
             </div>

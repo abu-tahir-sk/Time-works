@@ -194,7 +194,7 @@ export function ExpensesClient({
               Company Accounts & Ledger
             </h1>
             <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[#0078D4]/10 text-[#0078D4] border border-[#0078D4]/20">
-              হিসাব-পাতি
+              General Ledger
             </span>
           </div>
           <p className="text-xs text-muted-foreground mt-1">
@@ -229,7 +229,7 @@ export function ExpensesClient({
               <DialogHeader>
                 <DialogTitle className="text-base font-bold flex items-center gap-2">
                   <Receipt className="h-4 w-4 text-[#0078D4]" />
-                  Record Business Expense (নতুন খরচ)
+                  Record Business Expense
                 </DialogTitle>
                 <DialogDescription className="text-xs">
                   Enter expense details to maintain accurate company profit and loss records.

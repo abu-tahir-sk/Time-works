@@ -147,18 +147,18 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem className="cursor-pointer" render={<Link href="/dashboard/expenses" />}>
                     <Receipt className="h-3.5 w-3.5 mr-2 text-amber-500" />
-                    <span>Record Expense (হিসাব)</span>
+                    <span>Record Expense</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
 
               {/* Admin Portal Quick Link */}
               <Link
-                href="/dashboard/admin"
+                href="/admin"
                 className="hidden md:inline-flex items-center gap-1.5 h-8.5 px-2.5 rounded-md text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
               >
                 <ShieldCheck className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400" />
-                <span className="hidden xl:inline">Admin Center</span>
+                <span className="hidden xl:inline">Admin Portal</span>
               </Link>
 
               <ThemeToggle />
@@ -215,10 +215,10 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                       Executive Dashboard
                     </DropdownMenuItem>
                     <DropdownMenuItem className="cursor-pointer" render={<Link href="/dashboard/expenses" />}>
-                      Company Accounts (হিসাব-পাতি)
+                      Company Ledger & Accounts
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer" render={<Link href="/dashboard/admin" />}>
-                      Admin Control Center
+                    <DropdownMenuItem className="cursor-pointer" render={<Link href="/admin" />}>
+                      Admin Portal
                     </DropdownMenuItem>
                     <DropdownMenuItem className="cursor-pointer" render={<Link href="/dashboard/settings" />}>
                       Workspace Settings

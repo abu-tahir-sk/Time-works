@@ -105,7 +105,7 @@ export function QuotationBuilder({ clients, company, initialData }: QuotationBui
                 </button>
             </div>
 
-            {/* বাম পাশ: Editor Panel */}
+            {/* Left: Editor Panel */}
             <div className={`w-full md:w-1/2 flex-col overflow-y-auto border-r bg-background ${activeTab === "preview" ? "hidden md:flex" : "flex"}`}>
                 <div className="flex items-center justify-between p-4 border-b sticky top-0 bg-background/95 backdrop-blur z-10">
                     <div>
@@ -131,10 +131,10 @@ export function QuotationBuilder({ clients, company, initialData }: QuotationBui
                 </div>
             </div>
 
-            {/* ডান পাশ: Live Preview Panel */}
+            {/* Right: Live Preview Panel */}
             <div className={`w-full md:w-1/2 flex-col overflow-y-auto bg-muted/40 ${activeTab === "edit" ? "hidden md:flex" : "flex"}`}>
                 <div className="p-4 flex justify-center min-h-full">
-                    {/* আমরা ইনভয়েস প্রিভিউ ইঞ্জিনটি কোটেশন ডেটা পাঠিয়ে রিইউজ করতে পারি */}
+                    {/* Live Preview using unified preview engine */}
                     <StaticInvoicePreview
                         data={{
                             ...formData,
