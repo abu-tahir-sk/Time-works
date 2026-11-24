@@ -41,11 +41,15 @@ model User {
   emailVerified DateTime?
   passwordHash  String?
   image         String?
+  role          String    @default("ADMIN") // ADMIN, USER
+  plan          String    @default("PRO")   // FREE, PRO, ENTERPRISE
+  planExpiresAt DateTime?
   accounts      Account[]
   sessions      Session[]
   companies     Company[]
   quotations    Quotation[]
   agreements    Agreement[]
+  expenses      Expense[]
   
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
@@ -125,6 +129,7 @@ model Company {
   invoices          Invoice[]
   clients           Client[]
   agreements        Agreement[]
+  expenses          Expense[]
   
   // A company is owned/managed by a user (simplified for now, can add team roles later)
   ownerId           String
@@ -306,4 +311,32 @@ model Agreement {
   updatedAt       DateTime  @updatedAt
 
   @@unique([companyId, agreementNumber])
+}
+
+// -----------------------------------------------------------------------------
+// DOCUFLOW EXPENSES & COMPANY LEDGER (হিসাব-পাতি) MODULE SCHEMA
+// -----------------------------------------------------------------------------
+
+model Expense {
+  id              String    @id @default(cuid())
+  companyId       String
+  company         Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  title           String
+  category        String    @default("OPERATIONS") // SALARIES, RENT, SOFTWARE, MARKETING, UTILITIES, HARDWARE, TRAVEL, TAX, OTHER
+  amount          Float
+  currency        String    @default("INR")
+  expenseDate     DateTime  @default(now())
+  paymentMethod   String?   // CASH, BANK_TRANSFER, CARD, UPI, OTHER
+  receiptUrl      String?
+  notes           String?   @db.Text
+  status          String    @default("PAID") // PAID, PENDING, REIMBURSED
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([companyId])
+  @@index([userId])
 }

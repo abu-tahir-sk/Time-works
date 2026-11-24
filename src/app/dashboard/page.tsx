@@ -1,53 +1,361 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import Link from "next/link"
+import {
+  FileSpreadsheet,
+  FileSignature,
+  Handshake,
+  Receipt,
+  ArrowUpRight,
+  ArrowDownRight,
+  Plus,
+  TrendingUp,
+  AlertCircle,
+  Building2,
+  Calendar,
+  Sparkles,
+  ShieldCheck,
+  ChevronRight,
+} from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { getCompanyFinancialOverview } from "@/actions/expenses"
+import { requireUser, getUserCompany } from "@/lib/auth/utils"
+import { formatMoney } from "@/lib/utils"
 
-export default function DashboardPage() {
+export const metadata = {
+  title: "Executive Dashboard | DocuFlow Enterprise",
+  description: "Company Financial Overview, Ledger, Invoices, and Business Analytics.",
+}
+
+export default async function DashboardPage() {
+  const [user, company, financialData] = await Promise.all([
+    requireUser(),
+    getUserCompany(),
+    getCompanyFinancialOverview(),
+  ])
+
+  const { summary, currency, recentInvoices, recentExpenses, categoryTotals } = financialData
+
   return (
-    <div className="flex flex-col gap-8">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Welcome, Admin</h1>
-        <p className="text-muted-foreground mt-2">
-          Here you can see the recent activity of your business.
-        </p>
+    <div className="space-y-6">
+      {/* Executive Welcome & Header Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/70 pb-5">
+        <div>
+          <div className="flex items-center gap-2.5">
+            <h1 className="text-2xl font-bold tracking-tight text-foreground">
+              Welcome back, {user.name || "Business Leader"}
+            </h1>
+            <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[#0078D4]/10 text-[#0078D4] border border-[#0078D4]/20">
+              {company.name}
+            </span>
+          </div>
+          <p className="text-xs text-muted-foreground mt-1">
+            Enterprise Financial Hub: Real-time company accounting, invoices, profit & loss, and document workflows.
+          </p>
+        </div>
+
+        {/* Quick Microsoft Action Bar */}
+        <div className="flex items-center gap-2">
+          <Link href="/dashboard/invoices/new">
+            <Button size="sm" className="h-8.5 text-xs bg-[#0078D4] hover:bg-[#106EBE] text-white shadow-xs font-semibold">
+              <Plus className="h-3.5 w-3.5 mr-1" />
+              New Invoice
+            </Button>
+          </Link>
+          <Link href="/dashboard/expenses">
+            <Button size="sm" variant="outline" className="h-8.5 text-xs border-border/80 shadow-2xs hover:bg-muted font-medium">
+              <Receipt className="h-3.5 w-3.5 mr-1 text-amber-500" />
+              Record Expense
+            </Button>
+          </Link>
+          <Link href="/dashboard/quotations/new">
+            <Button size="sm" variant="outline" className="h-8.5 text-xs border-border/80 shadow-2xs hover:bg-muted font-medium">
+              <FileSignature className="h-3.5 w-3.5 mr-1 text-indigo-500" />
+              Quotation
+            </Button>
+          </Link>
+        </div>
       </div>
-      
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+
+      {/* Primary Financial Metric Cards (Microsoft Fluent 2) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Total Collected Revenue */}
+        <Card className="border border-border/80 shadow-[0_1.6px_3.6px_0_rgba(0,0,0,0.06)] bg-card rounded-lg">
+          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0 pt-4 px-4">
+            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              Total Inflow (Paid)
+            </span>
+            <div className="h-7 w-7 rounded-md bg-emerald-50 dark:bg-emerald-950/50 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+              <ArrowDownRight className="h-4 w-4" />
+            </div>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">$45,000</div>
-            <p className="text-xs text-muted-foreground">+20.1% from last month</p>
+          <CardContent className="px-4 pb-4">
+            <div className="text-2xl font-bold font-mono tracking-tight text-foreground">
+              {formatMoney(summary.totalCollected, currency)}
+            </div>
+            <p className="text-[11px] text-muted-foreground mt-1 flex items-center justify-between">
+              <span>{summary.invoiceCount} invoices issued</span>
+              <span className="text-emerald-600 font-semibold">Active Inflow</span>
+            </p>
           </CardContent>
         </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Invoices</CardTitle>
+
+        {/* Company Expenses (হিসাব-পাতি) */}
+        <Card className="border border-border/80 shadow-[0_1.6px_3.6px_0_rgba(0,0,0,0.06)] bg-card rounded-lg">
+          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0 pt-4 px-4">
+            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              Total Outflow (Expenses)
+            </span>
+            <div className="h-7 w-7 rounded-md bg-rose-50 dark:bg-rose-950/50 flex items-center justify-center text-rose-600 dark:text-rose-400">
+              <ArrowUpRight className="h-4 w-4" />
+            </div>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">+2350</div>
-            <p className="text-xs text-muted-foreground">+180 from last month</p>
+          <CardContent className="px-4 pb-4">
+            <div className="text-2xl font-bold font-mono tracking-tight text-rose-600 dark:text-rose-400">
+              {formatMoney(summary.totalExpenses, currency)}
+            </div>
+            <p className="text-[11px] text-muted-foreground mt-1 flex items-center justify-between">
+              <span>{summary.expenseCount} expenses recorded</span>
+              <span className="text-rose-600 font-semibold">Operational Costs</span>
+            </p>
           </CardContent>
         </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Overdue</CardTitle>
+
+        {/* Net Profit & Margin */}
+        <Card className="border border-border/80 shadow-[0_1.6px_3.6px_0_rgba(0,0,0,0.06)] bg-card rounded-lg">
+          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0 pt-4 px-4">
+            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              Net Profit / Margin
+            </span>
+            <div
+              className={`h-7 w-7 rounded-md flex items-center justify-center ${
+                summary.netProfit >= 0
+                  ? "bg-blue-50 text-[#0078D4] dark:bg-blue-950/50"
+                  : "bg-red-50 text-red-600 dark:bg-red-950/50"
+              }`}
+            >
+              <TrendingUp className="h-4 w-4" />
+            </div>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">$12,340</div>
-            <p className="text-xs text-muted-foreground">19 invoices overdue</p>
+          <CardContent className="px-4 pb-4">
+            <div
+              className={`text-2xl font-bold font-mono tracking-tight ${
+                summary.netProfit >= 0
+                  ? "text-emerald-700 dark:text-emerald-400"
+                  : "text-rose-700 dark:text-rose-400"
+              }`}
+            >
+              {formatMoney(summary.netProfit, currency)}
+            </div>
+            <p className="text-[11px] text-muted-foreground mt-1 flex items-center justify-between">
+              <span>Operating Margin</span>
+              <span className="font-bold text-foreground">{summary.profitMargin}%</span>
+            </p>
           </CardContent>
         </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Clients</CardTitle>
+
+        {/* Outstanding Receivables */}
+        <Card className="border border-border/80 shadow-[0_1.6px_3.6px_0_rgba(0,0,0,0.06)] bg-card rounded-lg">
+          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0 pt-4 px-4">
+            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              Pending Receivables
+            </span>
+            <div className="h-7 w-7 rounded-md bg-amber-50 dark:bg-amber-950/50 flex items-center justify-center text-amber-600 dark:text-amber-400">
+              <AlertCircle className="h-4 w-4" />
+            </div>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">+573</div>
-            <p className="text-xs text-muted-foreground">+201 since last hour</p>
+          <CardContent className="px-4 pb-4">
+            <div className="text-2xl font-bold font-mono tracking-tight text-amber-600 dark:text-amber-400">
+              {formatMoney(summary.pendingReceivables, currency)}
+            </div>
+            <p className="text-[11px] text-muted-foreground mt-1 flex items-center justify-between">
+              <span>Unpaid client invoices</span>
+              <span className="text-amber-600 font-semibold">Action Due</span>
+            </p>
           </CardContent>
         </Card>
       </div>
+
+      {/* Financial Health & Cashflow Visual Overview */}
+      <Card className="border border-border/80 shadow-[0_1px_3px_rgba(0,0,0,0.04)] bg-card">
+        <CardHeader className="py-3 px-4 border-b border-border/60">
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Company Cash Flow Balance (ইনকাম বনাম খরচ)
+              </CardTitle>
+            </div>
+            <Link
+              href="/dashboard/expenses"
+              className="text-xs text-[#0078D4] hover:underline font-semibold flex items-center gap-1"
+            >
+              Open Full Ledger <ChevronRight className="h-3 w-3" />
+            </Link>
+          </div>
+        </CardHeader>
+        <CardContent className="p-4 space-y-3">
+          <div className="space-y-1.5">
+            <div className="flex justify-between text-xs font-medium">
+              <span className="text-emerald-600 dark:text-emerald-400">Revenue Inflow: {formatMoney(summary.totalCollected, currency)}</span>
+              <span className="text-rose-600 dark:text-rose-400">Expenses Outflow: {formatMoney(summary.totalExpenses, currency)}</span>
+            </div>
+            <div className="w-full bg-muted rounded-full h-2.5 overflow-hidden flex">
+              <div
+                className="bg-emerald-500 h-full transition-all"
+                style={{
+                  width: `${
+                    summary.totalCollected + summary.totalExpenses > 0
+                      ? (summary.totalCollected / (summary.totalCollected + summary.totalExpenses)) * 100
+                      : 50
+                  }%`,
+                }}
+              />
+              <div
+                className="bg-rose-500 h-full transition-all"
+                style={{
+                  width: `${
+                    summary.totalCollected + summary.totalExpenses > 0
+                      ? (summary.totalExpenses / (summary.totalCollected + summary.totalExpenses)) * 100
+                      : 50
+                  }%`,
+                }}
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Split View: Recent Invoices & Recent Company Expenses */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        {/* Recent Invoices Card */}
+        <Card className="border border-border/80 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+          <CardHeader className="py-3 px-4 border-b border-border/60 flex flex-row items-center justify-between">
+            <div>
+              <CardTitle className="text-sm font-bold flex items-center gap-2">
+                <FileSpreadsheet className="h-4 w-4 text-[#0078D4]" />
+                Recent Invoices
+              </CardTitle>
+              <CardDescription className="text-[11px]">Latest client billing and payment status</CardDescription>
+            </div>
+            <Link
+              href="/dashboard/invoices"
+              className="text-xs font-semibold text-[#0078D4] hover:underline"
+            >
+              View all
+            </Link>
+          </CardHeader>
+          <CardContent className="p-0">
+            {recentInvoices.length === 0 ? (
+              <div className="py-8 text-center text-xs text-muted-foreground">
+                No invoices created yet. Click "New Invoice" to create one.
+              </div>
+            ) : (
+              <div className="divide-y divide-border/60">
+                {recentInvoices.map((inv: any) => (
+                  <div
+                    key={inv.id}
+                    className="flex items-center justify-between py-2.5 px-4 hover:bg-muted/30 transition-colors text-xs"
+                  >
+                    <div>
+                      <p className="font-semibold text-foreground">{inv.invoiceNumber}</p>
+                      <p className="text-[11px] text-muted-foreground">{inv.client?.name || "Client"}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-mono font-bold text-foreground">
+                        {formatMoney(inv.total, inv.currency || currency)}
+                      </p>
+                      <span
+                        className={`inline-block text-[10px] font-semibold px-1.5 py-0.2 rounded ${
+                          inv.status === "PAID"
+                            ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"
+                            : inv.status === "OVERDUE"
+                            ? "bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300"
+                            : "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300"
+                        }`}
+                      >
+                        {inv.status}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Recent Company Expenses Card */}
+        <Card className="border border-border/80 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+          <CardHeader className="py-3 px-4 border-b border-border/60 flex flex-row items-center justify-between">
+            <div>
+              <CardTitle className="text-sm font-bold flex items-center gap-2">
+                <Receipt className="h-4 w-4 text-amber-500" />
+                Recent Company Expenses (খরচ)
+              </CardTitle>
+              <CardDescription className="text-[11px]">Latest operating costs and bills</CardDescription>
+            </div>
+            <Link
+              href="/dashboard/expenses"
+              className="text-xs font-semibold text-[#0078D4] hover:underline"
+            >
+              View ledger
+            </Link>
+          </CardHeader>
+          <CardContent className="p-0">
+            {recentExpenses.length === 0 ? (
+              <div className="py-8 text-center text-xs text-muted-foreground">
+                No company expenses recorded yet. Click "Record Expense" to add.
+              </div>
+            ) : (
+              <div className="divide-y divide-border/60">
+                {recentExpenses.map((exp: any) => (
+                  <div
+                    key={exp.id}
+                    className="flex items-center justify-between py-2.5 px-4 hover:bg-muted/30 transition-colors text-xs"
+                  >
+                    <div>
+                      <p className="font-semibold text-foreground">{exp.title}</p>
+                      <p className="text-[11px] text-muted-foreground capitalize">
+                        {exp.category.toLowerCase()} • {new Date(exp.expenseDate).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-mono font-bold text-rose-600 dark:text-rose-400">
+                        - {formatMoney(exp.amount, exp.currency || currency)}
+                      </p>
+                      <span className="text-[10px] text-muted-foreground capitalize">
+                        {exp.paymentMethod?.replace(/_/g, " ").toLowerCase() || "Bank"}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Super Admin Center Quick Banner */}
+      <Card className="border-2 border-[#0078D4]/20 bg-linear-to-r from-blue-50/50 via-background to-purple-50/50 dark:from-blue-950/20 dark:to-purple-950/20 p-4 rounded-lg shadow-xs">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-lg bg-[#0078D4] text-white flex items-center justify-center shrink-0 shadow-xs">
+              <ShieldCheck className="h-6 w-6" />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-foreground">
+                Microsoft 365 Admin Center Portal
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Super Admin governance: view premium users, upgrade accounts to Pro/Enterprise, and monitor platform health.
+              </p>
+            </div>
+          </div>
+          <Link href="/dashboard/admin" className="shrink-0">
+            <Button size="sm" className="h-8.5 text-xs bg-[#0078D4] hover:bg-[#106EBE] text-white font-semibold">
+              Open Admin Center
+            </Button>
+          </Link>
+        </div>
+      </Card>
     </div>
   )
 }
