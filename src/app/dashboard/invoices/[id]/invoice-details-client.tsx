@@ -1,9 +1,16 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useMemo } from "react"
+import dynamic from "next/dynamic"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { format } from "date-fns"
+import { InvoicePdf } from "@/components/invoices/invoice-pdf"
+
+const PDFDownloadLink = dynamic(
+  () => import("@react-pdf/renderer").then((mod) => mod.PDFDownloadLink),
+  { ssr: false }
+)
 import {
   ArrowLeft,
   Copy,
@@ -50,6 +57,11 @@ export function InvoiceDetailsClient({ initialInvoice, company, clients }: Invoi
   const [isDeleting, setIsDeleting] = useState(false)
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false)
   const [copied, setCopied] = useState(false)
+
+  const pdfDoc = useMemo(
+    () => <InvoicePdf data={invoice} company={company} clients={clients} />,
+    [invoice, company, clients]
+  )
 
   const handleStatusChange = async (status: string) => {
     setIsUpdatingStatus(true)
@@ -196,6 +208,25 @@ export function InvoiceDetailsClient({ initialInvoice, company, clients }: Invoi
             Edit
           </Button>
 
+          {pdfDoc && (
+            <PDFDownloadLink
+              document={pdfDoc}
+              fileName={`timesworks-invoice-${invoice.invoiceNumber || "document"}.pdf`}
+            >
+              {({ loading }: any) => (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={loading}
+                  className="h-9 px-4 text-xs font-semibold border-border/80 shadow-2xs hover:bg-muted cursor-pointer"
+                >
+                  <Download className="h-3.5 w-3.5 mr-1.5 text-muted-foreground" />
+                  {loading ? "Generating PDF..." : "Download PDF"}
+                </Button>
+              )}
+            </PDFDownloadLink>
+          )}
+
           <Button
             variant="outline"
             size="sm"
@@ -203,7 +234,7 @@ export function InvoiceDetailsClient({ initialInvoice, company, clients }: Invoi
             className="h-9 px-4 text-xs font-semibold border-border/80 shadow-2xs hover:bg-muted"
           >
             <Printer className="h-3.5 w-3.5 mr-1.5 text-muted-foreground" />
-            PDF
+            Print
           </Button>
 
           {invoice.status !== "PAID" ? (
