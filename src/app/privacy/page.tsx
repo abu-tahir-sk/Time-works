@@ -4,7 +4,7 @@ import { Footer } from "@/components/layout/footer"
 import { ShieldCheck } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "Privacy Policy | Times Works PRO",
+  title: "Privacy Policy | Times Works",
   description: "Our commitment to financial data security, GDPR compliance, and non-disclosure standards.",
 }
 
@@ -32,7 +32,7 @@ export default function PrivacyPage() {
             <section className="space-y-2">
               <h2 className="text-base font-bold text-foreground">1. Introduction & Overview</h2>
               <p>
-                Times Works Inc. (&ldquo;Times Works,&rdquo; &ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;) operates the Times Works PRO financial and document automation platform. We are committed to protecting the confidentiality, integrity, and security of your personal data, customer financial records, invoices, and legal agreements.
+                Times Works Inc. (&ldquo;Times Works,&rdquo; &ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;) operates the Times Works financial and document automation platform. We are committed to protecting the confidentiality, integrity, and security of your personal data, customer financial records, invoices, and legal agreements.
               </p>
             </section>
 

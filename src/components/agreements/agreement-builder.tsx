@@ -101,7 +101,7 @@ export function AgreementBuilder({ clients, company }: AgreementBuilderProps) {
       "Times Works shall design, provision, configure, and maintain enterprise document workflows, custom billing synchronizers, and digital signature automation infrastructure under the agreed service level standards.",
     clauses: DEFAULT_CLAUSES_BY_TYPE.SERVICE_AGREEMENT,
     notes:
-      "Governed by the standard commercial master service provisions of Times Works PRO.",
+      "Governed by the standard commercial master service provisions of Times Works.",
     companyDetails: {
       name: company?.name || "Times Works",
       address:
@@ -200,7 +200,7 @@ export function AgreementBuilder({ clients, company }: AgreementBuilderProps) {
                 New Agreement ({data.title || "Legal Contract"})
               </h1>
               <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#c82020]/10 text-[#c82020] border border-[#c82020]/25">
-                Times Works PRO
+                Times Works
               </span>
             </div>
             <p className="text-xs text-muted-foreground mt-0.5">

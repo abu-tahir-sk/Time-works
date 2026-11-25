@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { ShieldCheck, Award, Users, Building2, CheckCircle2, ArrowRight } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "About Us | Times Works PRO",
+  title: "About Us | Times Works",
   description: "Learn about the mission, engineering standards, and values powering Times Works financial platforms.",
 }
 
@@ -75,7 +75,7 @@ export default function AboutPage() {
                 Most billing software was designed 15 years ago—clunky, multi-page PDFs with broken headers, missing tax compliance, and zero integration with actual cash flow accounting.
               </p>
               <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-                Times Works PRO delivers a unified platform following Microsoft Fluent and Fortune 500 standards. Whether you are generating a 10-line consulting bill or managing complex master services agreements, your documents communicate prestige and precision.
+                Times Works delivers a unified platform following Microsoft Fluent and Fortune 500 standards. Whether you are generating a 10-line consulting bill or managing complex master services agreements, your documents communicate prestige and precision.
               </p>
               <div className="pt-2 flex items-center gap-4 text-xs font-semibold text-foreground">
                 <div className="flex items-center gap-1.5">

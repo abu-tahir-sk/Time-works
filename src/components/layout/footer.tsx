@@ -24,9 +24,6 @@ export function Footer() {
                 <span className="font-bold text-xl tracking-tight text-foreground font-sans">
                   Times Works
                 </span>
-                <span className="inline-flex items-center px-1.5 py-0.2 rounded text-[10px] font-semibold bg-[#c82020]/10 text-[#c82020] border border-[#c82020]/25 uppercase">
-                  PRO
-                </span>
               </div>
             </Link>
 
@@ -48,11 +45,6 @@ export function Footer() {
               <li>
                 <Link href="/features" className="hover:text-[#c82020] transition-colors">
                   All Features
-                </Link>
-              </li>
-              <li>
-                <Link href="/pricing" className="hover:text-[#c82020] transition-colors">
-                  Plans & Pricing
                 </Link>
               </li>
               <li>

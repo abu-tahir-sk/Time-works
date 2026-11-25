@@ -4,7 +4,7 @@ import { Footer } from "@/components/layout/footer"
 import { FileText } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "Terms of Service | Times Works PRO",
+  title: "Terms of Service | Times Works",
   description: "Enterprise master service agreement, licensing terms, and billing conditions for Times Works.",
 }
 
@@ -32,7 +32,7 @@ export default function TermsPage() {
             <section className="space-y-2">
               <h2 className="text-base font-bold text-foreground">1. Acceptance of Terms</h2>
               <p>
-                By registering, accessing, or utilizing the services provided by Times Works Inc. (&ldquo;Times Works PRO&rdquo;), you agree to be legally bound by these Terms of Service. If you are entering into this agreement on behalf of a corporate entity, you warrant that you have full legal authority to bind said entity.
+                By registering, accessing, or utilizing the services provided by Times Works Inc. (&ldquo;Times Works&rdquo;), you agree to be legally bound by these Terms of Service. If you are entering into this agreement on behalf of a corporate entity, you warrant that you have full legal authority to bind said entity.
               </p>
             </section>
 
@@ -51,9 +51,9 @@ export default function TermsPage() {
             </section>
 
             <section className="space-y-2">
-              <h2 className="text-base font-bold text-foreground">4. Subscription Billing & Cancellations</h2>
+              <h2 className="text-base font-bold text-foreground">4. Service Access & Workspace Governance</h2>
               <p>
-                Paid tiers (Professional and Enterprise) are billed on a recurring monthly or annual basis. You may cancel your subscription at any time via Workspace Settings. Upon cancellation, your workspace transitions to the Free Starter tier with continued read-only access to historical invoices and receipts.
+                Times Works provides unrestricted access to document automation, invoices, quotations, legal contracts, and financial bookkeeping. Users retain full ownership and copyright of all company data, documents, and client records produced within their workspace.
               </p>
             </section>
 

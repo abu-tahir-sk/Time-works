@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { HelpCircle, ChevronRight, FileSpreadsheet, ShieldCheck, ArrowRight } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "FAQ & Help Center | Times Works PRO",
+  title: "FAQ & Help Center | Times Works",
   description: "Answers to common questions regarding invoice creation, single-page PDF rendering, security watermarks, and ledger accounting.",
 }
 
@@ -84,7 +84,7 @@ export default function FAQPage() {
             Frequently Asked Questions.
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto">
-            Find answers to common questions about Times Works PRO invoicing, PDF generation, security watermarks, and company accounting.
+            Find answers to common questions about Times Works invoicing, PDF generation, security watermarks, and company accounting.
           </p>
         </section>
 
@@ -126,9 +126,9 @@ export default function FAQPage() {
                   Contact Support
                 </Button>
               </Link>
-              <Link href="/pricing">
+              <Link href="/features">
                 <Button variant="outline" className="h-9.5 px-5 text-xs font-semibold">
-                  View Plans
+                  Explore Features
                 </Button>
               </Link>
             </div>

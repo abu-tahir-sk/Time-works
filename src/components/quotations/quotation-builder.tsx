@@ -147,7 +147,7 @@ export function QuotationBuilder({ clients, company, initialData }: QuotationBui
                 {initialData ? `Edit Quotation (${form.watch("quotationNumber") || ""})` : "New Quotation (Proposal)"}
               </h1>
               <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#c82020]/10 text-[#c82020] border border-[#c82020]/25">
-                Times Works PRO
+                Times Works
               </span>
             </div>
             <p className="text-xs text-muted-foreground mt-0.5">

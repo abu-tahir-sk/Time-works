@@ -24,18 +24,15 @@ export function Sidebar() {
   return (
     <div className="hidden border-r border-border/80 bg-background/95 backdrop-blur-md md:block w-64 lg:w-72 shrink-0 select-none shadow-[1px_0_0_0_rgba(0,0,0,0.04)] h-full overflow-hidden">
       <div className="flex h-full flex-col justify-between overflow-hidden">
-        {/* Times Works PRO Brand Header */}
+        {/* Times Works Brand Header */}
         <div className="flex h-14 items-center justify-between border-b border-border/60 px-5 shrink-0">
           <Link href="/dashboard" className="flex items-center gap-3 font-semibold group">
             <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-tr from-[#c82020] to-[#e11d48] text-white shadow-sm ring-1 ring-white/20">
               <Sparkles className="w-4 h-4 text-white" />
             </div>
             <div className="flex flex-col">
-              <span className="text-sm font-bold tracking-tight text-foreground flex items-center gap-1.5">
+              <span className="text-sm font-bold tracking-tight text-foreground">
                 Times Works
-                <span className="inline-flex items-center rounded-sm px-1.5 py-0.2 text-[9px] font-extrabold bg-[#c82020]/10 text-[#c82020] border border-[#c82020]/25 tracking-wider">
-                  PRO
-                </span>
               </span>
               <span className="text-[10px] text-muted-foreground/75 font-medium">Professional Services</span>
             </div>

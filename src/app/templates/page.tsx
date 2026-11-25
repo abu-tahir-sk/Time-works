@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { FileSpreadsheet, FileSignature, Handshake, CheckCircle2, ArrowRight, Eye, ShieldCheck } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "Document Templates | Times Works PRO",
+  title: "Document Templates | Times Works",
   description: "Explore enterprise-ready templates for Invoices, Quotations, Estimates, and Legal Service Agreements.",
 }
 

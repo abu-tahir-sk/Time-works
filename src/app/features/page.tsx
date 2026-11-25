@@ -264,60 +264,6 @@ export default function FeaturesPage() {
           </div>
         </section>
 
-        {/* 6. MODERN PRICING TABLE */}
-        <section className="py-32 bg-white dark:bg-[#050505] border-b border-slate-200/50 dark:border-white/5">
-          <div className="container mx-auto px-4 max-w-4xl">
-            <div className="text-center mb-20">
-              <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">Transparent Pricing.</h2>
-              <p className="text-slate-500 dark:text-slate-400 text-lg">Start for free, upgrade when you need more power.</p>
-            </div>
-            
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-[2rem] border border-slate-200/80 dark:border-white/10 shadow-xl overflow-hidden relative">
-              {/* Subtle pro highlight background */}
-              <div className="absolute top-0 right-0 w-1/3 h-full bg-blue-500/5 pointer-events-none" />
-              
-              <table className="w-full text-left border-collapse">
-                <thead className="bg-slate-50/50 dark:bg-white/[0.02]">
-                  <tr>
-                    <th className="p-6 md:p-8 font-semibold text-lg border-b border-slate-200/80 dark:border-white/10 text-slate-500 w-1/2">Features</th>
-                    <th className="p-6 md:p-8 font-semibold text-xl border-b border-slate-200/80 dark:border-white/10 text-center text-slate-900 dark:text-white">Starter</th>
-                    <th className="p-6 md:p-8 font-bold text-xl border-b border-slate-200/80 dark:border-white/10 text-center text-blue-600 dark:text-blue-400">Pro</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-white/5 text-sm md:text-base">
-                  {[
-                    { label: "Monthly Documents", free: "5", pro: "Unlimited" },
-                    { label: "Client CRM limit", free: "3 Clients", pro: "Unlimited" },
-                    { label: "Custom Branding", free: false, pro: true },
-                    { label: "Digital Signatures", free: false, pro: true },
-                    { label: "Team Members", free: "1 (Owner)", pro: "Unlimited Roles" },
-                    { label: "API Access", free: false, pro: true },
-                  ].map((row, i) => (
-                    <tr key={i} className="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors">
-                      <td className="p-4 md:p-6 font-medium text-slate-700 dark:text-slate-300">{row.label}</td>
-                      <td className="p-4 md:p-6 text-center text-slate-500">
-                        {typeof row.free === 'boolean' ? (row.free ? <Check className="w-5 h-5 mx-auto text-slate-700 dark:text-slate-300" /> : <span className="text-slate-300 dark:text-slate-700">—</span>) : row.free}
-                      </td>
-                      <td className="p-4 md:p-6 text-center font-medium text-blue-600 dark:text-blue-400">
-                        {typeof row.pro === 'boolean' ? (row.pro ? <Check className="w-5 h-5 mx-auto text-blue-600 dark:text-blue-400" /> : <span className="text-slate-300">—</span>) : row.pro}
-                      </td>
-                    </tr>
-                  ))}
-                  <tr>
-                    <td className="p-4 md:p-8 bg-slate-50/50 dark:bg-white/[0.02]"></td>
-                    <td className="p-4 md:p-8 text-center bg-slate-50/50 dark:bg-white/[0.02]">
-                      <Button variant="outline" className="w-full rounded-full">Current Plan</Button>
-                    </td>
-                    <td className="p-4 md:p-8 text-center bg-blue-500/5">
-                      <Button className="w-full rounded-full bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-500 hover:opacity-90 border-0 text-white shadow-lg shadow-blue-500/20">Upgrade to Pro</Button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-
         {/* 7. FINAL CTA */}
         <section className="py-40 relative overflow-hidden text-center bg-[#FAFAFA] dark:bg-[#000]">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-200/40 dark:from-white/5 via-transparent to-transparent -z-10" />

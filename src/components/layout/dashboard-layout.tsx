@@ -65,7 +65,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 <div className="flex items-center gap-2 pb-4 border-b">
                   <Image src="/logo-v3.jpg" alt="Times Works Logo" width={32} height={32} className="rounded-md" />
                   <div>
-                    <span className="font-semibold text-sm">Times Works PRO</span>
+                    <span className="font-semibold text-sm">Times Works</span>
                     <p className="text-[11px] text-muted-foreground">Professional Services</p>
                   </div>
                 </div>
@@ -205,7 +205,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                       <p className="text-[11px] text-muted-foreground truncate">{session?.user?.email}</p>
                       <div className="mt-1.5 flex items-center gap-1.5">
                         <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
-                          PRO Plan
+                          Active Workspace
                         </span>
                         <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-semibold bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300">
                           Admin
