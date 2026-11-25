@@ -12,14 +12,8 @@ import { signOut, useSession } from "next-auth/react"
 export function Sidebar() {
   const pathname = usePathname()
   const { data: session } = useSession()
-  const isSuperAdmin = session?.user?.email?.toLowerCase() === "abutahir2626@gmail.com"
 
-  const visibleSections = SIDEBAR_SECTIONS.filter((section) => {
-    if (section.group === "Administration" && !isSuperAdmin) {
-      return false
-    }
-    return true
-  })
+  const visibleSections = SIDEBAR_SECTIONS
 
   return (
     <div className="hidden border-r border-border/80 bg-background/95 backdrop-blur-md md:block w-64 lg:w-72 shrink-0 select-none shadow-[1px_0_0_0_rgba(0,0,0,0.04)] h-full overflow-hidden">
@@ -120,21 +114,12 @@ export function Sidebar() {
                   {session?.user?.name || "Abu Sufian"}
                 </span>
                 <span className="text-[10px] text-muted-foreground truncate">
-                  {isSuperAdmin ? "Managing Partner" : "Finance Director"}
+                  Finance Director
                 </span>
               </div>
             </Link>
 
             <div className="flex items-center gap-0.5 shrink-0">
-              {isSuperAdmin && (
-                <Link
-                  href="/admin"
-                  title="Admin Portal"
-                  className="p-1.5 rounded-lg text-muted-foreground hover:text-[#c82020] hover:bg-muted transition-colors"
-                >
-                  <Sparkles className="h-3.5 w-3.5" />
-                </Link>
-              )}
               <Link
                 href="/dashboard/settings"
                 title="Settings"

@@ -291,7 +291,7 @@ export function AgreementListClient({ agreements }: { agreements: Agreement[] })
 
       <div className="overflow-hidden rounded-xl border bg-card shadow-sm">
         <div className="overflow-x-auto">
-          <Table className="min-w-[960px]">
+          <Table className="min-w-full">
             <TableHeader>
               <TableRow className="bg-muted/40 hover:bg-muted/40">
                 <TableHead className="pl-4">Agreement</TableHead>

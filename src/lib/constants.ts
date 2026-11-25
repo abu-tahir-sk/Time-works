@@ -95,12 +95,6 @@ export const SIDEBAR_SECTIONS: SidebarSection[] = [
         href: "/dashboard/settings",
         icon: Settings,
       },
-      {
-        title: "Admin Portal",
-        href: "/admin",
-        icon: ShieldCheck,
-        badge: "Admin",
-      },
     ],
   },
 ]

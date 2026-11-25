@@ -128,5 +128,55 @@
   }
   html {
     @apply font-sans;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Mobile responsive foundation */
+  body {
+    overflow-x: hidden;
+  }
+
+  * {
+    max-width: 100%;
+  }
+
+  /* Mobile: ensure tables scroll horizontally smoothly */
+  @media (max-width: 640px) {
+    .overflow-x-auto {
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Minimum touch target size for accessibility */
+    button,
+    [role="button"],
+    a {
+      @apply min-h-[44px];
+    }
+
+    /* Cards stack with tighter gap on mobile */
+    .grid {
+      gap: 1rem;
+    }
+
+    /* Responsive typography */
+    h1 {
+      @apply text-xl;
+    }
+    h2 {
+      @apply text-lg;
+    }
+    h3 {
+      @apply text-base;
+    }
+
+    /* Ensure modal/dialog sheets are full height on mobile */
+    [role="dialog"] {
+      @apply max-h-[90vh];
+    }
+
+    /* Prevent long words from breaking layout */
+    p, span, div {
+      overflow-wrap: break-word;
+    }
   }
 }

@@ -284,7 +284,7 @@ export function InvoiceListClient({ initialInvoices }: { initialInvoices: any[] 
       {/* Filter Tabs & Search Bar */}
       <div className="flex flex-col sm:flex-row justify-between gap-3">
         <div className="flex flex-col sm:flex-row flex-1 items-stretch sm:items-center gap-3">
-          <div className="relative flex-1 max-w-sm">
+          <div className="relative flex-1 w-full max-w-xs sm:max-w-sm">
             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
             <Input
               placeholder="Search by invoice # or client..."
@@ -324,7 +324,7 @@ export function InvoiceListClient({ initialInvoices }: { initialInvoices: any[] 
       <Card className="border border-border/80 shadow-xs overflow-hidden rounded-xl">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
-            <Table className="min-w-[750px]">
+            <Table className="min-w-full">
               <TableHeader className="bg-muted/40 border-b border-border/80">
                 <TableRow className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
                   <TableHead className="py-2.5 px-4">Invoice #</TableHead>
@@ -382,7 +382,7 @@ export function InvoiceListClient({ initialInvoices }: { initialInvoices: any[] 
                         </span>
                       </TableCell>
                       <TableCell className="py-3 px-4 text-right">
-                        <div className="inline-flex items-center gap-1">
+                        <div className="flex flex-col sm:flex-row gap-1.5 items-end sm:items-center">
                           {/* Quick Pay Action button (Wave inspiration) */}
                           {invoice.status !== "PAID" && (
                             <Button

@@ -2,8 +2,10 @@
 
 import Image from "next/image"
 import Link from "next/link"
+import { useState } from "react"
 import { signOut, useSession } from "next-auth/react"
 import { Sidebar } from "@/components/layout/sidebar"
+import { MobileSidebarContent } from "@/components/layout/mobile-sidebar-drawer"
 import {
   Menu,
   Bell,
@@ -16,6 +18,7 @@ import {
   Receipt,
   ShieldCheck,
   Sparkles,
+  ChevronLeft,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -39,6 +42,7 @@ interface DashboardLayoutProps {
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   const { data: session } = useSession()
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   return (
     <div className="flex h-screen w-full flex-col bg-[#faf9f8] dark:bg-[#121212] font-sans antialiased text-foreground overflow-hidden">
@@ -48,7 +52,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           {/* Microsoft Fluent Top Navigation Header */}
           <header className="shrink-0 flex h-14 items-center gap-3 border-b border-border/80 bg-background/95 backdrop-blur-md px-4 lg:h-[60px] lg:px-6 z-10 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
             {/* Mobile Sidebar Trigger */}
-            <Sheet>
+            <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
               <SheetTrigger
                 render={
                   <Button
@@ -61,40 +65,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 <Menu className="h-5 w-5" />
                 <span className="sr-only">Toggle navigation menu</span>
               </SheetTrigger>
-              <SheetContent side="left" className="flex flex-col w-72 p-4">
-                <div className="flex items-center gap-2 pb-4 border-b">
-                  <Image src="/logo-v3.jpg" alt="Times Works Logo" width={32} height={32} className="rounded-md" />
-                  <div>
-                    <span className="font-semibold text-sm">Times Works</span>
-                    <p className="text-[11px] text-muted-foreground">Professional Services</p>
-                  </div>
-                </div>
-                <nav className="flex-1 overflow-y-auto py-3 space-y-4">
-                  {SIDEBAR_SECTIONS.map((sec, idx) => (
-                    <div key={idx} className="space-y-1">
-                      <p className="text-[11px] font-semibold uppercase text-muted-foreground/70 px-2">
-                        {sec.group}
-                      </p>
-                      {sec.items.map((item, i) => (
-                        <Link
-                          key={i}
-                          href={item.href}
-                          className="flex items-center justify-between rounded-md px-3 py-2 text-xs font-medium text-foreground hover:bg-muted"
-                        >
-                          <div className="flex items-center gap-2.5">
-                            <item.icon className="h-4 w-4 text-muted-foreground" />
-                            <span>{item.title}</span>
-                          </div>
-                          {item.badge && (
-                            <span className="text-[10px] bg-primary/10 text-primary px-1.5 py-0.2 rounded font-semibold">
-                              {item.badge}
-                            </span>
-                          )}
-                        </Link>
-                      ))}
-                    </div>
-                  ))}
-                </nav>
+              <SheetContent side="left" className="flex flex-col h-full w-80 p-4 border-l border-border/60 bg-background/95 backdrop-blur-md shadow-lg">
+                <MobileSidebarContent />
               </SheetContent>
             </Sheet>
 
@@ -152,17 +124,6 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 </DropdownMenuContent>
               </DropdownMenu>
 
-              {/* Admin Portal Quick Link */}
-              {session?.user?.email?.toLowerCase() === "abutahir2626@gmail.com" && (
-                <Link
-                  href="/admin"
-                  className="hidden md:inline-flex items-center gap-1.5 h-8.5 px-2.5 rounded-md text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
-                >
-                  <ShieldCheck className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400" />
-                  <span className="hidden xl:inline">Admin Portal</span>
-                </Link>
-              )}
-
               <ThemeToggle />
 
               {/* Notifications */}
@@ -219,11 +180,6 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                     <DropdownMenuItem className="cursor-pointer" render={<Link href="/dashboard/expenses" />}>
                       Company Ledger & Accounts
                     </DropdownMenuItem>
-                    {session?.user?.email?.toLowerCase() === "abutahir2626@gmail.com" && (
-                      <DropdownMenuItem className="cursor-pointer" render={<Link href="/admin" />}>
-                        Admin Portal
-                      </DropdownMenuItem>
-                    )}
                     <DropdownMenuItem className="cursor-pointer" render={<Link href="/dashboard/settings" />}>
                       Workspace Settings
                     </DropdownMenuItem>

@@ -43,15 +43,12 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
-  const isSuperAdmin = session?.user?.email?.toLowerCase() === "abutahir2626@gmail.com"
-
   const navLinks = [
     { href: "/", label: "Home" },
     { href: "/features", label: "Features" },
     { href: "/templates", label: "Templates" },
     { href: "/faq", label: "FAQ" },
     { href: "/contact", label: "Contact" },
-    ...(isSuperAdmin ? [{ href: "/admin", label: "Admin" }] : []),
   ]
 
   return (

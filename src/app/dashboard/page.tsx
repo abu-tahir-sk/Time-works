@@ -341,30 +341,6 @@ export default async function DashboardPage() {
           </CardContent>
         </Card>
       </div>
-
-      {/* Super Admin Center Quick Banner */}
-      <Card className="border-2 border-[#c82020]/20 bg-linear-to-r from-rose-50/50 via-background to-purple-50/50 dark:from-rose-950/20 dark:to-purple-950/20 p-4 rounded-lg shadow-xs">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-lg bg-[#c82020] text-white flex items-center justify-center shrink-0 shadow-xs">
-              <ShieldCheck className="h-6 w-6" />
-            </div>
-            <div>
-              <p className="text-sm font-bold text-foreground">
-                Times Works Admin Governance Portal
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Super Admin governance: view premium users, upgrade accounts to Pro/Enterprise, and monitor platform health.
-              </p>
-            </div>
-          </div>
-          <Link href="/dashboard/admin" className="shrink-0">
-            <Button size="sm" className="h-8.5 text-xs bg-[#c82020] hover:bg-[#a81a1a] text-white font-semibold">
-              Open Admin Center
-            </Button>
-          </Link>
-        </div>
-      </Card>
     </div>
   )
 }

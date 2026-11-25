@@ -125,7 +125,7 @@ export default async function QuotationsPage() {
         <Card className="border border-border/80 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
           <CardContent className="p-0">
             <div className="overflow-x-auto">
-              <table className="w-full text-xs text-left min-w-[650px]">
+              <table className="w-full text-xs text-left min-w-full">
               <thead className="bg-muted/40 border-b border-border/80 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
                 <tr>
                   <th className="py-2.5 px-4">Quotation #</th>
@@ -161,7 +161,7 @@ export default async function QuotationsPage() {
                       </span>
                     </td>
                     <td className="py-3 px-4 text-right">
-                      <div className="flex items-center justify-end gap-1.5">
+                      <div className="flex flex-col sm:flex-row gap-1.5 items-end sm:items-center">
                         <ConvertQuotationButton
                           quotationId={quote.id}
                           quotationNumber={quote.quotationNumber}
