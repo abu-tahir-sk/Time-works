@@ -54,7 +54,7 @@ const MacWindow = ({ children, className = "" }: { children: React.ReactNode, cl
 
 export default function FeaturesPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAFAFA] dark:bg-[#000000] font-sans selection:bg-blue-500/30 overflow-x-hidden text-slate-900 dark:text-slate-50">
+    <div className="min-h-screen flex flex-col bg-[#FAFAFA] dark:bg-[#000000] font-sans selection:bg-[#c82020]/20 overflow-x-hidden text-slate-900 dark:text-slate-50">
       <Navbar />
       <main className="flex-1">
         
@@ -62,7 +62,7 @@ export default function FeaturesPage() {
         <section className="relative w-full pt-40 pb-32 overflow-hidden flex flex-col items-center justify-center min-h-[95vh]">
           {/* Subtle glowing mesh background */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[800px] opacity-30 dark:opacity-40 pointer-events-none z-0">
-            <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/20 via-indigo-500/20 to-purple-500/20 blur-[120px] rounded-full" />
+            <div className="absolute inset-0 bg-gradient-to-tr from-[#c82020]/15 via-rose-500/10 to-amber-500/10 blur-[120px] rounded-full" />
           </div>
           
           <div className="container mx-auto px-4 max-w-7xl relative z-10 grid lg:grid-cols-2 gap-16 items-center">
@@ -72,13 +72,13 @@ export default function FeaturesPage() {
               </Badge>
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.05] text-balance">
                 Run your business with <br className="hidden lg:block" />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-500">absolute clarity.</span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#c82020] via-rose-600 to-[#991b1b]">absolute clarity.</span>
               </h1>
               <p className="text-lg md:text-xl text-slate-500 dark:text-slate-400 max-w-lg leading-relaxed text-balance">
                 Invoices, quotations, agreements, and client management—meticulously crafted into one unified, lightning-fast workspace.
               </p>
               <div className="flex flex-wrap gap-4 pt-4">
-                <Button size="lg" className="bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-500 text-white hover:opacity-90 rounded-full px-8 h-12 text-[15px] font-semibold shadow-xl shadow-blue-500/20 border-0 transition-transform hover:scale-105">
+                <Button size="lg" className="bg-[#c82020] hover:bg-[#a81a1a] text-white rounded-full px-8 h-12 text-[15px] font-semibold shadow-xl shadow-[#c82020]/25 border-0 transition-transform hover:scale-105">
                   Start Building Free
                 </Button>
                 <Button size="lg" variant="ghost" className="rounded-full px-8 h-12 text-[15px] font-semibold hover:bg-slate-100 dark:hover:bg-white/10 transition-colors">
@@ -120,10 +120,10 @@ export default function FeaturesPage() {
               <motion.div variants={fadeUp} className="md:col-span-2 md:row-span-2 group relative p-8 rounded-3xl bg-slate-50 dark:bg-white/[0.02] border border-slate-200/50 dark:border-white/5 overflow-hidden hover:bg-slate-100/50 dark:hover:bg-white/[0.04] transition-colors">
                 <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity"><Calculator className="w-32 h-32" /></div>
                 <div className="h-full flex flex-col">
-                  <div className="w-12 h-12 bg-blue-500/10 text-blue-500 rounded-xl flex items-center justify-center mb-6"><Calculator className="w-6 h-6" /></div>
+                  <div className="w-12 h-12 bg-[#c82020]/10 text-[#c82020] rounded-xl flex items-center justify-center mb-6"><Calculator className="w-6 h-6" /></div>
                   <h3 className="text-2xl font-bold mb-3 tracking-tight">Smart Invoicing</h3>
                   <p className="text-slate-500 dark:text-slate-400 text-sm max-w-sm flex-1 leading-relaxed">Create beautiful, professional invoices in seconds. Track statuses, apply taxes automatically, and let clients pay directly via integrated payment links.</p>
-                  <div className="pt-4 flex items-center text-blue-500 text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0">
+                  <div className="pt-4 flex items-center text-[#c82020] text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0">
                     Explore Invoices <ArrowRight className="w-4 h-4 ml-1" />
                   </div>
                 </div>
@@ -131,13 +131,13 @@ export default function FeaturesPage() {
 
               {/* Normal Bento Items */}
               <motion.div variants={fadeUp} className="md:col-span-2 group relative p-8 rounded-3xl bg-slate-50 dark:bg-white/[0.02] border border-slate-200/50 dark:border-white/5 overflow-hidden hover:bg-slate-100/50 dark:hover:bg-white/[0.04] transition-colors">
-                <div className="w-10 h-10 bg-indigo-500/10 text-indigo-500 rounded-xl flex items-center justify-center mb-4"><FileSignature className="w-5 h-5" /></div>
+                <div className="w-10 h-10 bg-rose-500/10 text-[#c82020] rounded-xl flex items-center justify-center mb-4"><FileSignature className="w-5 h-5" /></div>
                 <h3 className="text-xl font-bold mb-2 tracking-tight">Digital Agreements</h3>
                 <p className="text-slate-500 dark:text-slate-400 text-sm">Legally binding digital signatures built right in. Get contracts signed instantly without external software.</p>
               </motion.div>
 
               <motion.div variants={fadeUp} className="md:col-span-1 group relative p-8 rounded-3xl bg-slate-50 dark:bg-white/[0.02] border border-slate-200/50 dark:border-white/5 overflow-hidden hover:bg-slate-100/50 dark:hover:bg-white/[0.04] transition-colors flex flex-col justify-between">
-                <div className="w-10 h-10 bg-purple-500/10 text-purple-500 rounded-xl flex items-center justify-center"><Users className="w-5 h-5" /></div>
+                <div className="w-10 h-10 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-xl flex items-center justify-center"><Users className="w-5 h-5" /></div>
                 <div>
                   <h3 className="text-lg font-bold mb-1 tracking-tight">Client CRM</h3>
                   <p className="text-slate-500 dark:text-slate-400 text-xs">A unified directory for all your clients.</p>
@@ -171,8 +171,8 @@ export default function FeaturesPage() {
                     "Integrated 'Pay Now' buttons"
                   ].map((feature, i) => (
                     <div key={i} className="flex items-center gap-3 text-[15px] text-slate-600 dark:text-slate-300">
-                      <div className="w-5 h-5 rounded-full bg-blue-500/10 flex items-center justify-center shrink-0">
-                        <Check className="w-3 h-3 text-blue-500" />
+                      <div className="w-5 h-5 rounded-full bg-[#c82020]/10 flex items-center justify-center shrink-0">
+                        <Check className="w-3 h-3 text-[#c82020]" />
                       </div>
                       {feature}
                     </div>
@@ -202,7 +202,7 @@ export default function FeaturesPage() {
                 <motion.div 
                   animate={{ x: ["-100%", "200%"] }} 
                   transition={{ repeat: Infinity, duration: 3, ease: "linear" }}
-                  className="w-1/2 h-full bg-gradient-to-r from-transparent via-blue-500 to-transparent" 
+                  className="w-1/2 h-full bg-gradient-to-r from-transparent via-[#c82020] to-transparent" 
                 />
               </div>
 
@@ -215,8 +215,8 @@ export default function FeaturesPage() {
                 ].map((step, i) => (
                   <motion.div key={i} variants={fadeUp} className="flex flex-col items-center">
                     <div className="w-16 h-16 bg-white dark:bg-[#111] rounded-2xl shadow-lg shadow-slate-200/50 dark:shadow-black/50 border border-slate-200/50 dark:border-white/10 flex items-center justify-center mb-4 text-slate-700 dark:text-slate-300 relative group">
-                      <div className="absolute inset-0 bg-blue-500/0 group-hover:bg-blue-500/5 rounded-2xl transition-colors" />
-                      <step.icon className="w-6 h-6" />
+                      <div className="absolute inset-0 bg-[#c82020]/0 group-hover:bg-[#c82020]/10 rounded-2xl transition-colors" />
+                      <step.icon className="w-6 h-6 group-hover:text-[#c82020] transition-colors" />
                     </div>
                     <div className="font-bold tracking-tight">{step.title}</div>
                     <div className="text-xs text-slate-500 mt-1">{step.desc}</div>
@@ -265,17 +265,16 @@ export default function FeaturesPage() {
         </section>
 
         {/* 7. FINAL CTA */}
-        <section className="py-40 relative overflow-hidden text-center bg-[#FAFAFA] dark:bg-[#000]">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-200/40 dark:from-white/5 via-transparent to-transparent -z-10" />
-          <div className="container mx-auto px-4 max-w-3xl space-y-10 relative z-10">
-            <h2 className="text-5xl md:text-6xl font-extrabold tracking-tight text-balance leading-tight">
+        <section className="py-24 md:py-32 relative overflow-hidden text-center bg-gradient-to-r from-[#c82020] via-[#a81a1a] to-[#880e0e] text-white">
+          <div className="container mx-auto px-4 max-w-3xl space-y-8 relative z-10">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-balance leading-tight text-white">
               Ready to modernize your workflow?
             </h2>
-            <p className="text-xl text-slate-500 dark:text-slate-400 font-medium">
-              Join thousands of businesses managing their documents with DocuFlow today.
+            <p className="text-lg md:text-xl text-white/90 font-medium max-w-xl mx-auto leading-relaxed">
+              Join thousands of businesses managing their documents with Times Works today.
             </p>
-            <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Button size="lg" className="w-full sm:w-auto bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-500 hover:opacity-90 border-0 text-white rounded-full px-10 h-14 text-lg font-semibold shadow-xl shadow-blue-500/20 transition-transform hover:scale-105">
+            <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Button size="lg" className="w-full sm:w-auto bg-white hover:bg-white/95 text-[#c82020] rounded-full px-10 h-14 text-lg font-bold shadow-2xl transition-transform hover:scale-105">
                 Start Building Free
               </Button>
             </div>

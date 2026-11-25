@@ -20,8 +20,8 @@ export function HeroDashboardMockup() {
           <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
           <div className="w-3 h-3 rounded-full bg-green-500/80" />
           <div className="mx-auto flex items-center justify-center -ml-16 w-full">
-            <span className="text-xs text-muted-foreground font-medium flex items-center gap-1">
-              <FileText className="h-3 w-3" /> DocuFlow
+            <span className="text-xs text-muted-foreground font-medium flex items-center gap-1.5">
+              <FileText className="h-3 w-3 text-[#c82020]" /> Times Works
             </span>
           </div>
         </div>
@@ -50,7 +50,7 @@ export function HeroDashboardMockup() {
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              <Card className="p-4 bg-primary/5 border-primary/20">
+              <Card className="p-4 bg-[#c82020]/5 border-[#c82020]/20">
                 <p className="text-sm text-muted-foreground mb-1">Total Revenue</p>
                 <h4 className="text-2xl font-bold">₹2.4L</h4>
                 <p className="text-xs text-green-500 flex items-center mt-1">
@@ -71,11 +71,11 @@ export function HeroDashboardMockup() {
 
             {/* Chart Area */}
             <div className="flex-1 border border-border/50 rounded-xl bg-card/50 flex items-end relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#c82020]/10 to-transparent" />
               {/* Fake Chart Lines */}
               <svg className="w-full h-32 absolute bottom-0" viewBox="0 0 100 100" preserveAspectRatio="none">
-                <path d="M0,100 L0,80 Q20,60 40,80 T80,40 T100,20 L100,100 Z" fill="currentColor" className="text-primary/10" />
-                <path d="M0,80 Q20,60 40,80 T80,40 T100,20" fill="none" stroke="currentColor" className="text-primary" strokeWidth="2" />
+                <path d="M0,100 L0,80 Q20,60 40,80 T80,40 T100,20 L100,100 Z" fill="currentColor" className="text-[#c82020]/10" />
+                <path d="M0,80 Q20,60 40,80 T80,40 T100,20" fill="none" stroke="#c82020" strokeWidth="2.5" />
               </svg>
             </div>
           </div>

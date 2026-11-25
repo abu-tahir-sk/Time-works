@@ -27,8 +27,14 @@ export function Sidebar() {
         {/* Times Works Brand Header */}
         <div className="flex h-14 items-center justify-between border-b border-border/60 px-5 shrink-0">
           <Link href="/dashboard" className="flex items-center gap-3 font-semibold group">
-            <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-tr from-[#c82020] to-[#e11d48] text-white shadow-sm ring-1 ring-white/20">
-              <Sparkles className="w-4 h-4 text-white" />
+            <div className="relative w-8 h-8 rounded-lg overflow-hidden border border-border/60 shadow-2xs shrink-0 transition-transform group-hover:scale-105">
+              <Image
+                src="/logo-v3.jpg"
+                alt="Times Works Logo"
+                fill
+                className="object-cover"
+                priority
+              />
             </div>
             <div className="flex flex-col">
               <span className="text-sm font-bold tracking-tight text-foreground">

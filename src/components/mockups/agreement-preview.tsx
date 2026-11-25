@@ -19,7 +19,7 @@ export function AgreementPreviewMockup() {
 
         <div className="space-y-4 text-xs leading-relaxed text-foreground/80 mb-8">
           <p>
-            This Service Agreement ("Agreement") is made between <strong>DocuFlow Studio</strong> ("Provider") and <strong>ABC Technologies</strong> ("Client").
+            This Service Agreement ("Agreement") is made between <strong>Times Works Studio</strong> ("Provider") and <strong>ABC Technologies</strong> ("Client").
           </p>
           <div className="space-y-2">
             <div className="h-2 w-full bg-muted rounded" />

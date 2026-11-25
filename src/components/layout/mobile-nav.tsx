@@ -36,7 +36,7 @@ export function MobileNav() {
           className="flex items-center space-x-2"
           onOpenChange={setOpen}
         >
-          <Image src="/logo-v3.jpg" alt="DocuFlow Logo" width={36} height={36} className="rounded-md" />
+          <Image src="/logo-v3.jpg" alt="Times Works Logo" width={36} height={36} className="rounded-md" />
           <span className="font-bold">{siteConfig.name}</span>
         </MobileLink>
         <div className="flex flex-col space-y-3 mt-6">

@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <!-- Background Gradient: Rich Executive Crimson to Deep Royal Burgundy -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#df2626" />
+      <stop offset="45%" stop-color="#c82020" />
+      <stop offset="100%" stop-color="#880e0e" />
+    </linearGradient>
+
+    <!-- Gloss Highlight Gradient -->
+    <linearGradient id="glossGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.28" />
+      <stop offset="50%" stop-color="#ffffff" stop-opacity="0.05" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+    </linearGradient>
+
+    <!-- Platinum Monogram Gradients -->
+    <linearGradient id="platLight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="100%" stop-color="#e2e8f0" />
+    </linearGradient>
+
+    <linearGradient id="platAccent" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#cbd5e1" />
+      <stop offset="100%" stop-color="#f8fafc" />
+    </linearGradient>
+
+    <!-- Gold Foil Accent for Premium Precision -->
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fde047" />
+      <stop offset="50%" stop-color="#eab308" />
+      <stop offset="100%" stop-color="#ca8a04" />
+    </linearGradient>
+
+    <!-- Drop Shadow Filter -->
+    <filter id="monogramShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#4a0404" flood-opacity="0.6" />
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.3" />
+    </filter>
+
+    <filter id="subtleGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Background Rounded Canvas (Squircle) -->
+  <rect x="16" y="16" width="480" height="480" rx="112" fill="url(#bgGrad)" />
+  
+  <!-- Subtle Internal Border -->
+  <rect x="17" y="17" width="478" height="478" rx="111" fill="none" stroke="url(#glossGrad)" stroke-width="4" />
+
+  <!-- Soft Ambient Glow behind monogram -->
+  <circle cx="256" cy="246" r="140" fill="#ffffff" opacity="0.08" filter="url(#subtleGlow)" />
+
+  <!-- Monogram Group (TW Architecture) -->
+  <g filter="url(#monogramShadow)">
+    
+    <!-- TOP BAR OF 'T' (Executive Horizon Line with angled facets) -->
+    <path d="M 124 148 C 124 139.16 131.16 132 140 132 L 372 132 C 380.84 132 388 139.16 388 148 L 388 180 C 388 188.84 380.84 196 372 196 L 316 196 L 302 214 L 210 214 L 196 196 L 140 196 C 131.16 196 124 188.84 124 180 Z" 
+          fill="url(#platLight)" />
+
+    <!-- Left Wing of 'W' -->
+    <path d="M 148 214 L 198 214 L 236 348 C 238 356 231 364 222 364 L 186 364 C 180 364 175 360 173 354 L 134 228 C 132 220 138 214 148 214 Z" 
+          fill="url(#platAccent)" opacity="0.95" />
+
+    <!-- Right Wing of 'W' -->
+    <path d="M 364 214 L 314 214 L 276 348 C 274 356 281 364 290 364 L 326 364 C 332 364 337 360 339 354 L 378 228 C 380 220 374 214 364 214 Z" 
+          fill="url(#platAccent)" opacity="0.95" />
+
+    <!-- Center Pillar & Peak (Convergence of 'T' stem and 'W' vertex) -->
+    <path d="M 234 196 L 278 196 L 278 308 L 256 340 L 234 308 Z" 
+          fill="url(#platLight)" />
+
+    <!-- Central Diamond Chevron (Precision Arrow pointing upward) -->
+    <polygon points="256,220 284,260 256,296 228,260" fill="url(#goldGrad)" />
+    
+    <!-- Center Precision Diamond Core -->
+    <polygon points="256,242 268,260 256,278 244,260" fill="#ffffff" opacity="0.9" />
+  </g>
+
+  <!-- Modern Corner Accent (Top-Right Precision Dot) -->
+  <circle cx="396" cy="116" r="10" fill="url(#goldGrad)" filter="url(#monogramShadow)" />
+</svg>
