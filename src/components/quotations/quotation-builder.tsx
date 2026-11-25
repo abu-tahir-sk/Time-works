@@ -9,6 +9,7 @@ import { defaultDesignSettings } from "@/lib/design-system/schema"
 import { QuotationEditor } from "./quotation-editor"
 import { StaticInvoicePreview } from "@/components/invoices/invoice-preview"
 import { InvoicePdf } from "@/components/invoices/invoice-pdf"
+import { SendEmailDialog } from "@/components/invoices/send-email-dialog"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import { createOrUpdateQuotation } from "@/actions/quotations"
@@ -22,6 +23,7 @@ import {
   Download,
   Check,
   Loader2,
+  Mail,
 } from "lucide-react"
 
 const PDFDownloadLink = dynamic(
@@ -199,6 +201,25 @@ export function QuotationBuilder({ clients, company, initialData }: QuotationBui
               <span>Paper Sheet</span>
             </button>
           </div>
+
+          {pdfDoc && (
+            <SendEmailDialog
+              data={formData}
+              company={company}
+              clients={localClients}
+              pdfDocument={pdfDoc}
+              trigger={
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-8.5 px-3 text-xs font-semibold border-border/80 shadow-2xs hover:bg-muted cursor-pointer"
+                >
+                  <Mail className="h-3.5 w-3.5 mr-1.5 text-muted-foreground" />
+                  Send by Email
+                </Button>
+              }
+            />
+          )}
 
           {pdfDoc && (
             <PDFDownloadLink

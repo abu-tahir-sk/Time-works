@@ -422,6 +422,11 @@ export function InvoiceListClient({ initialInvoices }: { initialInvoices: any[] 
                                   <Eye className="mr-2 h-3.5 w-3.5 text-[#c82020]" /> View & Print
                                 </DropdownMenuItem>
                               </Link>
+                              <Link href={`/dashboard/invoices/${invoice.id}`}>
+                                <DropdownMenuItem className="cursor-pointer">
+                                  <Send className="mr-2 h-3.5 w-3.5 text-emerald-600" /> Send by Email
+                                </DropdownMenuItem>
+                              </Link>
                               <Link href={`/dashboard/invoices/${invoice.id}/edit`}>
                                 <DropdownMenuItem className="cursor-pointer">
                                   <Edit className="mr-2 h-3.5 w-3.5 text-blue-600" /> Edit Invoice

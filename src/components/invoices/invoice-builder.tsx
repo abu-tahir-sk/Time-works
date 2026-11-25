@@ -9,6 +9,7 @@ import { defaultDesignSettings } from "@/lib/design-system/schema"
 import { InvoiceEditor } from "./invoice-editor"
 import { LivePaperCanvas } from "./live-paper-canvas"
 import { InvoicePdf } from "./invoice-pdf"
+import { SendEmailDialog } from "./send-email-dialog"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import { createOrUpdateInvoice } from "@/actions/invoices"
@@ -27,6 +28,7 @@ import {
   Columns,
   Share2,
   Loader2,
+  Mail,
 } from "lucide-react"
 
 const PDFDownloadLink = dynamic(
@@ -200,6 +202,25 @@ export function InvoiceBuilder({ clients, company, initialData }: InvoiceBuilder
               <span>Split View</span>
             </button>
           </div>
+
+          {pdfDoc && (
+            <SendEmailDialog
+              data={watchedData}
+              company={company}
+              clients={localClients}
+              pdfDocument={pdfDoc}
+              trigger={
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-8.5 px-3 text-xs font-semibold border-border/80 shadow-2xs hover:bg-muted cursor-pointer"
+                >
+                  <Mail className="h-3.5 w-3.5 mr-1.5 text-muted-foreground" />
+                  Send by Email
+                </Button>
+              }
+            />
+          )}
 
           {pdfDoc && (
             <PDFDownloadLink

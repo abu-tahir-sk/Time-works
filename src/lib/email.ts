@@ -100,7 +100,7 @@ export async function sendPasswordResetEmail(email: string, token: string) {
 export async function sendDocumentEmail(to: string, subject: string, message: string, pdfBuffer: Buffer, fileName: string) {
   try {
     const mailOptions = {
-      from: `"DocuFlow" <${process.env.EMAIL_USER}>`,
+      from: `"Times Works" <${process.env.EMAIL_USER}>`,
       to,
       subject,
       text: message,

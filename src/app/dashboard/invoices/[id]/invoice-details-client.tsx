@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { format } from "date-fns"
 import { InvoicePdf } from "@/components/invoices/invoice-pdf"
+import { SendEmailDialog } from "@/components/invoices/send-email-dialog"
 
 const PDFDownloadLink = dynamic(
   () => import("@react-pdf/renderer").then((mod) => mod.PDFDownloadLink),
@@ -31,6 +32,7 @@ import {
   CreditCard,
   Building2,
   Check,
+  Mail,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -207,6 +209,25 @@ export function InvoiceDetailsClient({ initialInvoice, company, clients }: Invoi
             <Edit className="h-3.5 w-3.5 mr-1.5 text-muted-foreground" />
             Edit
           </Button>
+
+          {pdfDoc && (
+            <SendEmailDialog
+              data={invoice}
+              company={company}
+              clients={clients}
+              pdfDocument={pdfDoc}
+              trigger={
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-9 px-4 text-xs font-semibold border-border/80 shadow-2xs hover:bg-muted cursor-pointer"
+                >
+                  <Mail className="h-3.5 w-3.5 mr-1.5 text-muted-foreground" />
+                  Send by Email
+                </Button>
+              }
+            />
+          )}
 
           {pdfDoc && (
             <PDFDownloadLink
