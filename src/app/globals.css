@@ -189,145 +189,45 @@
     }
 
     html, body {
-      background: white !important;
-      color: #000 !important;
+      background: #ffffff !important;
+      color: #000000 !important;
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
     }
 
-    /* Hide all UI chrome during print */
+    /* Hide standard UI shells during browser print */
     aside,
     header,
-    [role="button"],
-    button,
-    .print\\:hidden,
-    [class*="print:hidden"],
-    .fixed,
-    .sticky,
-    .absolute,
-    .z-50,
-    .z-10,
-    .bg-\\[#c82020\\],
-    .bg-background,
-    .dark\\:bg-\\[#121212\\],
-    .dark\\:bg-\\[0c0d12\\] {
+    nav {
       display: none !important;
-      visibility: hidden !important;
     }
 
-    /* Keep main content visible */
-    main,
-    [role="main"],
-    .space-y-6,
-    .space-y-4,
-    .print\\:p-0,
-    [class*="print:p-0"] {
+    /* Expand main area */
+    main {
       display: block !important;
-      visibility: visible !important;
-      background: white !important;
+      background: #ffffff !important;
       box-shadow: none !important;
       border: none !important;
       margin: 0 !important;
       padding: 0 !important;
       width: 100% !important;
       max-width: 100% !important;
-      float: none !important;
-      position: static !important;
     }
 
-    /* Cards for print */
-    .card,
-    [class*="border-border"],
-    .rounded-lg,
-    .rounded-xl {
-      border: 0.5px solid #ccc !important;
-      box-shadow: none !important;
-      background: white !important;
-      border-radius: 0 !important;
-      page-break-inside: avoid;
-    }
-
-    /* Typography for print */
-    h1, h2, h3, h4, h5, h6 {
-      color: #000 !important;
-      page-break-after: avoid;
-    }
-
-    p, span, td, th, div {
-      color: #000 !important;
-    }
-
-    .text-muted-foreground,
-    .text-gray-500,
-    .text-rose-600,
-    .text-emerald-600,
-    .text-amber-600,
-    .text-purple-600,
-    .text-indigo-600,
-    .text-blue-600 {
-      color: #444 !important;
-    }
-
-    /* Remove background colors on print (except intentional accent) */
-    .bg-emerald-50,
-    .bg-rose-50,
-    .bg-amber-50,
-    .bg-purple-50,
-    .bg-indigo-50,
-    .bg-blue-50,
-    .bg-muted,
-    .bg-background/80,
-    .bg-background/95,
-    .dark\\:bg-emerald-950/50,
-    .dark\\:bg-rose-950/50 {
-      background: white !important;
-    }
-
-    /* Links: show URL in print */
-    a[href]::after {
-      content: " (" attr(href) ")";
-      font-size: 0.75rem;
-      color: #666;
-    }
-
-    /* Avoid breaking inside rows/cards */
-    tr, .table-row, [role="row"] {
-      page-break-inside: avoid;
-    }
-
-    /* Ensure tables don't overflow */
+    /* Print tables */
     table {
       width: 100% !important;
       border-collapse: collapse !important;
     }
 
     th, td {
-      border: 0.5px solid #999 !important;
+      border: 0.5px solid #cccccc !important;
       padding: 4px 6px !important;
       font-size: 0.8rem !important;
     }
 
-    /* Hide avatars, icons that are decorative */
-    .avatar,
-    [class*="h-4 w-4"],
-    [class*="h-5 w-5"],
-    [class*="h-3 w-3"],
-    [class*="h-7 w-7"],
-    [class*="h-8 w-8"],
-    [class*="h-9 w-9"],
-    [class*="h-10 w-10"],
-    [class*="h-12 w-12"],
-    svg.lucide-react,
-    svg {
-      display: none !important;
-    }
-
-    /* Keep essential text icons */
-    .text-emerald-600,
-    .text-rose-600,
-    .text-amber-600,
-    .text-purple-600 {
-      display: inline !important;
+    tr {
+      page-break-inside: avoid;
     }
   }
 }
