@@ -1,6 +1,7 @@
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth/config"
 import { prisma } from "@/lib/prisma"
+import { ensureWorkspaceDefaults } from "@/lib/workspace-defaults"
 
 export const SUPER_ADMIN_EMAIL = "abutahir2626@gmail.com"
 
@@ -77,5 +78,8 @@ export async function getUserCompany() {
     })
   }
   
+  // Ensure default enterprise data (clients, quotes, agreements, ledger) are populated
+  await ensureWorkspaceDefaults(user.id, company.id)
+
   return company
 }

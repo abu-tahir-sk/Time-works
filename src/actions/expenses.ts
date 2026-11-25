@@ -65,7 +65,7 @@ export async function createExpense(data: CreateExpenseInput) {
         title: data.title.trim(),
         category: data.category || "OPERATIONS",
         amount: Number(data.amount),
-        currency: data.currency || "INR",
+        currency: data.currency || "USD",
         expenseDate: data.expenseDate ? new Date(data.expenseDate) : new Date(),
         paymentMethod: data.paymentMethod || "BANK_TRANSFER",
         notes: data.notes?.trim() || null,
@@ -168,7 +168,7 @@ export async function getCompanyFinancialOverview() {
 
     return {
       success: true,
-      currency: invoices[0]?.currency || "INR",
+      currency: invoices[0]?.currency || "USD",
       summary: {
         totalInvoiced,
         totalCollected,
@@ -188,7 +188,7 @@ export async function getCompanyFinancialOverview() {
     return {
       success: false,
       error: error.message || "Failed to calculate financials",
-      currency: "INR",
+      currency: "USD",
       summary: {
         totalInvoiced: 0,
         totalCollected: 0,
