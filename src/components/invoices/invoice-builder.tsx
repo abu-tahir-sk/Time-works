@@ -138,18 +138,26 @@ export function InvoiceBuilder({ clients, company, initialData }: InvoiceBuilder
     <div className="w-full max-w-full overflow-x-hidden font-sans select-none space-y-6 pb-20">
       {/* 1. Header Bar with CherryWorks / Wave & Invoice Generator Modes */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-border/70 pb-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground font-sans">
-              {initialData ? `Edit Invoice (${form.watch("invoiceNumber") || "Professional"})` : "New Invoice (Professional)"}
-            </h1>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#c82020]/10 text-[#c82020] border border-[#c82020]/25">
-              Times Works PRO
-            </span>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/dashboard/invoices"
+            className="p-2 rounded-lg border border-border/80 bg-background text-muted-foreground hover:text-foreground hover:bg-muted transition-colors shadow-2xs"
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </Link>
+          <div>
+            <div className="flex items-center gap-2">
+              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground font-sans">
+                {initialData ? `Edit Invoice (${form.watch("invoiceNumber") || "Professional"})` : "New Invoice (Professional)"}
+              </h1>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#c82020]/10 text-[#c82020] border border-[#c82020]/25">
+                Times Works PRO
+              </span>
+            </div>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Live WYSIWYG paper calculations with strict single-page PDF guarantee.
+            </p>
           </div>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            Inspired by Wave & Invoice Generator: live WYSIWYG paper calculations with enterprise security.
-          </p>
         </div>
 
         {/* View Mode Switcher + Action Controls */}
