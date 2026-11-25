@@ -20,6 +20,9 @@ import {
   Sparkles,
   RefreshCw,
   Loader2,
+  ChevronDown,
+  ChevronRight,
+  Scale,
 } from "lucide-react"
 
 import { AgreementPdf } from "./agreement-pdf"
@@ -41,12 +44,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
 
 // Dynamic PDF Viewer & Download link for client-only rendering
 const PDFViewer = dynamic(
@@ -72,12 +69,13 @@ interface AgreementBuilderProps {
 }
 
 type ViewMode = "studio" | "canvas"
+type SectionKey = "details" | "parties" | "scope" | "terms"
 
 export function AgreementBuilder({ clients, company }: AgreementBuilderProps) {
   const router = useRouter()
   const [isSaving, setIsSaving] = useState(false)
-  const [previewOpen, setPreviewOpen] = useState(false)
   const [viewMode, setViewMode] = useState<ViewMode>("studio")
+  const [activeSection, setActiveSection] = useState<SectionKey>("details")
 
   const [data, setData] = useState<AgreementFormValues>(() => ({
     title: "Master Services Agreement (MSA)",
@@ -239,15 +237,28 @@ export function AgreementBuilder({ clients, company }: AgreementBuilderProps) {
             </button>
           </div>
 
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setPreviewOpen(true)}
-            className="h-8.5 px-3 text-xs font-semibold border-border/80 shadow-2xs hover:bg-muted"
-          >
-            <Download className="h-3.5 w-3.5 mr-1.5 text-muted-foreground" />
-            Export PDF
-          </Button>
+          <PDFDownloadLink document={pdfDoc} fileName={fileName}>
+            {({ loading }) => (
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={loading}
+                className="h-8.5 px-3 text-xs font-semibold border-border/80 shadow-2xs hover:bg-muted cursor-pointer"
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <Download className="h-3.5 w-3.5 mr-1.5 text-muted-foreground" />
+                    Download PDF
+                  </>
+                )}
+              </Button>
+            )}
+          </PDFDownloadLink>
 
           <Button
             variant="outline"
@@ -276,240 +287,478 @@ export function AgreementBuilder({ clients, company }: AgreementBuilderProps) {
       {viewMode === "studio" && (
         <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start w-full min-w-0">
           {/* LEFT COLUMN: Main Form Cards (8 cols) */}
-          <div className="xl:col-span-8 space-y-6 w-full min-w-0">
+          <div className="xl:col-span-8 space-y-4 w-full min-w-0">
+            {/* Step Navigation Menu - Accordion Switcher */}
+            <div className="bg-white dark:bg-[#181a20] rounded-2xl shadow-sm border border-border/60 p-2.5">
+              <div className="flex items-center gap-1.5 overflow-x-auto">
+                {[
+                  { id: "details" as SectionKey, label: "1. Details", icon: FileText, summary: data.title ? (data.title.length > 18 ? data.title.slice(0, 18) + '...' : data.title) : "Agreement" },
+                  { id: "parties" as SectionKey, label: "2. Parties", icon: Users, summary: data.clientName ? (data.clientName.length > 16 ? data.clientName.slice(0, 16) + '...' : data.clientName) : "Client" },
+                  { id: "scope" as SectionKey, label: "3. Scope & Value", icon: DollarSign, summary: `${data.currency} ${data.value}` },
+                  { id: "terms" as SectionKey, label: "4. Legal Terms", icon: Scale, summary: `${data.clauses?.split('\n').filter(Boolean).length || 0} clauses` },
+                ].map((sec) => {
+                  const Icon = sec.icon
+                  const isActive = activeSection === sec.id
+                  return (
+                    <button
+                      key={sec.id}
+                      type="button"
+                      onClick={() => setActiveSection(sec.id)}
+                      className={`flex-1 min-w-[120px] px-3 py-2 rounded-xl text-xs font-semibold flex items-center justify-between gap-2 transition-all cursor-pointer ${
+                        isActive
+                          ? "bg-[#c82020] text-white shadow-xs"
+                          : "bg-muted/40 text-muted-foreground hover:bg-muted hover:text-foreground"
+                      }`}
+                    >
+                      <div className="flex items-center gap-1.5 truncate">
+                        <Icon className="w-3.5 h-3.5 shrink-0" />
+                        <span className="truncate">{sec.label}</span>
+                      </div>
+                      <span className={`text-[10px] px-1.5 py-0.5 rounded truncate max-w-[80px] hidden sm:inline-block ${
+                        isActive ? "bg-white/20 text-white" : "bg-background text-muted-foreground"
+                      }`}>
+                        {sec.summary}
+                      </span>
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+
             {/* Card 1: Agreement Information */}
-            <div className="bg-white dark:bg-[#181a20] rounded-2xl shadow-sm border border-border/60 p-6 space-y-4">
-              <h2 className="text-base font-bold text-foreground">Agreement Details</h2>
+            <div className="bg-white dark:bg-[#181a20] rounded-2xl shadow-sm border border-border/60 overflow-hidden transition-all">
+              <button
+                type="button"
+                onClick={() => setActiveSection(activeSection === "details" ? "details" : "details")}
+                className="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left hover:bg-muted/20 transition-colors cursor-pointer"
+              >
+                <div className="flex items-center gap-2.5">
+                  <div className={`p-1.5 rounded-lg ${activeSection === "details" ? "bg-[#c82020]/10 text-[#c82020]" : "bg-muted text-muted-foreground"}`}>
+                    <FileText className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h2 className="text-sm sm:text-base font-bold text-foreground">Agreement Details</h2>
+                    {activeSection !== "details" && (
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        {data.title || "MSA"} • {data.agreementNumber}
+                      </p>
+                    )}
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[11px] font-semibold text-muted-foreground hidden sm:inline-block">
+                    {data.type.replace(/_/g, " ")}
+                  </span>
+                  {activeSection === "details" ? (
+                    <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                  ) : (
+                    <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                  )}
+                </div>
+              </button>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
-                <div className="sm:col-span-2 space-y-1">
-                  <Label className="text-xs text-muted-foreground font-medium">Agreement Title *</Label>
-                  <Input
-                    value={data.title}
-                    onChange={(e) => set("title", e.target.value)}
-                    placeholder="Master Services Agreement (MSA)"
-                    className="h-10 text-xs font-medium rounded-xl bg-muted/20"
-                  />
-                </div>
+              {activeSection === "details" && (
+                <div className="px-4 pb-5 sm:px-6 sm:pb-6 pt-1 space-y-4 border-t border-border/40">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+                    <div className="sm:col-span-2 space-y-1">
+                      <Label className="text-xs text-muted-foreground font-medium">Agreement Title *</Label>
+                      <Input
+                        value={data.title}
+                        onChange={(e) => set("title", e.target.value)}
+                        placeholder="Master Services Agreement (MSA)"
+                        className="h-10 text-xs font-medium rounded-xl bg-muted/20"
+                      />
+                    </div>
 
-                <div className="sm:col-span-1 space-y-1">
-                  <Label className="text-xs text-muted-foreground font-medium">Agreement Number *</Label>
-                  <Input
-                    value={data.agreementNumber}
-                    onChange={(e) => set("agreementNumber", e.target.value)}
-                    placeholder="AGR-2026-001"
-                    className="h-10 text-xs font-mono font-medium rounded-xl bg-muted/20"
-                  />
-                </div>
+                    <div className="sm:col-span-1 space-y-1">
+                      <Label className="text-xs text-muted-foreground font-medium">Agreement Number *</Label>
+                      <Input
+                        value={data.agreementNumber}
+                        onChange={(e) => set("agreementNumber", e.target.value)}
+                        placeholder="AGR-2026-001"
+                        className="h-10 text-xs font-mono font-medium rounded-xl bg-muted/20"
+                      />
+                    </div>
 
-                <div className="sm:col-span-1 space-y-1">
-                  <Label className="text-xs text-muted-foreground font-medium">Agreement Type</Label>
-                  <Select
-                    value={data.type}
-                    onValueChange={(v: string | null) =>
-                      handleTypeChange((v ?? "SERVICE_AGREEMENT") as AgreementType)
-                    }
-                  >
-                    <SelectTrigger className="h-10 text-xs rounded-xl bg-muted/20">
-                      <SelectValue placeholder="Select type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {AGREEMENT_TYPES.map((type) => (
-                        <SelectItem key={type.value} value={type.value}>
-                          {type.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
+                    <div className="sm:col-span-1 space-y-1">
+                      <Label className="text-xs text-muted-foreground font-medium">Agreement Type</Label>
+                      <Select
+                        value={data.type}
+                        onValueChange={(v: string | null) =>
+                          handleTypeChange((v ?? "SERVICE_AGREEMENT") as AgreementType)
+                        }
+                      >
+                        <SelectTrigger className="h-10 text-xs rounded-xl bg-muted/20">
+                          <SelectValue placeholder="Select type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {AGREEMENT_TYPES.map((type) => (
+                            <SelectItem key={type.value} value={type.value}>
+                              {type.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-1">
-                <div className="space-y-1">
-                  <Label className="text-xs text-muted-foreground font-medium">Effective Date</Label>
-                  <Input
-                    type="date"
-                    value={data.effectiveDate}
-                    onChange={(e) => set("effectiveDate", e.target.value)}
-                    className="h-10 text-xs rounded-xl bg-muted/20"
-                  />
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-1">
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground font-medium">Effective Date</Label>
+                      <Input
+                        type="date"
+                        value={data.effectiveDate}
+                        onChange={(e) => set("effectiveDate", e.target.value)}
+                        className="h-10 text-xs rounded-xl bg-muted/20"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground font-medium">Valid Until (Expiry Date)</Label>
+                      <Input
+                        type="date"
+                        value={data.expiryDate}
+                        onChange={(e) => set("expiryDate", e.target.value)}
+                        className="h-10 text-xs rounded-xl bg-muted/20"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end pt-3 border-t border-border/30">
+                    <Button
+                      type="button"
+                      size="sm"
+                      onClick={() => setActiveSection("parties")}
+                      className="h-8.5 px-4 text-xs font-bold rounded-xl bg-[#c82020] hover:bg-[#a81a1a] text-white shadow-xs"
+                    >
+                      <span>Continue to Parties</span>
+                      <ChevronRight className="w-3.5 h-3.5 ml-1.5" />
+                    </Button>
+                  </div>
                 </div>
-                <div className="space-y-1">
-                  <Label className="text-xs text-muted-foreground font-medium">Valid Until (Expiry Date)</Label>
-                  <Input
-                    type="date"
-                    value={data.expiryDate}
-                    onChange={(e) => set("expiryDate", e.target.value)}
-                    className="h-10 text-xs rounded-xl bg-muted/20"
-                  />
-                </div>
-              </div>
+              )}
             </div>
 
             {/* Card 2: Parties (Dual-Party Identification) */}
-            <div className="bg-white dark:bg-[#181a20] rounded-2xl shadow-sm border border-border/60 p-6 space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-base font-bold text-foreground">Parties & Counterparties</h2>
-                  <p className="text-[11px] text-muted-foreground">Identify both participating legal entities.</p>
+            <div className="bg-white dark:bg-[#181a20] rounded-2xl shadow-sm border border-border/60 overflow-hidden transition-all">
+              <button
+                type="button"
+                onClick={() => setActiveSection(activeSection === "parties" ? "parties" : "parties")}
+                className="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left hover:bg-muted/20 transition-colors cursor-pointer"
+              >
+                <div className="flex items-center gap-2.5">
+                  <div className={`p-1.5 rounded-lg ${activeSection === "parties" ? "bg-[#c82020]/10 text-[#c82020]" : "bg-muted text-muted-foreground"}`}>
+                    <Users className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h2 className="text-sm sm:text-base font-bold text-foreground">Parties & Counterparties</h2>
+                    {activeSection !== "parties" && (
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        {data.clientName || "Counterparty"} {data.clientCompany ? `(${data.clientCompany})` : ""}
+                      </p>
+                    )}
+                  </div>
                 </div>
-                {data.clientId && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setData((prev) => ({ ...prev, clientId: "" }))}
-                    className="h-7 text-xs text-muted-foreground"
-                  >
-                    <RefreshCw className="h-3 w-3 mr-1" />
-                    Edit Manually
-                  </Button>
-                )}
-              </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[11px] font-semibold text-muted-foreground hidden sm:inline-block">
+                    {data.clientEmail || "Dual-Party"}
+                  </span>
+                  {activeSection === "parties" ? (
+                    <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                  ) : (
+                    <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                  )}
+                </div>
+              </button>
 
-              {/* Client Selection */}
-              {clients.length > 0 && !data.clientId ? (
-                <div className="space-y-1">
-                  <Label className="text-xs text-muted-foreground font-medium">Select Registered Client *</Label>
-                  <Select
-                    value=""
-                    onValueChange={(v: string | null) => v && handleClientChange(v)}
-                  >
-                    <SelectTrigger className="h-10 text-xs rounded-xl bg-muted/20">
-                      <SelectValue placeholder="Choose a client to auto-fill..." />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {clients.map((client) => (
-                        <SelectItem key={client.id} value={client.id}>
-                          {client.name} {client.company || client.clientCompany ? `(${client.company || client.clientCompany})` : ""}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              ) : null}
+              {activeSection === "parties" && (
+                <div className="px-4 pb-5 sm:px-6 sm:pb-6 pt-1 space-y-4 border-t border-border/40">
+                  <div className="flex items-center justify-between">
+                    <p className="text-[11px] text-muted-foreground">Identify both participating legal entities.</p>
+                    {data.clientId && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setData((prev) => ({ ...prev, clientId: "" }))}
+                        className="h-7 text-xs text-muted-foreground"
+                      >
+                        <RefreshCw className="h-3 w-3 mr-1" />
+                        Edit Manually
+                      </Button>
+                    )}
+                  </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                <div className="space-y-1">
-                  <Label className="text-xs text-muted-foreground font-medium">Party 2: Client Legal Name *</Label>
-                  <Input
-                    value={data.clientName}
-                    onChange={(e) => set("clientName", e.target.value)}
-                    placeholder="Acme Global Corporation"
-                    className="h-10 text-xs rounded-xl bg-muted/20"
-                  />
+                  {/* Client Selection */}
+                  {clients.length > 0 && !data.clientId ? (
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground font-medium">Select Registered Client *</Label>
+                      <Select
+                        value=""
+                        onValueChange={(v: string | null) => v && handleClientChange(v)}
+                      >
+                        <SelectTrigger className="h-10 text-xs rounded-xl bg-muted/20">
+                          <SelectValue placeholder="Choose a client to auto-fill..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {clients.map((client) => (
+                            <SelectItem key={client.id} value={client.id}>
+                              {client.name} {client.company || client.clientCompany ? `(${client.company || client.clientCompany})` : ""}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  ) : null}
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground font-medium">Party 2: Client Legal Name *</Label>
+                      <Input
+                        value={data.clientName}
+                        onChange={(e) => set("clientName", e.target.value)}
+                        placeholder="Acme Global Corporation"
+                        className="h-10 text-xs rounded-xl bg-muted/20"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground font-medium">Client Organization / Trade Name</Label>
+                      <Input
+                        value={data.clientCompany}
+                        onChange={(e) => set("clientCompany", e.target.value)}
+                        placeholder="Acme Global Inc."
+                        className="h-10 text-xs rounded-xl bg-muted/20"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground font-medium">Official Contact Email</Label>
+                      <Input
+                        value={data.clientEmail}
+                        onChange={(e) => set("clientEmail", e.target.value)}
+                        placeholder="legal@acmeglobal.com"
+                        className="h-10 text-xs rounded-xl bg-muted/20"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground font-medium">Registered Corporate Address</Label>
+                      <Input
+                        value={data.clientAddress}
+                        onChange={(e) => set("clientAddress", e.target.value)}
+                        placeholder="750 7th Avenue, New York, NY 10019, USA"
+                        className="h-10 text-xs rounded-xl bg-muted/20"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex justify-between items-center pt-3 border-t border-border/30">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setActiveSection("details")}
+                      className="h-8.5 px-3 text-xs text-muted-foreground"
+                    >
+                      <ArrowLeft className="w-3.5 h-3.5 mr-1" />
+                      Back to Details
+                    </Button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      onClick={() => setActiveSection("scope")}
+                      className="h-8.5 px-4 text-xs font-bold rounded-xl bg-[#c82020] hover:bg-[#a81a1a] text-white shadow-xs"
+                    >
+                      <span>Continue to Scope</span>
+                      <ChevronRight className="w-3.5 h-3.5 ml-1.5" />
+                    </Button>
+                  </div>
                 </div>
-                <div className="space-y-1">
-                  <Label className="text-xs text-muted-foreground font-medium">Client Organization / Trade Name</Label>
-                  <Input
-                    value={data.clientCompany}
-                    onChange={(e) => set("clientCompany", e.target.value)}
-                    placeholder="Acme Global Inc."
-                    className="h-10 text-xs rounded-xl bg-muted/20"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <Label className="text-xs text-muted-foreground font-medium">Official Contact Email</Label>
-                  <Input
-                    value={data.clientEmail}
-                    onChange={(e) => set("clientEmail", e.target.value)}
-                    placeholder="legal@acmeglobal.com"
-                    className="h-10 text-xs rounded-xl bg-muted/20"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <Label className="text-xs text-muted-foreground font-medium">Registered Corporate Address</Label>
-                  <Input
-                    value={data.clientAddress}
-                    onChange={(e) => set("clientAddress", e.target.value)}
-                    placeholder="750 7th Avenue, New York, NY 10019, USA"
-                    className="h-10 text-xs rounded-xl bg-muted/20"
-                  />
-                </div>
-              </div>
+              )}
             </div>
 
             {/* Card 3: Commercial Consideration & Scope of Work */}
-            <div className="bg-white dark:bg-[#181a20] rounded-2xl shadow-sm border border-border/60 p-6 space-y-4">
-              <h2 className="text-base font-bold text-foreground">Commercial Scope & Compensation</h2>
+            <div className="bg-white dark:bg-[#181a20] rounded-2xl shadow-sm border border-border/60 overflow-hidden transition-all">
+              <button
+                type="button"
+                onClick={() => setActiveSection(activeSection === "scope" ? "scope" : "scope")}
+                className="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left hover:bg-muted/20 transition-colors cursor-pointer"
+              >
+                <div className="flex items-center gap-2.5">
+                  <div className={`p-1.5 rounded-lg ${activeSection === "scope" ? "bg-[#c82020]/10 text-[#c82020]" : "bg-muted text-muted-foreground"}`}>
+                    <DollarSign className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h2 className="text-sm sm:text-base font-bold text-foreground">Commercial Scope & Compensation</h2>
+                    {activeSection !== "scope" && (
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        {data.currency} {Number(data.value || 0).toLocaleString()} • {data.paymentTerms}
+                      </p>
+                    )}
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[11px] font-semibold text-muted-foreground hidden sm:inline-block">
+                    {data.currency} {data.value}
+                  </span>
+                  {activeSection === "scope" ? (
+                    <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                  ) : (
+                    <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                  )}
+                </div>
+              </button>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-                <div className="space-y-1">
-                  <Label className="text-xs text-muted-foreground font-medium">Contract Value</Label>
-                  <Input
-                    type="number"
-                    value={data.value}
-                    onChange={(e) => set("value", e.target.value)}
-                    placeholder="6000"
-                    className="h-10 text-xs font-mono rounded-xl bg-muted/20"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <Label className="text-xs text-muted-foreground font-medium">Currency</Label>
-                  <Select value={data.currency} onValueChange={(v) => set("currency", v || "USD")}>
-                    <SelectTrigger className="h-10 text-xs rounded-xl bg-muted/20">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="USD">$ USD</SelectItem>
-                      <SelectItem value="EUR">€ EUR</SelectItem>
-                      <SelectItem value="GBP">£ GBP</SelectItem>
-                      <SelectItem value="INR">₹ INR</SelectItem>
-                      <SelectItem value="BDT">৳ BDT</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-1">
-                  <Label className="text-xs text-muted-foreground font-medium">Payment Terms</Label>
-                  <Select value={data.paymentTerms} onValueChange={(v) => set("paymentTerms", v || "Net 30")}>
-                    <SelectTrigger className="h-10 text-xs rounded-xl bg-muted/20">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Due upon receipt">Due upon receipt</SelectItem>
-                      <SelectItem value="Net 15">Net 15</SelectItem>
-                      <SelectItem value="Net 30">Net 30</SelectItem>
-                      <SelectItem value="Net 60">Net 60</SelectItem>
-                      <SelectItem value="Milestone-based">Milestone-based</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
+              {activeSection === "scope" && (
+                <div className="px-4 pb-5 sm:px-6 sm:pb-6 pt-1 space-y-4 border-t border-border/40">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground font-medium">Contract Value</Label>
+                      <Input
+                        type="number"
+                        value={data.value}
+                        onChange={(e) => set("value", e.target.value)}
+                        placeholder="6000"
+                        className="h-10 text-xs font-mono rounded-xl bg-muted/20"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground font-medium">Currency</Label>
+                      <Select value={data.currency} onValueChange={(v) => set("currency", v || "USD")}>
+                        <SelectTrigger className="h-10 text-xs rounded-xl bg-muted/20">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="USD">$ USD</SelectItem>
+                          <SelectItem value="EUR">€ EUR</SelectItem>
+                          <SelectItem value="GBP">£ GBP</SelectItem>
+                          <SelectItem value="INR">₹ INR</SelectItem>
+                          <SelectItem value="BDT">৳ BDT</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground font-medium">Payment Terms</Label>
+                      <Select value={data.paymentTerms} onValueChange={(v) => set("paymentTerms", v || "Net 30")}>
+                        <SelectTrigger className="h-10 text-xs rounded-xl bg-muted/20">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Due upon receipt">Due upon receipt</SelectItem>
+                          <SelectItem value="Net 15">Net 15</SelectItem>
+                          <SelectItem value="Net 30">Net 30</SelectItem>
+                          <SelectItem value="Net 60">Net 60</SelectItem>
+                          <SelectItem value="Milestone-based">Milestone-based</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
 
-              <div className="space-y-1">
-                <Label className="text-xs text-muted-foreground font-medium">Scope of Work & Services Narrative</Label>
-                <Textarea
-                  value={data.scope}
-                  onChange={(e) => set("scope", e.target.value)}
-                  placeholder="Detail the deliverables, technical responsibilities, and service levels..."
-                  className="min-h-[85px] text-xs rounded-xl bg-muted/20 resize-y"
-                />
-              </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs text-muted-foreground font-medium">Scope of Work & Services Narrative</Label>
+                    <Textarea
+                      value={data.scope}
+                      onChange={(e) => set("scope", e.target.value)}
+                      placeholder="Detail the deliverables, technical responsibilities, and service levels..."
+                      className="min-h-[85px] text-xs rounded-xl bg-muted/20 resize-y"
+                    />
+                  </div>
+
+                  <div className="flex justify-between items-center pt-3 border-t border-border/30">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setActiveSection("parties")}
+                      className="h-8.5 px-3 text-xs text-muted-foreground"
+                    >
+                      <ArrowLeft className="w-3.5 h-3.5 mr-1" />
+                      Back to Parties
+                    </Button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      onClick={() => setActiveSection("terms")}
+                      className="h-8.5 px-4 text-xs font-bold rounded-xl bg-[#c82020] hover:bg-[#a81a1a] text-white shadow-xs"
+                    >
+                      <span>Continue to Terms</span>
+                      <ChevronRight className="w-3.5 h-3.5 ml-1.5" />
+                    </Button>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Card 4: Terms, Conditions & Legal Covenants */}
-            <div className="bg-white dark:bg-[#181a20] rounded-2xl shadow-sm border border-border/60 p-6 space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-base font-bold text-foreground">Terms & Legal Covenants</h2>
-                  <p className="text-[11px] text-muted-foreground">Standard clauses automatically balanced into 2 columns on the A4 PDF.</p>
+            <div className="bg-white dark:bg-[#181a20] rounded-2xl shadow-sm border border-border/60 overflow-hidden transition-all">
+              <button
+                type="button"
+                onClick={() => setActiveSection(activeSection === "terms" ? "terms" : "terms")}
+                className="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left hover:bg-muted/20 transition-colors cursor-pointer"
+              >
+                <div className="flex items-center gap-2.5">
+                  <div className={`p-1.5 rounded-lg ${activeSection === "terms" ? "bg-[#c82020]/10 text-[#c82020]" : "bg-muted text-muted-foreground"}`}>
+                    <Scale className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h2 className="text-sm sm:text-base font-bold text-foreground">Terms & Legal Covenants</h2>
+                    {activeSection !== "terms" && (
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        {data.clauses?.split('\n').filter(Boolean).length || 0} Clauses balanced on single-page A4
+                      </p>
+                    )}
+                  </div>
                 </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleTypeChange(data.type)}
-                  className="h-7 text-xs"
-                >
-                  <RefreshCw className="h-3 w-3 mr-1" />
-                  Reset to Standard Clauses
-                </Button>
-              </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[11px] font-semibold text-muted-foreground hidden sm:inline-block">
+                    Dual Columns
+                  </span>
+                  {activeSection === "terms" ? (
+                    <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                  ) : (
+                    <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                  )}
+                </div>
+              </button>
 
-              <Textarea
-                value={data.clauses}
-                onChange={(e) => set("clauses", e.target.value)}
-                placeholder="1. SCOPE OF WORK&#10;The Service Provider shall perform...&#10;&#10;2. TERM&#10;This Agreement shall commence..."
-                className="min-h-[220px] text-xs font-mono leading-relaxed rounded-xl bg-muted/20 resize-y"
-              />
+              {activeSection === "terms" && (
+                <div className="px-4 pb-5 sm:px-6 sm:pb-6 pt-1 space-y-4 border-t border-border/40">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-[11px] text-muted-foreground">Standard clauses automatically balanced into 2 columns on the A4 PDF.</p>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleTypeChange(data.type)}
+                      className="h-7 text-xs"
+                    >
+                      <RefreshCw className="h-3 w-3 mr-1" />
+                      Reset to Standard Clauses
+                    </Button>
+                  </div>
+
+                  <Textarea
+                    value={data.clauses}
+                    onChange={(e) => set("clauses", e.target.value)}
+                    placeholder="1. SCOPE OF WORK&#10;The Service Provider shall perform...&#10;&#10;2. TERM&#10;This Agreement shall commence..."
+                    className="min-h-[220px] text-xs font-mono leading-relaxed rounded-xl bg-muted/20 resize-y"
+                  />
+
+                  <div className="flex justify-between items-center pt-3 border-t border-border/30">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setActiveSection("scope")}
+                      className="h-8.5 px-3 text-xs text-muted-foreground"
+                    >
+                      <ArrowLeft className="w-3.5 h-3.5 mr-1" />
+                      Back to Scope
+                    </Button>
+                    <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                      <ShieldCheck className="w-3.5 h-3.5" />
+                      Ready for single-page PDF generation
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -595,29 +844,6 @@ export function AgreementBuilder({ clients, company }: AgreementBuilderProps) {
           </div>
         </div>
       )}
-
-      {/* Export PDF Modal Dialog */}
-      <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
-        <DialogContent className="max-w-4xl max-h-[92vh] overflow-y-auto p-4 sm:p-6">
-          <DialogHeader className="pb-3 border-b border-border/60 flex flex-row items-center justify-between">
-            <DialogTitle className="text-base font-bold text-foreground">
-              Agreement PDF Export & Print
-            </DialogTitle>
-            <PDFDownloadLink document={pdfDoc} fileName={fileName}>
-              {({ loading }) => (
-                <Button size="sm" disabled={loading} className="h-8 text-xs font-bold bg-[#c82020] hover:bg-[#a81a1a] text-white mr-6">
-                  {loading ? "Generating..." : "Download PDF"}
-                </Button>
-              )}
-            </PDFDownloadLink>
-          </DialogHeader>
-          <div className="py-2 h-[700px] w-full">
-            <PDFViewer width="100%" height="100%" className="border-none" showToolbar={false}>
-              {pdfDoc}
-            </PDFViewer>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   )
 }

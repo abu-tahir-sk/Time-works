@@ -5,7 +5,6 @@ import Link from "next/link"
 import {
   TrendingUp,
   TrendingDown,
-  DollarSign,
   Receipt,
   FileSpreadsheet,
   FileSignature,
@@ -25,6 +24,9 @@ import {
   RefreshCw,
   Plus,
   Percent,
+  Activity,
+  ShieldAlert,
+  ShieldCheck,
 } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -43,7 +45,6 @@ export function FinancialAnalyticsView({ initialData }: FinancialAnalyticsViewPr
   const [data, setData] = useState<FinancialAnalyticsData>(initialData)
   const [period, setPeriod] = useState<AnalyticsPeriod>(initialData.period || "1Y")
   const [isPending, startTransition] = useTransition()
-  const [activeMetric, setActiveMetric] = useState<"invoiced" | "collected" | "expenses">("collected")
 
   const handlePeriodChange = (newPeriod: AnalyticsPeriod) => {
     setPeriod(newPeriod)
@@ -55,20 +56,126 @@ export function FinancialAnalyticsView({ initialData }: FinancialAnalyticsViewPr
     })
   }
 
+  const handlePrint = () => {
+    window.print()
+  }
+
+  const handleExportCsv = () => {
+    const rows = [
+      ["Month", "Invoiced", "Collected", "Expenses", "Net Profit"],
+      ...data.monthlyTrends.map((m) => [
+        m.fullLabel,
+        m.invoiced.toString(),
+        m.collected.toString(),
+        m.expenses.toString(),
+        m.netProfit.toString(),
+      ]),
+    ]
+    const csvContent = rows.map((r) => r.join(",")).join("\n")
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement("a")
+    link.setAttribute("href", url)
+    link.setAttribute("download", `financial-analytics-${period}.csv`)
+    link.style.visibility = "hidden"
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
   const { currency, kpis, monthlyTrends, expenseCategories, agingReceivables, topClients, quotationPipeline } = data
 
-  // Find max value for monthly chart scaling
+  // --- Period-over-period deltas (latest month vs previous month) ---
+  const latestMonth = monthlyTrends[monthlyTrends.length - 1]
+  const previousMonth = monthlyTrends[monthlyTrends.length - 2]
+
+  const deltaPct = (current: number, previous: number) => {
+    if (!previous || previous === 0) return current > 0 ? 100 : 0
+    return ((current - previous) / previous) * 100
+  }
+
+  const deltas = {
+    invoiced: latestMonth ? deltaPct(latestMonth.invoiced, previousMonth?.invoiced || 0) : 0,
+    collected: latestMonth ? deltaPct(latestMonth.collected, previousMonth?.collected || 0) : 0,
+    expenses: latestMonth ? deltaPct(latestMonth.expenses, previousMonth?.expenses || 0) : 0,
+    netProfit: latestMonth ? deltaPct(latestMonth.netProfit, previousMonth?.netProfit || 0) : 0,
+  }
+
   const maxMonthlyVal = Math.max(
     ...monthlyTrends.map((m) => Math.max(m.invoiced, m.collected, m.expenses)),
     1000
   )
 
-  const handlePrint = () => {
-    window.print()
+  // --- Financial Health Score (0-100) ---
+  const collectionRateScore = Math.min(100, (kpis.collectionRate / 100) * 100)
+  const marginScore = Math.max(0, Math.min(100, kpis.operatingMargin + 50)) // -50%..50% mapped
+  const overdue60PlusRatio =
+    agingReceivables.totalOutstanding > 0
+      ? (agingReceivables.overdue60_plus.amount / agingReceivables.totalOutstanding) * 100
+      : 0
+  const overdueScore = Math.max(0, 100 - overdue60PlusRatio * 2)
+  const topClientShare =
+    kpis.totalInvoiced > 0 && topClients.length > 0
+      ? (topClients[0].totalInvoiced / kpis.totalInvoiced) * 100
+      : 0
+  const concentrationScore = Math.max(0, 100 - (topClientShare - 30) * 2) // penalize >30% concentration
+
+  const healthScore = Math.round(
+    collectionRateScore * 0.3 + marginScore * 0.3 + overdueScore * 0.2 + concentrationScore * 0.2
+  )
+
+  const healthColor =
+    healthScore >= 75
+      ? "text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 border-emerald-200/50 dark:border-emerald-800/50"
+      : healthScore >= 50
+      ? "text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/50 border-amber-200/50 dark:border-amber-800/50"
+      : "text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/50 border-red-200/50 dark:border-red-800/50"
+
+  // --- Cash Runway estimate ---
+  const monthCount = Math.max(monthlyTrends.length, 1)
+  const avgMonthlyBurn = kpis.totalExpenses / monthCount
+  const cashRunway =
+    kpis.netProfit >= 0
+      ? null // cash positive
+      : avgMonthlyBurn > 0
+      ? Math.max(0, Math.floor(agingReceivables.totalOutstanding / avgMonthlyBurn))
+      : null
+
+  // --- Critical Alerts ---
+  const alerts: Array<{ title: string; detail: string; severity: "critical" | "warning"; action?: string }> = []
+  if (agingReceivables.overdue60_plus.amount > 0) {
+    alerts.push({
+      title: "Critical Overdue Receivables",
+      detail: `${formatMoney(agingReceivables.overdue60_plus.amount, currency)} is 60+ days overdue across ${agingReceivables.overdue60_plus.count} invoice(s).`,
+      severity: "critical",
+      action: "Review Overdue Invoices",
+    })
+  }
+  if (kpis.collectionRate < 70 && kpis.totalInvoiced > 0) {
+    alerts.push({
+      title: "Low Collection Rate",
+      detail: `Only ${kpis.collectionRate}% of billed amount has been collected. Follow up on pending receivables.`,
+      severity: "warning",
+      action: "View Pending Invoices",
+    })
+  }
+  if (kpis.netProfit < 0) {
+    alerts.push({
+      title: "Operating Deficit",
+      detail: `Expenses exceed collections by ${formatMoney(Math.abs(kpis.netProfit), currency)} this period.`,
+      severity: "critical",
+    })
+  }
+  if (cashRunway !== null && cashRunway <= 3 && kpis.netProfit < 0) {
+    alerts.push({
+      title: "Low Cash Runway",
+      detail: `Estimated runway of ${cashRunway} month(s) based on outstanding receivables vs monthly burn.`,
+      severity: "warning",
+    })
   }
 
   return (
-    <div className="space-y-6 pb-12 font-sans select-none print:p-0 print:space-y-4">
+    <div className="space-y-6 pb-16 font-sans select-none print:p-0 print:space-y-4">
       {/* 1. Executive Analytics Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border/70 pb-5">
         <div>
@@ -82,6 +189,7 @@ export function FinancialAnalyticsView({ initialData }: FinancialAnalyticsViewPr
           </div>
           <p className="text-xs text-muted-foreground mt-1">
             Enterprise Financial Intelligence: Revenue velocity, cash collections, operating expenses, and aging receivables.
+            <span className="ml-2 text-muted-foreground/80">Last updated {new Date().toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}</span>
           </p>
         </div>
 
@@ -114,22 +222,34 @@ export function FinancialAnalyticsView({ initialData }: FinancialAnalyticsViewPr
             })}
           </div>
 
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handlePrint}
-            className="h-8 text-xs border-border/80 shadow-2xs hover:bg-muted font-medium print:hidden"
-          >
-            <Printer className="h-3.5 w-3.5 mr-1.5 text-muted-foreground" />
-            Print Report
-          </Button>
-
-          <Link href="/dashboard/invoices/new" className="print:hidden">
-            <Button size="sm" className="h-8 text-xs bg-[#c82020] hover:bg-[#a81a1a] text-white shadow-xs font-semibold">
-              <Plus className="h-3.5 w-3.5 mr-1" />
-              New Invoice
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handlePrint}
+              className="h-8 text-xs border-border/80 shadow-2xs hover:bg-muted font-medium print:hidden"
+            >
+              <Printer className="h-3.5 w-3.5 mr-1.5 text-muted-foreground" />
+              Print Report
             </Button>
-          </Link>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleExportCsv}
+              className="h-8 text-xs border-border/80 shadow-2xs hover:bg-muted font-medium print:hidden"
+            >
+              <Download className="h-3.5 w-3.5 mr-1.5 text-muted-foreground" />
+              Export CSV
+            </Button>
+
+            <Link href="/dashboard/invoices/new" className="print:hidden">
+              <Button size="sm" className="h-8 text-xs bg-[#c82020] hover:bg-[#a81a1a] text-white shadow-xs font-semibold">
+                <Plus className="h-3.5 w-3.5 mr-1" />
+                New Invoice
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
 
@@ -141,7 +261,7 @@ export function FinancialAnalyticsView({ initialData }: FinancialAnalyticsViewPr
         </div>
       )}
 
-      {/* 2. Primary KPI Tiles (Microsoft Fluent 2) */}
+      {/* 2. Primary KPI Tiles (with period-over-period deltas) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         {/* Total Invoiced */}
         <Card className="border border-border/80 bg-card rounded-lg shadow-xs hover:shadow-sm transition-shadow">
@@ -154,10 +274,13 @@ export function FinancialAnalyticsView({ initialData }: FinancialAnalyticsViewPr
             </div>
           </CardHeader>
           <CardContent className="px-4 pb-4">
-            <div className="text-xl sm:text-2xl font-bold font-mono tracking-tight text-foreground">
-              {formatMoney(kpis.totalInvoiced, currency)}
+            <div className="flex items-baseline gap-2">
+              <span className="text-xl sm:text-2xl font-bold font-mono tracking-tight text-foreground">
+                {formatMoney(kpis.totalInvoiced, currency)}
+              </span>
+              <TrendBadge value={deltas.invoiced} />
             </div>
-            <p className="text-[11px] text-muted-foreground mt-1 flex items-center justify-between">
+            <p className="text-[11px] text-muted-foreground mt-2 flex items-center justify-between">
               <span>{kpis.totalInvoicesCount} invoices issued</span>
               <span className="text-muted-foreground/80 font-mono">
                 Avg: {formatMoney(kpis.avgInvoiceValue, currency)}
@@ -177,10 +300,13 @@ export function FinancialAnalyticsView({ initialData }: FinancialAnalyticsViewPr
             </div>
           </CardHeader>
           <CardContent className="px-4 pb-4">
-            <div className="text-xl sm:text-2xl font-bold font-mono tracking-tight text-emerald-600 dark:text-emerald-400">
-              {formatMoney(kpis.totalCollected, currency)}
+            <div className="flex items-baseline gap-2">
+              <span className="text-xl sm:text-2xl font-bold font-mono tracking-tight text-emerald-600 dark:text-emerald-400">
+                {formatMoney(kpis.totalCollected, currency)}
+              </span>
+              <TrendBadge value={deltas.collected} />
             </div>
-            <p className="text-[11px] text-muted-foreground mt-1 flex items-center justify-between">
+            <p className="text-[11px] text-muted-foreground mt-2 flex items-center justify-between">
               <span>{kpis.paidInvoicesCount} fully paid</span>
               <span className="text-emerald-600 dark:text-emerald-400 font-semibold">
                 {kpis.collectionRate}% collected
@@ -200,10 +326,13 @@ export function FinancialAnalyticsView({ initialData }: FinancialAnalyticsViewPr
             </div>
           </CardHeader>
           <CardContent className="px-4 pb-4">
-            <div className="text-xl sm:text-2xl font-bold font-mono tracking-tight text-amber-600 dark:text-amber-400">
-              {formatMoney(kpis.pendingReceivables, currency)}
+            <div className="flex items-baseline gap-2">
+              <span className="text-xl sm:text-2xl font-bold font-mono tracking-tight text-amber-600 dark:text-amber-400">
+                {formatMoney(kpis.pendingReceivables, currency)}
+              </span>
+              <TrendBadge value={deltas.expenses} inverse />
             </div>
-            <p className="text-[11px] text-muted-foreground mt-1 flex items-center justify-between">
+            <p className="text-[11px] text-muted-foreground mt-2 flex items-center justify-between">
               <span>Uncollected volume</span>
               <span className="text-amber-600 dark:text-amber-400 font-medium">
                 {kpis.totalInvoiced > 0
@@ -226,10 +355,13 @@ export function FinancialAnalyticsView({ initialData }: FinancialAnalyticsViewPr
             </div>
           </CardHeader>
           <CardContent className="px-4 pb-4">
-            <div className="text-xl sm:text-2xl font-bold font-mono tracking-tight text-rose-600 dark:text-rose-400">
-              {formatMoney(kpis.totalExpenses, currency)}
+            <div className="flex items-baseline gap-2">
+              <span className="text-xl sm:text-2xl font-bold font-mono tracking-tight text-rose-600 dark:text-rose-400">
+                {formatMoney(kpis.totalExpenses, currency)}
+              </span>
+              <TrendBadge value={deltas.expenses} inverse />
             </div>
-            <p className="text-[11px] text-muted-foreground mt-1 flex items-center justify-between">
+            <p className="text-[11px] text-muted-foreground mt-2 flex items-center justify-between">
               <span>{expenseCategories.length} cost centers</span>
               <span className="text-rose-600 dark:text-rose-400 font-medium">Outflow</span>
             </p>
@@ -247,16 +379,19 @@ export function FinancialAnalyticsView({ initialData }: FinancialAnalyticsViewPr
             </div>
           </CardHeader>
           <CardContent className="px-4 pb-4">
-            <div
-              className={`text-xl sm:text-2xl font-bold font-mono tracking-tight ${
-                kpis.netProfit >= 0
-                  ? "text-foreground"
-                  : "text-red-600 dark:text-red-400"
-              }`}
-            >
-              {formatMoney(kpis.netProfit, currency)}
+            <div className="flex items-baseline gap-2">
+              <div
+                className={`text-xl sm:text-2xl font-bold font-mono tracking-tight ${
+                  kpis.netProfit >= 0
+                    ? "text-foreground"
+                    : "text-red-600 dark:text-red-400"
+                }`}
+              >
+                {formatMoney(kpis.netProfit, currency)}
+              </div>
+              <TrendBadge value={deltas.netProfit} />
             </div>
-            <p className="text-[11px] text-muted-foreground mt-1 flex items-center justify-between">
+            <p className="text-[11px] text-muted-foreground mt-2 flex items-center justify-between">
               <span>Margin: {kpis.operatingMargin}%</span>
               <span
                 className={`font-semibold ${
@@ -272,7 +407,180 @@ export function FinancialAnalyticsView({ initialData }: FinancialAnalyticsViewPr
         </Card>
       </div>
 
-      {/* 3. Monthly Financial Velocity Trend (Bar & Trend Overview) */}
+      {/* 2b. Financial Health Strip */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Card className={`border border-border/80 bg-card rounded-lg shadow-xs ${healthColor}`}>
+          <CardContent className="px-4 py-3">
+            <div className="flex items-end justify-between gap-2">
+              <div>
+                <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+                  Financial Health Score
+                </span>
+                <div className="flex items-baseline gap-1 mt-1">
+                  <span className="text-2xl font-bold font-mono text-foreground">{healthScore}</span>
+                  <span className="text-xs font-semibold">{healthScore >= 75 ? "Strong" : healthScore >= 50 ? "Fair" : "At Risk"}</span>
+                </div>
+              </div>
+              <div className="h-10 w-10 rounded-full flex items-center justify-center text-lg opacity-90">
+                <Activity className="h-5 w-5" />
+              </div>
+            </div>
+            <div className="mt-2 flex gap-4 text-[10px] text-muted-foreground">
+              <span className="flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                Collection {Math.round(kpis.collectionRate)}%
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-purple-500" />
+                Margin {Math.round(kpis.operatingMargin)}%
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                Overdue {Math.round(overdue60PlusRatio)}%
+              </span>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border border-border/80 bg-card rounded-lg shadow-xs">
+          <CardContent className="px-4 py-3">
+            <div className="flex items-end justify-between gap-2">
+              <div>
+                <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+                  Estimated Cash Runway
+                </span>
+                <div className="flex items-baseline gap-1 mt-1">
+                  <span className="text-2xl font-bold font-mono text-foreground">
+                    {cashRunway === null ? (kpis.netProfit >= 0 ? "∞" : "–") : cashRunway}
+                  </span>
+                  <span className="text-xs font-semibold text-muted-foreground">
+                    {cashRunway === null ? (kpis.netProfit >= 0 ? "Cash Positive" : "N/A") : "months"}
+                  </span>
+                </div>
+              </div>
+              <div className="h-10 w-10 rounded-full flex items-center justify-center text-lg bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400">
+                <ShieldCheck className="h-5 w-5" />
+              </div>
+            </div>
+            <p className="text-[10px] text-muted-foreground mt-2">
+              Based on outstanding receivables vs avg. monthly burn ({formatMoney(Math.round(avgMonthlyBurn), currency)}/mo).
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="border border-border/80 bg-card rounded-lg shadow-xs">
+          <CardContent className="px-4 py-3">
+            <div className="flex items-end justify-between gap-2">
+              <div>
+                <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+                  Net Margin Rate
+                </span>
+                <div className="flex items-baseline gap-1 mt-1">
+                  <span className="text-2xl font-bold font-mono text-foreground">
+                    {kpis.operatingMargin}%
+                  </span>
+                  <span className="text-xs font-semibold text-muted-foreground">of collected</span>
+                </div>
+              </div>
+              <div className="h-10 w-10 rounded-full flex items-center justify-center text-lg bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400">
+                <Percent className="h-5 w-5" />
+              </div>
+            </div>
+            <div className="mt-2 h-1 w-full rounded-full bg-muted overflow-hidden">
+              <div
+                className="h-full rounded-full transition-all"
+                style={{
+                  width: `${Math.min(100, Math.max(0, kpis.operatingMargin + 50))}%`,
+                  backgroundColor:
+                    kpis.operatingMargin >= 0
+                      ? "#10b981"
+                      : kpis.operatingMargin >= -25
+                      ? "#f59e0b"
+                      : "#ef4444",
+                }}
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border border-border/80 bg-card rounded-lg shadow-xs">
+          <CardContent className="px-4 py-3">
+            <div className="flex items-end justify-between gap-2">
+              <div>
+                <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+                  Collection Efficiency
+                </span>
+                <div className="flex items-baseline gap-1 mt-1">
+                  <span className="text-2xl font-bold font-mono text-emerald-600 dark:text-emerald-400">
+                    {kpis.collectionRate}%
+                  </span>
+                  <span className="text-xs font-semibold text-muted-foreground">of billed</span>
+                </div>
+              </div>
+              <div className="h-10 w-10 rounded-full flex items-center justify-center text-lg bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400">
+                <CheckCircle2 className="h-5 w-5" />
+              </div>
+            </div>
+            <div className="mt-2 h-1 w-full rounded-full bg-muted overflow-hidden">
+              <div className="h-full rounded-full bg-emerald-500 transition-all" style={{ width: `${Math.min(100, kpis.collectionRate)}%` }} />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* 2c. Critical Alerts Banner */}
+      {alerts.length > 0 && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {alerts.map((alert, i) => (
+            <Card
+              key={i}
+              className={`border border-border/80 bg-card rounded-lg shadow-xs ${
+                alert.severity === "critical" ? "border-red-200/60 bg-red-50/40 dark:border-red-900/30 dark:bg-red-950/20" : "border-amber-200/60 bg-amber-50/40 dark:border-amber-900/30 dark:bg-amber-950/20"
+              }`}
+            >
+              <CardContent className="px-4 py-3">
+                <div className="flex items-start gap-3">
+                  <div className={`h-6 w-6 rounded flex items-center justify-center shrink-0 mt-0.5 ${
+                    alert.severity === "critical"
+                      ? "bg-red-100 dark:bg-red-950/50 text-red-600 dark:text-red-400"
+                      : "bg-amber-100 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400"
+                  }`}>
+                    <AlertTriangle className="h-3.5 w-3.5" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-sm font-bold text-foreground">{alert.title}</span>
+                      <span className={`text-[10px] font-semibold uppercase px-1.5 py-0.5 rounded ${
+                        alert.severity === "critical"
+                          ? "bg-red-100 dark:bg-red-950/50 text-red-700 dark:text-red-400"
+                          : "bg-amber-100 dark:bg-amber-950/50 text-amber-700 dark:text-amber-400"
+                      }`}>{alert.severity}</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-0.5">{alert.detail}</p>
+                    {alert.action && (
+                      <Link
+                        key={alert.action}
+                        href={
+                          alert.action === "Review Overdue Invoices"
+                            ? "/dashboard/invoices?status=OVERDUE"
+                            : alert.action === "View Pending Invoices"
+                            ? "/dashboard/invoices?status=UNPAID"
+                            : "/dashboard/expenses"
+                        }
+                        className="mt-2 inline-flex items-center gap-1 text-[#c82020] text-xs font-semibold hover:underline"
+                      >
+                        {alert.action} <ChevronRight className="h-3.5 w-3.5" />
+                      </Link>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      {/* 3. Monthly Financial Velocity Trend */}
       <Card className="border border-border/80 bg-card rounded-lg shadow-xs">
         <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4">
           <div>
@@ -285,7 +593,6 @@ export function FinancialAnalyticsView({ initialData }: FinancialAnalyticsViewPr
             </CardDescription>
           </div>
 
-          {/* Metric Selector Legend */}
           <div className="flex items-center gap-3 text-xs">
             <div className="flex items-center gap-1.5">
               <div className="w-3 h-3 rounded-xs bg-[#c82020]" />
@@ -310,12 +617,11 @@ export function FinancialAnalyticsView({ initialData }: FinancialAnalyticsViewPr
             </div>
           ) : (
             <div className="space-y-4">
-              {/* Responsive Bar Grid */}
-              <div className="h-64 w-full flex items-end gap-2 sm:gap-4 px-2 pt-6 border-b border-border/60">
+              <div className="h-[300px] w-full flex items-end gap-1.5 sm:gap-3 px-2 pt-10 border-b border-border/60">
                 {monthlyTrends.map((m, idx) => {
-                  const invoicedHeight = Math.max(4, Math.round((m.invoiced / maxMonthlyVal) * 100))
-                  const collectedHeight = Math.max(4, Math.round((m.collected / maxMonthlyVal) * 100))
-                  const expensesHeight = Math.max(4, Math.round((m.expenses / maxMonthlyVal) * 100))
+                  const invoicedHeight = Math.max(6, Math.round((m.invoiced / maxMonthlyVal) * 100))
+                  const collectedHeight = Math.max(6, Math.round((m.collected / maxMonthlyVal) * 100))
+                  const expensesHeight = Math.max(6, Math.round((m.expenses / maxMonthlyVal) * 100))
 
                   return (
                     <div
@@ -323,8 +629,10 @@ export function FinancialAnalyticsView({ initialData }: FinancialAnalyticsViewPr
                       className="flex-1 h-full flex flex-col justify-end items-center group relative cursor-pointer"
                     >
                       {/* Hover Tooltip Card */}
-                      <div className="absolute -top-28 left-1/2 -translate-x-1/2 hidden group-hover:flex flex-col bg-popover text-popover-foreground text-[10px] p-2 rounded-md shadow-lg border border-border z-30 pointer-events-none whitespace-nowrap min-w-[130px]">
-                        <span className="font-bold border-b border-border pb-1 mb-1">{m.fullLabel}</span>
+                      <div className="absolute -top-[220px] left-1/2 -translate-x-1/2 hidden group-hover:flex flex-col bg-popover text-popover-foreground text-[10px] p-2.5 rounded-md shadow-lg border border-border z-30 pointer-events-none whitespace-nowrap min-w-[150px]">
+                        <span className="font-bold border-b border-border pb-1 mb-1 text-xs">
+                          {m.fullLabel}
+                        </span>
                         <div className="flex justify-between text-[#c82020]">
                           <span>Invoiced:</span>
                           <span className="font-mono font-medium">{formatMoney(m.invoiced, currency)}</span>
@@ -343,26 +651,21 @@ export function FinancialAnalyticsView({ initialData }: FinancialAnalyticsViewPr
                         </div>
                       </div>
 
-                      {/* Grouped Bar Columns */}
-                      <div className="w-full flex items-end justify-center gap-0.5 sm:gap-1 h-full pb-1">
-                        {/* Invoiced Bar */}
+                      <div className="w-full flex items-end justify-center gap-0.5 sm:gap-1 h-full pb-2">
                         <div
-                          className="flex-1 max-w-[12px] bg-[#c82020]/40 hover:bg-[#c82020] rounded-t-xs transition-all"
-                          style={{ height: `${m.invoiced > 0 ? invoicedHeight : 2}%` }}
+                          className="flex-1 max-w-[14px] bg-[#c82020]/35 hover:bg-[#c82020] rounded-t-[4px] transition-all"
+                          style={{ height: `${m.invoiced > 0 ? invoicedHeight : 3}%` }}
                         />
-                        {/* Collected Bar */}
                         <div
-                          className="flex-1 max-w-[12px] bg-emerald-500/80 hover:bg-emerald-500 rounded-t-xs transition-all"
-                          style={{ height: `${m.collected > 0 ? collectedHeight : 2}%` }}
+                          className="flex-1 max-w-[14px] bg-emerald-500/60 hover:bg-emerald-500 rounded-t-[4px] transition-all"
+                          style={{ height: `${m.collected > 0 ? collectedHeight : 3}%` }}
                         />
-                        {/* Expenses Bar */}
                         <div
-                          className="flex-1 max-w-[12px] bg-rose-500/80 hover:bg-rose-500 rounded-t-xs transition-all"
-                          style={{ height: `${m.expenses > 0 ? expensesHeight : 2}%` }}
+                          className="flex-1 max-w-[14px] bg-rose-500/60 hover:bg-rose-500 rounded-t-[4px] transition-all"
+                          style={{ height: `${m.expenses > 0 ? expensesHeight : 3}%` }}
                         />
                       </div>
 
-                      {/* Month Label */}
                       <span className="text-[10px] font-semibold text-muted-foreground text-center truncate w-full mt-2 group-hover:text-foreground">
                         {m.label}
                       </span>
@@ -371,22 +674,21 @@ export function FinancialAnalyticsView({ initialData }: FinancialAnalyticsViewPr
                 })}
               </div>
 
-              {/* Bottom Quick Stats */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 text-xs">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3 text-xs">
                 <div className="p-3 rounded-md bg-muted/30 border border-border/50">
-                  <span className="text-muted-foreground text-[11px]">Net Margin Rate</span>
+                  <span className="text-muted-foreground text-[10px]">Net Margin Rate</span>
                   <div className="text-base font-bold font-mono text-foreground mt-0.5">
                     {kpis.operatingMargin}%
                   </div>
                 </div>
                 <div className="p-3 rounded-md bg-muted/30 border border-border/50">
-                  <span className="text-muted-foreground text-[11px]">Collection Efficiency</span>
+                  <span className="text-muted-foreground text-[10px]">Collection Efficiency</span>
                   <div className="text-base font-bold font-mono text-emerald-600 dark:text-emerald-400 mt-0.5">
                     {kpis.collectionRate}%
                   </div>
                 </div>
                 <div className="p-3 rounded-md bg-muted/30 border border-border/50">
-                  <span className="text-muted-foreground text-[11px]">Monthly Average Inflow</span>
+                  <span className="text-muted-foreground text-[10px]">Monthly Avg Inflow</span>
                   <div className="text-base font-bold font-mono text-foreground mt-0.5">
                     {formatMoney(
                       monthlyTrends.length > 0
@@ -397,7 +699,7 @@ export function FinancialAnalyticsView({ initialData }: FinancialAnalyticsViewPr
                   </div>
                 </div>
                 <div className="p-3 rounded-md bg-muted/30 border border-border/50">
-                  <span className="text-muted-foreground text-[11px]">Average Invoice Size</span>
+                  <span className="text-muted-foreground text-[10px]">Avg Invoice Size</span>
                   <div className="text-base font-bold font-mono text-foreground mt-0.5">
                     {formatMoney(kpis.avgInvoiceValue, currency)}
                   </div>
@@ -428,7 +730,6 @@ export function FinancialAnalyticsView({ initialData }: FinancialAnalyticsViewPr
           </CardHeader>
 
           <CardContent className="space-y-4 pt-1">
-            {/* Visual Aging Multi-Segment Bar */}
             <div className="w-full h-3 rounded-full bg-muted overflow-hidden flex shadow-2xs">
               {agingReceivables.totalOutstanding > 0 ? (
                 <>
@@ -466,9 +767,7 @@ export function FinancialAnalyticsView({ initialData }: FinancialAnalyticsViewPr
               )}
             </div>
 
-            {/* Aging Bracket Details Table */}
             <div className="divide-y divide-border/60 text-xs">
-              {/* Bracket 1: Current */}
               <div className="py-2.5 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0" />
@@ -487,7 +786,6 @@ export function FinancialAnalyticsView({ initialData }: FinancialAnalyticsViewPr
                 </div>
               </div>
 
-              {/* Bracket 2: 1-30 Days Overdue */}
               <div className="py-2.5 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="w-2.5 h-2.5 rounded-full bg-amber-400 shrink-0" />
@@ -506,7 +804,6 @@ export function FinancialAnalyticsView({ initialData }: FinancialAnalyticsViewPr
                 </div>
               </div>
 
-              {/* Bracket 3: 31-60 Days Overdue */}
               <div className="py-2.5 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="w-2.5 h-2.5 rounded-full bg-orange-500 shrink-0" />
@@ -525,7 +822,6 @@ export function FinancialAnalyticsView({ initialData }: FinancialAnalyticsViewPr
                 </div>
               </div>
 
-              {/* Bracket 4: 60+ Days Overdue */}
               <div className="py-2.5 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="w-2.5 h-2.5 rounded-full bg-red-500 shrink-0" />
@@ -677,6 +973,9 @@ export function FinancialAnalyticsView({ initialData }: FinancialAnalyticsViewPr
                         <span className="text-[11px] text-muted-foreground truncate block">
                           {client.companyName || client.email || "Individual Account"} • {client.invoiceCount} invoices
                         </span>
+                        <span className="text-[10px] text-muted-foreground block">
+                          {shareOfRevenue}% of revenue
+                        </span>
                       </div>
                       <div className="text-right">
                         <div className="font-mono font-bold text-foreground">
@@ -719,7 +1018,6 @@ export function FinancialAnalyticsView({ initialData }: FinancialAnalyticsViewPr
           </CardHeader>
 
           <CardContent className="space-y-4 pt-1">
-            {/* Pipeline Stats Grid */}
             <div className="grid grid-cols-3 gap-3 text-center">
               <div className="p-3 rounded-md bg-muted/30 border border-border/60">
                 <span className="text-[11px] text-muted-foreground">Total Quotes</span>
@@ -752,7 +1050,6 @@ export function FinancialAnalyticsView({ initialData }: FinancialAnalyticsViewPr
               </div>
             </div>
 
-            {/* Pipeline Funnel Progress */}
             <div className="space-y-1.5 pt-1">
               <div className="flex items-center justify-between text-xs text-muted-foreground">
                 <span>Proposal to Agreement Velocity</span>
@@ -781,6 +1078,126 @@ export function FinancialAnalyticsView({ initialData }: FinancialAnalyticsViewPr
           </CardContent>
         </Card>
       </div>
+
+      {/* 6. Profit & Loss Summary */}
+      <Card className="border border-border/80 bg-card rounded-lg shadow-xs">
+        <CardHeader className="flex flex-row items-center justify-between pb-3">
+          <CardTitle className="text-sm font-bold text-foreground flex items-center gap-2">
+            <ShieldAlert className="h-4 w-4 text-[#c82020]" />
+            <span>Profit & Loss Summary</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="pt-1">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm text-left border-collapse">
+              <thead>
+                <tr className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider border-b border-border/60">
+                  <th className="text-left pb-2.5 pr-4">Line Item</th>
+                  <th className="text-right pb-2.5">Current Period</th>
+                  <th className="text-right pb-2.5 pr-4">vs Previous Month</th>
+                  <th className="text-right pb-2.5">% of Revenue</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="border-b border-border/60">
+                  <td className="py-3 text-xs font-medium text-foreground pr-4">Total Invoiced (Revenue)</td>
+                  <td className="py-3 text-right text-xs font-mono text-foreground pr-4">
+                    {formatMoney(kpis.totalInvoiced, currency)}
+                  </td>
+                  <td className="py-3 text-right text-xs pr-4">
+                    <TrendInline value={deltas.invoiced} />
+                  </td>
+                  <td className="py-3 text-right text-xs text-muted-foreground pr-4">100%</td>
+                </tr>
+                <tr className="border-b border-border/60">
+                  <td className="py-3 text-xs font-medium text-foreground pr-4">Cash Collected</td>
+                  <td className="py-3 text-right text-xs font-mono text-emerald-600 dark:text-emerald-400 pr-4">
+                    {formatMoney(kpis.totalCollected, currency)}
+                  </td>
+                  <td className="py-3 text-right text-xs pr-4">
+                    <TrendInline value={deltas.collected} />
+                  </td>
+                  <td className="py-3 text-right text-xs text-muted-foreground pr-4">
+                    {kpis.totalInvoiced > 0 ? Math.round((kpis.totalCollected / kpis.totalInvoiced) * 100) : 0}%
+                  </td>
+                </tr>
+                <tr className="border-b border-border/60">
+                  <td className="py-3 text-xs font-medium text-foreground pr-4">Operating Expenses</td>
+                  <td className="py-3 text-right text-xs font-mono text-rose-600 dark:text-rose-400 pr-4">
+                    {formatMoney(kpis.totalExpenses, currency)}
+                  </td>
+                  <td className="py-3 text-right text-xs pr-4">
+                    <TrendInline value={deltas.expenses} inverse />
+                  </td>
+                  <td className="py-3 text-right text-xs text-muted-foreground pr-4">
+                    {kpis.totalCollected > 0 ? Math.round((kpis.totalExpenses / kpis.totalCollected) * 100) : 0}%
+                  </td>
+                </tr>
+                <tr className="font-bold border-t border-border/80">
+                  <td className="py-3 text-xs text-foreground pr-4">Net Operating Profit</td>
+                  <td className="py-3 text-right text-xs font-mono">
+                    <span
+                      className={kpis.netProfit >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-red-600 dark:text-red-400"}
+                    >
+                      {formatMoney(kpis.netProfit, currency)}
+                    </span>
+                  </td>
+                  <td className="py-3 text-right text-xs pr-4">
+                    <TrendInline value={deltas.netProfit} />
+                  </td>
+                  <td className="py-3 text-right text-xs font-semibold">
+                    {kpis.operatingMargin}%
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
     </div>
+  )
+}
+
+/* --- Sub-components --- */
+
+function TrendBadge({ value, inverse }: { value: number; inverse?: boolean }) {
+  const isUp = value > 0
+  const isDown = value < 0
+  const abs = Math.abs(value)
+  const color = isUp
+    ? "text-emerald-600 dark:text-emerald-400 bg-emerald-50/60 dark:bg-emerald-950/20"
+    : isDown
+    ? "text-rose-600 dark:text-rose-400 bg-rose-50/60 dark:bg-rose-950/20"
+    : "text-muted-foreground bg-muted/40"
+  const sign = isUp ? "+" : isDown ? "–" : ""
+  const Icon = isUp ? TrendingUp : isDown ? TrendingDown : MinusIcon
+
+  return (
+    <span className={`flex items-center gap-1 text-[10px] font-semibold ${color}`}>
+      <Icon className="h-3 w-3" />
+      {sign}{abs.toFixed(1)}% vs prev. month
+    </span>
+  )
+}
+
+function TrendInline({ value, inverse }: { value: number; inverse?: boolean }) {
+  const isUp = value > 0
+  const isDown = value < 0
+  const color = inverse ? (isUp ? "text-rose-600 dark:text-rose-400" : isDown ? "text-emerald-600 dark:text-emerald-400" : "text-muted-foreground") : isUp ? "text-emerald-600 dark:text-emerald-400" : isDown ? "text-rose-600 dark:text-rose-400" : "text-muted-foreground"
+  const sign = isUp ? "+" : isDown ? "–" : ""
+  const Icon = isUp ? TrendingUp : isDown ? TrendingDown : MinusIcon
+  return (
+    <span className={`flex items-center gap-1 text-[10px] font-semibold ${color}`}>
+      <Icon className="h-3 w-3" />
+      {sign}{Math.abs(value).toFixed(1)}%
+    </span>
+  )
+}
+
+function MinusIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="5" x2="19" y1="12" y2="12" />
+    </svg>
   )
 }

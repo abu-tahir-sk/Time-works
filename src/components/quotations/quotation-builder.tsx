@@ -1,12 +1,14 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useMemo } from "react"
+import dynamic from "next/dynamic"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { quotationSchema, QuotationFormValues } from "@/lib/quotations/schema"
 import { defaultDesignSettings } from "@/lib/design-system/schema"
 import { QuotationEditor } from "./quotation-editor"
 import { StaticInvoicePreview } from "@/components/invoices/invoice-preview"
+import { InvoicePdf } from "@/components/invoices/invoice-pdf"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import { createOrUpdateQuotation } from "@/actions/quotations"
@@ -19,13 +21,13 @@ import {
   Save,
   Download,
   Check,
+  Loader2,
 } from "lucide-react"
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
+
+const PDFDownloadLink = dynamic(
+  () => import("@react-pdf/renderer").then((mod) => mod.PDFDownloadLink),
+  { ssr: false }
+)
 
 interface QuotationBuilderProps {
   clients: any[]
@@ -38,7 +40,6 @@ type ViewMode = "studio" | "canvas"
 export function QuotationBuilder({ clients, company, initialData }: QuotationBuilderProps) {
   const router = useRouter()
   const [isSaving, setIsSaving] = useState(false)
-  const [previewOpen, setPreviewOpen] = useState(false)
   const [viewMode, setViewMode] = useState<ViewMode>("studio")
   const [localClients, setLocalClients] = useState<any[]>(clients)
 
@@ -129,6 +130,19 @@ export function QuotationBuilder({ clients, company, initialData }: QuotationBui
   }
 
   const formData = form.watch()
+  const pdfDoc = useMemo(
+    () => (
+      <InvoicePdf
+        data={{
+          ...formData,
+          dueDate: formData.validUntil,
+        }}
+        company={company}
+        clients={localClients}
+      />
+    ),
+    [formData, company, localClients]
+  )
 
   return (
     <div className="w-full max-w-full overflow-x-hidden font-sans select-none space-y-6 pb-20">
@@ -186,15 +200,33 @@ export function QuotationBuilder({ clients, company, initialData }: QuotationBui
             </button>
           </div>
 
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setPreviewOpen(true)}
-            className="h-8.5 px-3 text-xs font-semibold border-border/80 shadow-2xs hover:bg-muted"
-          >
-            <Download className="h-3.5 w-3.5 mr-1.5 text-muted-foreground" />
-            Export PDF
-          </Button>
+          {pdfDoc && (
+            <PDFDownloadLink
+              document={pdfDoc}
+              fileName={`timesworks-quotation-${formData.quotationNumber || "draft"}.pdf`}
+            >
+              {({ loading }: any) => (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={loading}
+                  className="h-8.5 px-3 text-xs font-semibold border-border/80 shadow-2xs hover:bg-muted cursor-pointer"
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
+                      Generating...
+                    </>
+                  ) : (
+                    <>
+                      <Download className="h-3.5 w-3.5 mr-1.5 text-muted-foreground" />
+                      Download PDF
+                    </>
+                  )}
+                </Button>
+              )}
+            </PDFDownloadLink>
+          )}
 
           <Button
             variant="outline"
@@ -247,27 +279,6 @@ export function QuotationBuilder({ clients, company, initialData }: QuotationBui
           </div>
         </div>
       )}
-
-      {/* 3. Export PDF Modal Dialog */}
-      <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
-        <DialogContent className="max-w-4xl max-h-[92vh] overflow-y-auto p-4 sm:p-6">
-          <DialogHeader className="pb-3 border-b border-border/60">
-            <DialogTitle className="text-base font-bold text-foreground">
-              Quotation PDF Export & Preview
-            </DialogTitle>
-          </DialogHeader>
-          <div className="py-2">
-            <StaticInvoicePreview
-              data={{
-                ...formData,
-                dueDate: formData.validUntil,
-              }}
-              company={company}
-              clients={localClients}
-            />
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   )
 }

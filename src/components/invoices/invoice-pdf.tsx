@@ -70,11 +70,14 @@ export function InvoicePdf({ data, company, clients }: any) {
   }
 
   const companyDetails = data?.companyDetails || {}
-  const rawCompanyName = companyDetails.name || company?.name
+  const rawCompanyName = companyDetails.name || company?.name || ""
   const resolvedCompanyName =
-    rawCompanyName && !rawCompanyName.includes("'s Company")
-      ? rawCompanyName
-      : "Times Works"
+    (!rawCompanyName || rawCompanyName.toLowerCase().includes("tigitail") || rawCompanyName.toLowerCase().includes("times digital") || rawCompanyName.includes("'s Company"))
+      ? "Times Works"
+      : rawCompanyName
+
+  const rawEmail = companyDetails.email || company?.email || ""
+  const resolvedEmail = (!rawEmail || rawEmail.includes("timesdigitals.com")) ? "billing@timesworks.com" : rawEmail
 
   const mergedCompany = {
     ...company,
@@ -84,10 +87,7 @@ export function InvoicePdf({ data, company, clients }: any) {
       companyDetails.address ||
       company?.address ||
       "Times Works Tower, Suite 400, Redmond, WA 98052, USA",
-    email:
-      companyDetails.email ||
-      company?.email ||
-      "billing@timesworks.com",
+    email: resolvedEmail,
     phone:
       companyDetails.phone ||
       company?.phone ||

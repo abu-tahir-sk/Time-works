@@ -1,13 +1,14 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useMemo } from "react"
+import dynamic from "next/dynamic"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { invoiceSchema, InvoiceFormValues } from "@/lib/invoices/schema"
 import { defaultDesignSettings } from "@/lib/design-system/schema"
 import { InvoiceEditor } from "./invoice-editor"
 import { LivePaperCanvas } from "./live-paper-canvas"
-import { InvoicePreview } from "./invoice-preview"
+import { InvoicePdf } from "./invoice-pdf"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import { createOrUpdateInvoice } from "@/actions/invoices"
@@ -25,13 +26,13 @@ import {
   FileText,
   Columns,
   Share2,
+  Loader2,
 } from "lucide-react"
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
+
+const PDFDownloadLink = dynamic(
+  () => import("@react-pdf/renderer").then((mod) => mod.PDFDownloadLink),
+  { ssr: false }
+)
 
 interface InvoiceBuilderProps {
   clients: any[]
@@ -44,7 +45,6 @@ type ViewMode = "studio" | "canvas" | "split"
 export function InvoiceBuilder({ clients, company, initialData }: InvoiceBuilderProps) {
   const router = useRouter()
   const [isSaving, setIsSaving] = useState(false)
-  const [previewOpen, setPreviewOpen] = useState(false)
   const [viewMode, setViewMode] = useState<ViewMode>("studio")
   const [localClients, setLocalClients] = useState<any[]>(clients)
 
@@ -127,12 +127,11 @@ export function InvoiceBuilder({ clients, company, initialData }: InvoiceBuilder
     }
   }
 
-  const handlePrintPDF = () => {
-    setPreviewOpen(true)
-    setTimeout(() => {
-      window.print()
-    }, 600)
-  }
+  const watchedData = form.watch()
+  const pdfDoc = useMemo(
+    () => <InvoicePdf data={watchedData} company={company} clients={localClients} />,
+    [watchedData, company, localClients]
+  )
 
   return (
     <div className="w-full max-w-full overflow-x-hidden font-sans select-none space-y-6 pb-20">
@@ -202,15 +201,33 @@ export function InvoiceBuilder({ clients, company, initialData }: InvoiceBuilder
             </button>
           </div>
 
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setPreviewOpen(true)}
-            className="h-8.5 px-3 text-xs font-semibold border-border/80 shadow-2xs hover:bg-muted"
-          >
-            <Download className="h-3.5 w-3.5 mr-1.5 text-muted-foreground" />
-            Export PDF
-          </Button>
+          {pdfDoc && (
+            <PDFDownloadLink
+              document={pdfDoc}
+              fileName={`timesworks-invoice-${watchedData.invoiceNumber || "draft"}.pdf`}
+            >
+              {({ loading }: any) => (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={loading}
+                  className="h-8.5 px-3 text-xs font-semibold border-border/80 shadow-2xs hover:bg-muted cursor-pointer"
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
+                      Generating...
+                    </>
+                  ) : (
+                    <>
+                      <Download className="h-3.5 w-3.5 mr-1.5 text-muted-foreground" />
+                      Download PDF
+                    </>
+                  )}
+                </Button>
+              )}
+            </PDFDownloadLink>
+          )}
 
           <Button
             variant="outline"
@@ -282,21 +299,6 @@ export function InvoiceBuilder({ clients, company, initialData }: InvoiceBuilder
           </div>
         </div>
       )}
-
-      {/* 3. Live Print/PDF Dialog */}
-      <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-4 sm:p-6 bg-muted/30">
-          <DialogHeader className="pb-3 border-b">
-            <DialogTitle className="text-base font-bold flex items-center gap-2">
-              <Eye className="h-4 w-4 text-[#c82020]" />
-              <span>Times Works Professional Invoice Preview</span>
-            </DialogTitle>
-          </DialogHeader>
-          <div className="flex justify-center py-2">
-            <InvoicePreview form={form} company={company} clients={localClients} />
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   )
 }

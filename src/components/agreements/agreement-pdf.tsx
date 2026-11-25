@@ -254,7 +254,18 @@ const styles = StyleSheet.create({
 })
 
 export function AgreementPdf({ data, company }: AgreementPdfProps) {
-  const companyInfo = { ...company, ...(data?.companyDetails || {}) }
+  const mergedCompany = { ...company, ...(data?.companyDetails || {}) }
+  const rawCompName = mergedCompany?.name || ""
+  const normalizedCompName = (!rawCompName || rawCompName.toLowerCase().includes("tigitail") || rawCompName.toLowerCase().includes("times digital") || rawCompName.includes("'s Company")) ? "Times Works" : rawCompName
+  const rawCompEmail = mergedCompany?.email || ""
+  const normalizedCompEmail = (!rawCompEmail || rawCompEmail.includes("timesdigitals.com")) ? "billing@timesworks.com" : rawCompEmail
+
+  const companyInfo = {
+    ...mergedCompany,
+    name: normalizedCompName,
+    email: normalizedCompEmail,
+    logoUrl: mergedCompany?.logoUrl || "/logo-v3.jpg",
+  }
   const effectiveDateStr = data?.effectiveDate
     ? format(new Date(data.effectiveDate), "MMMM dd, yyyy")
     : "Upon Execution"

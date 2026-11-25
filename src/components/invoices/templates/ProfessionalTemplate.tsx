@@ -46,9 +46,11 @@ export function ProfessionalTemplate({ data, company, clients, totals, ds }: any
   const clientEmail = selectedClient?.email || data.clientEmail || ""
   const clientAddress = selectedClient?.address || data.clientAddress || ""
 
-  const companyName = company?.name || data.companyDetails?.name || "Times Works"
+  const rawCompanyName = company?.name || data.companyDetails?.name || ""
+  const companyName = (!rawCompanyName || rawCompanyName.toLowerCase().includes("tigitail") || rawCompanyName.toLowerCase().includes("times digital") || rawCompanyName.includes("'s Company")) ? "Times Works" : rawCompanyName
   const companyAddress = company?.address || data.companyDetails?.address || "Times Works Tower, Suite 400, Redmond, WA 98052, USA"
-  const companyEmail = company?.email || data.companyDetails?.email || "billing@timesworks.com"
+  const rawEmail = company?.email || data.companyDetails?.email || ""
+  const companyEmail = (!rawEmail || rawEmail.includes("timesdigitals.com")) ? "billing@timesworks.com" : rawEmail
   const companyPhone = company?.phone || data.companyDetails?.phone || "+1 (800) 555-0199"
 
   const issueDateFormatted = data.issueDate ? format(new Date(data.issueDate), "MMMM d, yyyy") : ""
@@ -117,15 +119,17 @@ export function ProfessionalTemplate({ data, company, clients, totals, ds }: any
     },
     headerRight: {
       width: "42%",
+      flexDirection: "column",
       alignItems: "flex-end",
+      justifyContent: "flex-start",
     },
     documentTitle: {
-      fontSize: 22,
+      fontSize: 20,
       fontFamily: "Helvetica-Bold",
       letterSpacing: 2,
       color: colors.primary,
-      lineHeight: 1.1,
-      marginBottom: 3,
+      lineHeight: 1.2,
+      marginBottom: 6,
       textAlign: "right",
     },
     invoiceNumber: {
@@ -134,6 +138,7 @@ export function ProfessionalTemplate({ data, company, clients, totals, ds }: any
       color: colors.brand,
       letterSpacing: 0.6,
       textAlign: "right",
+      marginTop: 2,
     },
     metaGrid: {
       flexDirection: "row",
