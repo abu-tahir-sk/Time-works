@@ -1,288 +1,739 @@
 "use client"
 
+import React, { useState } from "react"
+import Link from "next/link"
+import Image from "next/image"
 import { Navbar } from "@/components/layout/navbar"
 import { Footer } from "@/components/layout/footer"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { motion, Variants } from "framer-motion"
-import { 
-  FileText, Shield, Zap, CheckCircle2, ArrowRight,
-  Calculator, Lock, Fingerprint, Cloud,
-  Users, PenTool, LayoutTemplate, CreditCard, BarChart3,
-  Bell, History, Settings, FileSignature, Share2, Play, Check, Server
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import {
+  FileText,
+  FileSignature,
+  FileCheck2,
+  Building2,
+  DollarSign,
+  TrendingUp,
+  ShieldCheck,
+  Zap,
+  ArrowRight,
+  CheckCircle2,
+  Lock,
+  Layers,
+  Database,
+  Globe2,
+  Check,
+  ArrowUpRight,
+  Sparkles,
+  ChevronRight,
+  Receipt,
+  PieChart,
+  Sliders,
+  Scale,
+  Users2,
+  Server
 } from "lucide-react"
 
-// Import Mockups
-import { HeroDashboardMockup } from "@/components/mockups/hero-dashboard"
-import { InvoicePreviewMockup } from "@/components/mockups/invoice-preview"
-import { ClientProfileMockup } from "@/components/mockups/client-profile"
-import { AgreementPreviewMockup } from "@/components/mockups/agreement-preview"
-import { AnalyticsDashboardMockup } from "@/components/mockups/analytics-dashboard"
-import { PaymentTrackingMockup } from "@/components/mockups/payment-tracking"
-import { DigitalSignatureMockup } from "@/components/mockups/digital-signature"
-import { TeamRbacMockup } from "@/components/mockups/team-rbac"
-import { AutomationWorkflowMockup } from "@/components/mockups/automation-workflow"
-import { NotificationCenterMockup } from "@/components/mockups/notification-center"
-import { CustomizationPanelMockup } from "@/components/mockups/customization-panel"
-
-const fadeUp: Variants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
-}
-
-const staggerContainer: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1 }
-  }
-}
-
-// Helper for sleek Mac Window container
-const MacWindow = ({ children, className = "" }: { children: React.ReactNode, className?: string }) => (
-  <div className={`relative rounded-xl border border-slate-200/50 dark:border-white/10 bg-white/50 dark:bg-black/50 backdrop-blur-xl shadow-2xl overflow-hidden ${className}`}>
-    <div className="h-10 border-b border-slate-200/50 dark:border-white/10 bg-slate-50/50 dark:bg-white/5 flex items-center px-4 gap-2">
-      <div className="w-3 h-3 rounded-full bg-red-400/80" />
-      <div className="w-3 h-3 rounded-full bg-amber-400/80" />
-      <div className="w-3 h-3 rounded-full bg-green-400/80" />
-    </div>
-    <div className="p-2 sm:p-4">
-      {children}
-    </div>
-  </div>
-)
-
 export default function FeaturesPage() {
+  const [activeTab, setActiveTab] = useState<"invoices" | "quotations" | "agreements" | "ledger" | "security">("invoices")
+
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAFAFA] dark:bg-[#000000] font-sans selection:bg-[#c82020]/20 overflow-x-hidden text-slate-900 dark:text-slate-50">
+    <div className="min-h-screen flex flex-col bg-background font-sans text-foreground selection:bg-[#c82020]/15">
       <Navbar />
+
       <main className="flex-1">
-        
-        {/* 1. HERO SECTION (Vercel/Linear Style) */}
-        <section className="relative w-full pt-40 pb-32 overflow-hidden flex flex-col items-center justify-center min-h-[95vh]">
-          {/* Subtle glowing mesh background */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[800px] opacity-30 dark:opacity-40 pointer-events-none z-0">
-            <div className="absolute inset-0 bg-gradient-to-tr from-[#c82020]/15 via-rose-500/10 to-amber-500/10 blur-[120px] rounded-full" />
-          </div>
-          
-          <div className="container mx-auto px-4 max-w-7xl relative z-10 grid lg:grid-cols-2 gap-16 items-center">
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: "easeOut" }} className="space-y-8">
-              <Badge variant="outline" className="px-4 py-1.5 rounded-full border-slate-200 dark:border-white/10 bg-white/50 dark:bg-white/5 backdrop-blur-md text-slate-600 dark:text-slate-300 font-medium">
-                The Ultimate Operating System
-              </Badge>
-              <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.05] text-balance">
-                Run your business with <br className="hidden lg:block" />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#c82020] via-rose-600 to-[#991b1b]">absolute clarity.</span>
+        {/* 1. MICROSOFT FLUENT EXECUTIVE HERO */}
+        <section className="relative pt-32 pb-20 md:pt-40 md:pb-28 border-b border-border/80 bg-linear-to-b from-muted/30 via-background to-background">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+            <div className="max-w-3xl space-y-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-[#c82020]/10 text-[#c82020] border border-[#c82020]/25">
+                <Building2 className="h-3.5 w-3.5" />
+                <span>Times Works Enterprise Operational Suite</span>
+              </div>
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-foreground leading-[1.12]">
+                Enterprise Financial Operations & Document Automation.
               </h1>
-              <p className="text-lg md:text-xl text-slate-500 dark:text-slate-400 max-w-lg leading-relaxed text-balance">
-                Invoices, quotations, agreements, and client management—meticulously crafted into one unified, lightning-fast workspace.
+              <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-2xl">
+                Engineered for corporate consultancies, agencies, and high-performance businesses. Deliver single-page executive invoices, commercial deal quotations, bilateral legal contracts, and live cash flow accounting without fragmentation.
               </p>
-              <div className="flex flex-wrap gap-4 pt-4">
-                <Button size="lg" className="bg-[#c82020] hover:bg-[#a81a1a] text-white rounded-full px-8 h-12 text-[15px] font-semibold shadow-xl shadow-[#c82020]/25 border-0 transition-transform hover:scale-105">
-                  Start Building Free
-                </Button>
-                <Button size="lg" variant="ghost" className="rounded-full px-8 h-12 text-[15px] font-semibold hover:bg-slate-100 dark:hover:bg-white/10 transition-colors">
-                  <Play className="w-4 h-4 mr-2" /> Watch Demo
-                </Button>
+              <div className="flex flex-wrap items-center gap-3 pt-2">
+                <Link href="/dashboard">
+                  <Button className="h-11 px-7 bg-[#c82020] hover:bg-[#a81a1a] text-white text-xs font-semibold rounded-md shadow-xs">
+                    Launch Workspace
+                    <ArrowRight className="h-4 w-4 ml-2" />
+                  </Button>
+                </Link>
+                <Link href="/templates">
+                  <Button variant="outline" className="h-11 px-6 text-xs font-semibold border-border/80 hover:bg-muted">
+                    Explore A4 Templates
+                  </Button>
+                </Link>
               </div>
-            </motion.div>
-
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }} className="relative perspective-1000">
-              {/* 3D Tilt container simulation */}
-              <div className="transform rotate-y-[-5deg] rotate-x-[5deg] shadow-2xl rounded-xl">
-                <MacWindow className="border-slate-200/60 dark:border-white/10 bg-white/60 dark:bg-black/60 shadow-[0_0_50px_-12px_rgba(0,0,0,0.1)] dark:shadow-[0_0_50px_-12px_rgba(255,255,255,0.05)]">
-                  <HeroDashboardMockup />
-                </MacWindow>
-              </div>
-              
-              {/* Floating notification badges */}
-              <motion.div animate={{ y: [0, -10, 0] }} transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }} className="absolute -left-8 top-16 bg-white/80 dark:bg-[#111] backdrop-blur-xl p-3.5 rounded-2xl shadow-xl border border-slate-200/50 dark:border-white/10 flex items-center gap-3">
-                <div className="bg-green-500/10 p-2 rounded-full"><CheckCircle2 className="w-5 h-5 text-green-500" /></div>
-                <div className="pr-2">
-                  <div className="text-sm font-semibold">Payment cleared</div>
-                  <div className="text-xs text-slate-500">INV-2023 just got paid</div>
-                </div>
-              </motion.div>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* 2. BENTO BOX FEATURE GRID */}
-        <section className="py-32 bg-white dark:bg-[#050505] relative z-10 border-t border-slate-200/50 dark:border-white/5">
-          <div className="container mx-auto px-4 max-w-7xl">
-            <div className="text-center mb-20">
-              <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">Everything you need. Nothing you don't.</h2>
-              <p className="text-slate-500 dark:text-slate-400 text-lg">A meticulously designed ecosystem of tools.</p>
             </div>
-            
-            <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} className="grid grid-cols-1 md:grid-cols-4 gap-4 auto-rows-[240px]">
-              {/* Large Bento Item 1 */}
-              <motion.div variants={fadeUp} className="md:col-span-2 md:row-span-2 group relative p-8 rounded-3xl bg-slate-50 dark:bg-white/[0.02] border border-slate-200/50 dark:border-white/5 overflow-hidden hover:bg-slate-100/50 dark:hover:bg-white/[0.04] transition-colors">
-                <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity"><Calculator className="w-32 h-32" /></div>
-                <div className="h-full flex flex-col">
-                  <div className="w-12 h-12 bg-[#c82020]/10 text-[#c82020] rounded-xl flex items-center justify-center mb-6"><Calculator className="w-6 h-6" /></div>
-                  <h3 className="text-2xl font-bold mb-3 tracking-tight">Smart Invoicing</h3>
-                  <p className="text-slate-500 dark:text-slate-400 text-sm max-w-sm flex-1 leading-relaxed">Create beautiful, professional invoices in seconds. Track statuses, apply taxes automatically, and let clients pay directly via integrated payment links.</p>
-                  <div className="pt-4 flex items-center text-[#c82020] text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0">
-                    Explore Invoices <ArrowRight className="w-4 h-4 ml-1" />
+
+            {/* Microsoft 365 / Azure Portal Style Live Interface Showcase */}
+            <div className="rounded-xl border border-border/80 bg-card shadow-[0_4px_24px_rgba(0,0,0,0.06)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.4)] overflow-hidden">
+              {/* Window Titlebar */}
+              <div className="h-11 bg-muted/60 border-b border-border/70 px-4 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-border" />
+                  <div className="w-3 h-3 rounded-full bg-border" />
+                  <div className="w-3 h-3 rounded-full bg-border" />
+                  <span className="text-xs font-semibold text-muted-foreground ml-3 flex items-center gap-1.5 font-mono">
+                    <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                    timesworks.cloud // executive-financial-ops // live-instance
+                  </span>
+                </div>
+                <div className="hidden sm:flex items-center gap-2 text-[11px] text-muted-foreground">
+                  <span className="px-2 py-0.5 rounded bg-background border border-border/60">Times Works v2.4</span>
+                  <span className="text-emerald-600 font-medium">99.99% Cloud Sync</span>
+                </div>
+              </div>
+
+              {/* Showcase Interior (Realistic Executive Workspace) */}
+              <div className="p-4 sm:p-6 lg:p-8 bg-card space-y-6">
+                {/* Metric Summary Bar */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+                  <div className="p-3.5 rounded-lg border border-border/70 bg-muted/20 space-y-1">
+                    <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider block">YTD Billed Revenue</span>
+                    <div className="text-xl sm:text-2xl font-bold font-mono text-foreground">$142,850.00</div>
+                    <span className="text-[10px] text-emerald-600 font-medium flex items-center gap-1">
+                      <ArrowUpRight className="h-3 w-3" /> +18.4% vs last period
+                    </span>
+                  </div>
+                  <div className="p-3.5 rounded-lg border border-border/70 bg-muted/20 space-y-1">
+                    <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider block">Inflow Collected</span>
+                    <div className="text-xl sm:text-2xl font-bold font-mono text-emerald-600 dark:text-emerald-400">$128,400.00</div>
+                    <span className="text-[10px] text-muted-foreground">92% cash realization</span>
+                  </div>
+                  <div className="p-3.5 rounded-lg border border-border/70 bg-muted/20 space-y-1">
+                    <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider block">Active Documents</span>
+                    <div className="text-xl sm:text-2xl font-bold font-mono text-foreground">84 Issued</div>
+                    <span className="text-[10px] text-muted-foreground">Invoices, Quotes, MSAs</span>
+                  </div>
+                  <div className="p-3.5 rounded-lg border border-border/70 bg-muted/20 space-y-1">
+                    <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider block">Operating Margin</span>
+                    <div className="text-xl sm:text-2xl font-bold font-mono text-indigo-600 dark:text-indigo-400">76.2%</div>
+                    <span className="text-[10px] text-muted-foreground">Automated P&L ledger</span>
                   </div>
                 </div>
-              </motion.div>
 
-              {/* Normal Bento Items */}
-              <motion.div variants={fadeUp} className="md:col-span-2 group relative p-8 rounded-3xl bg-slate-50 dark:bg-white/[0.02] border border-slate-200/50 dark:border-white/5 overflow-hidden hover:bg-slate-100/50 dark:hover:bg-white/[0.04] transition-colors">
-                <div className="w-10 h-10 bg-rose-500/10 text-[#c82020] rounded-xl flex items-center justify-center mb-4"><FileSignature className="w-5 h-5" /></div>
-                <h3 className="text-xl font-bold mb-2 tracking-tight">Digital Agreements</h3>
-                <p className="text-slate-500 dark:text-slate-400 text-sm">Legally binding digital signatures built right in. Get contracts signed instantly without external software.</p>
-              </motion.div>
-
-              <motion.div variants={fadeUp} className="md:col-span-1 group relative p-8 rounded-3xl bg-slate-50 dark:bg-white/[0.02] border border-slate-200/50 dark:border-white/5 overflow-hidden hover:bg-slate-100/50 dark:hover:bg-white/[0.04] transition-colors flex flex-col justify-between">
-                <div className="w-10 h-10 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-xl flex items-center justify-center"><Users className="w-5 h-5" /></div>
-                <div>
-                  <h3 className="text-lg font-bold mb-1 tracking-tight">Client CRM</h3>
-                  <p className="text-slate-500 dark:text-slate-400 text-xs">A unified directory for all your clients.</p>
-                </div>
-              </motion.div>
-
-              <motion.div variants={fadeUp} className="md:col-span-1 group relative p-8 rounded-3xl bg-slate-50 dark:bg-white/[0.02] border border-slate-200/50 dark:border-white/5 overflow-hidden hover:bg-slate-100/50 dark:hover:bg-white/[0.04] transition-colors flex flex-col justify-between">
-                <div className="w-10 h-10 bg-emerald-500/10 text-emerald-500 rounded-xl flex items-center justify-center"><BarChart3 className="w-5 h-5" /></div>
-                <div>
-                  <h3 className="text-lg font-bold mb-1 tracking-tight">Analytics</h3>
-                  <p className="text-slate-500 dark:text-slate-400 text-xs">Real-time revenue insights & metrics.</p>
-                </div>
-              </motion.div>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* 3. CORE SHOWCASE: INVOICING */}
-        <section className="py-32 bg-[#FAFAFA] dark:bg-[#000] relative overflow-hidden">
-          <div className="container mx-auto px-4 max-w-7xl">
-            <div className="grid lg:grid-cols-2 gap-20 items-center">
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="space-y-8 z-10">
-                <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-balance leading-tight">
-                  Invoices that get you paid faster.
-                </h2>
-                <div className="space-y-4">
-                  {[
-                    "Pixel-perfect PDF generation",
-                    "Automated tax and discount calculation",
-                    "One-click client selection from CRM",
-                    "Integrated 'Pay Now' buttons"
-                  ].map((feature, i) => (
-                    <div key={i} className="flex items-center gap-3 text-[15px] text-slate-600 dark:text-slate-300">
-                      <div className="w-5 h-5 rounded-full bg-[#c82020]/10 flex items-center justify-center shrink-0">
-                        <Check className="w-3 h-3 text-[#c82020]" />
+                {/* Split Operational View: Live Document + Activity Stream */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                  {/* Left: Realistic Live Document Preview */}
+                  <div className="lg:col-span-8 rounded-lg border border-border/80 bg-background p-5 sm:p-6 space-y-5 shadow-2xs">
+                    <div className="flex items-start justify-between border-b border-border/60 pb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="relative w-10 h-10 rounded-lg overflow-hidden border border-border/60 shrink-0">
+                          <Image src="/logo-v3.jpg" alt="Times Works Logo" fill className="object-cover" />
+                        </div>
+                        <div>
+                          <div className="text-sm font-bold text-foreground">Times Works Digital Advisory</div>
+                          <div className="text-xs text-muted-foreground">Redmond Towers, Suite 400 • billing@timesworks.com</div>
+                        </div>
                       </div>
-                      {feature}
+                      <div className="text-right">
+                        <div className="text-base font-extrabold font-mono text-[#c82020] uppercase tracking-wide">INVOICE</div>
+                        <div className="text-xs font-mono text-muted-foreground">INV-2026-0184</div>
+                      </div>
                     </div>
-                  ))}
+
+                    {/* Bill To & Metadata */}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                      <div>
+                        <span className="text-[10px] font-bold text-muted-foreground uppercase block">Client Entity</span>
+                        <span className="font-semibold text-foreground">Acme Global Enterprise</span>
+                      </div>
+                      <div>
+                        <span className="text-[10px] font-bold text-muted-foreground uppercase block">Issue Date</span>
+                        <span className="text-foreground">Nov 25, 2026</span>
+                      </div>
+                      <div>
+                        <span className="text-[10px] font-bold text-muted-foreground uppercase block">Payment Terms</span>
+                        <span className="font-medium text-foreground">Net 30 Days</span>
+                      </div>
+                      <div>
+                        <span className="text-[10px] font-bold text-muted-foreground uppercase block">Status</span>
+                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
+                          PAID
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Line Items Table */}
+                    <div className="border border-border/70 rounded-md overflow-hidden text-xs">
+                      <table className="w-full text-left">
+                        <thead className="bg-muted/40 border-b border-border/70 text-[11px] font-semibold text-muted-foreground uppercase">
+                          <tr>
+                            <th className="py-2 px-3">Description</th>
+                            <th className="py-2 px-3 text-center">Qty</th>
+                            <th className="py-2 px-3 text-right">Unit Rate</th>
+                            <th className="py-2 px-3 text-right">Amount</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-border/50 font-sans">
+                          <tr>
+                            <td className="py-2.5 px-3 font-medium text-foreground">Enterprise Cloud Systems Architecture Review</td>
+                            <td className="py-2.5 px-3 text-center font-mono text-muted-foreground">1 Project</td>
+                            <td className="py-2.5 px-3 text-right font-mono">$3,500.00</td>
+                            <td className="py-2.5 px-3 text-right font-mono font-semibold">$3,500.00</td>
+                          </tr>
+                          <tr>
+                            <td className="py-2.5 px-3 font-medium text-foreground">Executive Financial Workflow Automation Deployment</td>
+                            <td className="py-2.5 px-3 text-center font-mono text-muted-foreground">1 System</td>
+                            <td className="py-2.5 px-3 text-right font-mono">$1,800.00</td>
+                            <td className="py-2.5 px-3 text-right font-mono font-semibold">$1,800.00</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* Totals */}
+                    <div className="flex justify-end pt-2">
+                      <div className="w-56 space-y-1.5 text-xs">
+                        <div className="flex justify-between text-muted-foreground">
+                          <span>Subtotal:</span>
+                          <span className="font-mono">$5,300.00</span>
+                        </div>
+                        <div className="flex justify-between text-muted-foreground">
+                          <span>Applicable Tax (10%):</span>
+                          <span className="font-mono">+$530.00</span>
+                        </div>
+                        <div className="flex justify-between font-bold text-sm text-foreground pt-1.5 border-t border-border/80">
+                          <span>Total Settled:</span>
+                          <span className="font-mono text-[#c82020]">$5,830.00</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right: Security & Ledger Feed */}
+                  <div className="lg:col-span-4 space-y-4">
+                    <Card className="border border-border/80 shadow-2xs">
+                      <CardHeader className="py-3 px-4 border-b border-border/60">
+                        <CardTitle className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                          <ShieldCheck className="h-4 w-4 text-[#c82020]" />
+                          Anti-Fraud Security Verification
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="p-4 space-y-3 text-xs">
+                        <div className="flex items-center justify-between">
+                          <span className="text-muted-foreground">Watermark Matrix</span>
+                          <span className="font-semibold text-foreground">Active (45° Angle, 8% Opacity)</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-muted-foreground">Audit Token</span>
+                          <span className="font-mono text-[10px] bg-muted px-1.5 py-0.5 rounded text-foreground">
+                            SHA256:7f4a...9b12
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-muted-foreground">A4 Height Check</span>
+                          <span className="text-emerald-600 font-semibold flex items-center gap-1">
+                            <Check className="h-3 w-3" /> Exact 841.89 pt (1-Page)
+                          </span>
+                        </div>
+                        <div className="pt-2 border-t border-border/60 text-[11px] text-muted-foreground leading-relaxed">
+                          All generated PDFs include tamper-resistant metadata matching Fortune 500 legal standards.
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="border border-border/80 shadow-2xs">
+                      <CardHeader className="py-3 px-4 border-b border-border/60">
+                        <CardTitle className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                          <Layers className="h-4 w-4 text-indigo-500" />
+                          1-Click Quotation Deal Conversion
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="p-4 space-y-2 text-xs">
+                        <p className="text-muted-foreground text-[11px] leading-relaxed">
+                          Commercial scope approved by client? Convert quotation proposals into live legal invoices and ledger records with zero manual copy-pasting.
+                        </p>
+                        <div className="pt-2">
+                          <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#c82020]">
+                            Verified Contract Integrity <CheckCircle2 className="h-3.5 w-3.5" />
+                          </span>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
                 </div>
-              </motion.div>
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="relative z-10 lg:pl-10">
-                <MacWindow>
-                  <InvoicePreviewMockup />
-                </MacWindow>
-              </motion.div>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* 4. DYNAMIC WORKFLOW */}
-        <section className="py-32 bg-white dark:bg-[#050505] border-y border-slate-200/50 dark:border-white/5 text-center overflow-hidden">
-          <div className="container mx-auto px-4 max-w-5xl">
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="mb-20">
-              <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4 text-balance">The seamless lifecycle.</h2>
-              <p className="text-slate-500 dark:text-slate-400 text-lg">From proposal to payment without ever switching tabs.</p>
-            </motion.div>
-            
-            <div className="relative">
-              {/* Animated Connection Line */}
-              <div className="hidden md:block absolute top-1/2 left-[10%] right-[10%] h-[1px] bg-slate-200 dark:bg-slate-800 -translate-y-1/2 z-0 overflow-hidden">
-                <motion.div 
-                  animate={{ x: ["-100%", "200%"] }} 
-                  transition={{ repeat: Infinity, duration: 3, ease: "linear" }}
-                  className="w-1/2 h-full bg-gradient-to-r from-transparent via-[#c82020] to-transparent" 
-                />
+        {/* 2. CORE CAPABILITY PILLARS (MICROSOFT FLUENT GRID) */}
+        <section className="py-20 md:py-28 border-b border-border/80 bg-background">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+            <div className="max-w-3xl space-y-3">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#c82020]">Architectural Capabilities</span>
+              <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-foreground">
+                Engineered for Commercial Precision and Reliability.
+              </h2>
+              <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+                Times Works replaces fragmented point-solutions with an integrated operational environment that scales from solo advisors to corporate billing teams.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* Pillar 1 */}
+              <div className="p-6 rounded-xl border border-border/80 bg-card space-y-4 hover:border-[#c82020]/40 transition-colors shadow-2xs">
+                <div className="w-10 h-10 rounded-lg bg-[#c82020]/10 text-[#c82020] flex items-center justify-center">
+                  <FileText className="h-5 w-5" />
+                </div>
+                <h3 className="text-base font-bold text-foreground">Single-Page Invoicing Engine</h3>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Strict single-page A4 PDF guarantee prevents awkward page overflows. Real-time WYSIWYG paper calculations calculate subtotal, discounts, compound taxes, and amounts due instantly.
+                </p>
+                <ul className="space-y-1.5 text-xs text-muted-foreground pt-1">
+                  <li className="flex items-center gap-2">
+                    <Check className="h-3.5 w-3.5 text-[#c82020]" />
+                    <span>5 Executive templates (Professional, Classic, Minimal)</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="h-3.5 w-3.5 text-[#c82020]" />
+                    <span>Multi-currency support (USD, EUR, GBP, INR, BDT)</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="h-3.5 w-3.5 text-[#c82020]" />
+                    <span>Instant client PDF email dispatch via Resend</span>
+                  </li>
+                </ul>
               </div>
 
-              <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true }} className="grid grid-cols-1 md:grid-cols-4 gap-8 relative z-10">
-                {[
-                  { title: "Quote", icon: FileText, desc: "Send proposal" },
-                  { title: "Accept", icon: CheckCircle2, desc: "Client approves" },
-                  { title: "Invoice", icon: Calculator, desc: "Auto-convert" },
-                  { title: "Paid", icon: CreditCard, desc: "Money received" }
-                ].map((step, i) => (
-                  <motion.div key={i} variants={fadeUp} className="flex flex-col items-center">
-                    <div className="w-16 h-16 bg-white dark:bg-[#111] rounded-2xl shadow-lg shadow-slate-200/50 dark:shadow-black/50 border border-slate-200/50 dark:border-white/10 flex items-center justify-center mb-4 text-slate-700 dark:text-slate-300 relative group">
-                      <div className="absolute inset-0 bg-[#c82020]/0 group-hover:bg-[#c82020]/10 rounded-2xl transition-colors" />
-                      <step.icon className="w-6 h-6 group-hover:text-[#c82020] transition-colors" />
-                    </div>
-                    <div className="font-bold tracking-tight">{step.title}</div>
-                    <div className="text-xs text-slate-500 mt-1">{step.desc}</div>
-                  </motion.div>
-                ))}
-              </motion.div>
-            </div>
-          </div>
-        </section>
-
-        {/* 5. TEAM & SECURITY */}
-        <section className="py-32 bg-[#FAFAFA] dark:bg-[#000] border-b border-slate-200/50 dark:border-white/5">
-          <div className="container mx-auto px-4 max-w-7xl">
-            <div className="grid lg:grid-cols-2 gap-20 items-center">
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="order-2 lg:order-1 relative">
-                <div className="absolute -inset-4 bg-gradient-to-tr from-purple-500/5 to-transparent rounded-3xl blur-2xl z-0" />
-                <MacWindow className="relative z-10">
-                  <TeamRbacMockup />
-                </MacWindow>
-              </motion.div>
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="space-y-8 order-1 lg:order-2 z-10">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-slate-300 font-medium text-xs border border-slate-200 dark:border-white/10">
-                  <Server className="w-3 h-3" /> Enterprise Grade
+              {/* Pillar 2 */}
+              <div className="p-6 rounded-xl border border-border/80 bg-card space-y-4 hover:border-[#c82020]/40 transition-colors shadow-2xs">
+                <div className="w-10 h-10 rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                  <FileSignature className="h-5 w-5" />
                 </div>
-                <h2 className="text-4xl md:text-5xl font-bold tracking-tight leading-tight">
-                  Built for teams. <br />Secured by default.
-                </h2>
-                <p className="text-lg text-slate-500 dark:text-slate-400 leading-relaxed">
-                  Granular role-based access control (RBAC) ensures your team sees exactly what they need to see. Comprehensive audit logs track every action.
+                <h3 className="text-base font-bold text-foreground">Commercial Quotations & Proposals</h3>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Draft commercial project scopes, payment milestones, validity terms, and estimated costs. Clients review clean proposals that transition directly into execution.
                 </p>
-                <div className="grid grid-cols-2 gap-4">
-                  {[
-                    "Owner, Admin, Staff roles",
-                    "Detailed activity logs",
-                    "Document version history",
-                    "End-to-end encryption"
-                  ].map((ft, i) => (
-                    <div key={i} className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300 font-medium">
-                      <Shield className="w-4 h-4 text-slate-400" /> {ft}
-                    </div>
-                  ))}
+                <ul className="space-y-1.5 text-xs text-muted-foreground pt-1">
+                  <li className="flex items-center gap-2">
+                    <Check className="h-3.5 w-3.5 text-indigo-500" />
+                    <span>1-Click Quotation to Invoice deal conversion</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="h-3.5 w-3.5 text-indigo-500" />
+                    <span>Formal P.O. numbers and validity expiry dates</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="h-3.5 w-3.5 text-indigo-500" />
+                    <span>Full itemized scope with units, rates, and tax</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Pillar 3 */}
+              <div className="p-6 rounded-xl border border-border/80 bg-card space-y-4 hover:border-[#c82020]/40 transition-colors shadow-2xs">
+                <div className="w-10 h-10 rounded-lg bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center">
+                  <Scale className="h-5 w-5" />
                 </div>
-              </motion.div>
+                <h3 className="text-base font-bold text-foreground">Bilateral Legal Agreements & NDAs</h3>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Generate Master Services Agreements (MSA), Non-Disclosure Agreements (NDA), and Scope of Work contracts with formal bilateral signature blocks and jurisdiction clauses.
+                </p>
+                <ul className="space-y-1.5 text-xs text-muted-foreground pt-1">
+                  <li className="flex items-center gap-2">
+                    <Check className="h-3.5 w-3.5 text-rose-500" />
+                    <span>Pre-drafted legal covenants and IP protection</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="h-3.5 w-3.5 text-rose-500" />
+                    <span>Bilateral Provider and Client execution lines</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="h-3.5 w-3.5 text-rose-500" />
+                    <span>Strict 1-page compact layout without spillover</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Pillar 4 */}
+              <div className="p-6 rounded-xl border border-border/80 bg-card space-y-4 hover:border-[#c82020]/40 transition-colors shadow-2xs">
+                <div className="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                  <TrendingUp className="h-5 w-5" />
+                </div>
+                <h3 className="text-base font-bold text-foreground">Company Ledger & Cash Flow</h3>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Real-time operating ledger aggregates verified client invoice payments against business expenses, vendor invoices, and overheads to calculate net operating margins.
+                </p>
+                <ul className="space-y-1.5 text-xs text-muted-foreground pt-1">
+                  <li className="flex items-center gap-2">
+                    <Check className="h-3.5 w-3.5 text-emerald-500" />
+                    <span>Automatic Profit & Loss and net margin computation</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="h-3.5 w-3.5 text-emerald-500" />
+                    <span>Category breakdown: Payroll, Software, Legal, Ops</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="h-3.5 w-3.5 text-emerald-500" />
+                    <span>Export CSV ledger reports for external accountants</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Pillar 5 */}
+              <div className="p-6 rounded-xl border border-border/80 bg-card space-y-4 hover:border-[#c82020]/40 transition-colors shadow-2xs">
+                <div className="w-10 h-10 rounded-lg bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center">
+                  <ShieldCheck className="h-5 w-5" />
+                </div>
+                <h3 className="text-base font-bold text-foreground">Anti-Counterfeit Watermark Matrix</h3>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Eliminate invoice spoofing and contract tampering. Configure corporate logo or text watermarking with customizable diagonal rotation, opacity, and dense tiling.
+                </p>
+                <ul className="space-y-1.5 text-xs text-muted-foreground pt-1">
+                  <li className="flex items-center gap-2">
+                    <Check className="h-3.5 w-3.5 text-purple-500" />
+                    <span>Live 4x4 matrix tiling across paper background</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="h-3.5 w-3.5 text-purple-500" />
+                    <span>Custom opacity (3% to 20%) and custom angles</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="h-3.5 w-3.5 text-purple-500" />
+                    <span>Cryptographic audit stamps on every PDF export</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Pillar 6 */}
+              <div className="p-6 rounded-xl border border-border/80 bg-card space-y-4 hover:border-[#c82020]/40 transition-colors shadow-2xs">
+                <div className="w-10 h-10 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center">
+                  <Database className="h-5 w-5" />
+                </div>
+                <h3 className="text-base font-bold text-foreground">Serverless Cloud Infrastructure</h3>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Built on high-availability Neon PostgreSQL, Prisma ORM, and Next.js 16. Multi-tenant data isolation ensures company secrets and customer records remain strictly segregated.
+                </p>
+                <ul className="space-y-1.5 text-xs text-muted-foreground pt-1">
+                  <li className="flex items-center gap-2">
+                    <Check className="h-3.5 w-3.5 text-amber-500" />
+                    <span>Zero data loss with automated relational backups</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="h-3.5 w-3.5 text-amber-500" />
+                    <span>Super Admin governance and company telemetry</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="h-3.5 w-3.5 text-amber-500" />
+                    <span>JWT session management and secure authentication</span>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* 7. FINAL CTA */}
-        <section className="py-24 md:py-32 relative overflow-hidden text-center bg-gradient-to-r from-[#c82020] via-[#a81a1a] to-[#880e0e] text-white">
-          <div className="container mx-auto px-4 max-w-3xl space-y-8 relative z-10">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-balance leading-tight text-white">
-              Ready to modernize your workflow?
+        {/* 3. INTERACTIVE CAPABILITY TOUR (FLUENT SEGMENTED CONTROL) */}
+        <section className="py-20 md:py-28 border-b border-border/80 bg-muted/20">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+            <div className="text-center max-w-2xl mx-auto space-y-3">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#c82020]">System Tour</span>
+              <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-foreground">
+                Deep Dive into the Operational Workflow.
+              </h2>
+              <p className="text-xs sm:text-sm text-muted-foreground">
+                Click across the core subsystems to inspect their functional architecture and enterprise advantages.
+              </p>
+            </div>
+
+            {/* Segmented Control Buttons */}
+            <div className="flex flex-wrap items-center justify-center gap-2 bg-background p-1.5 rounded-xl border border-border/80 shadow-2xs max-w-3xl mx-auto">
+              {[
+                { id: "invoices", label: "Invoices & Billing", icon: FileText },
+                { id: "quotations", label: "Quotations & Scopes", icon: FileSignature },
+                { id: "agreements", label: "Legal Agreements", icon: Scale },
+                { id: "ledger", label: "Operating Ledger", icon: TrendingUp },
+                { id: "security", label: "Watermark Security", icon: ShieldCheck },
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id as any)}
+                  className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold transition-all ${
+                    activeTab === tab.id
+                      ? "bg-[#c82020] text-white shadow-xs"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                  }`}
+                >
+                  <tab.icon className="h-3.5 w-3.5" />
+                  <span>{tab.label}</span>
+                </button>
+              ))}
+            </div>
+
+            {/* Tab Details Display */}
+            <div className="max-w-4xl mx-auto rounded-xl border border-border/80 bg-card p-6 sm:p-8 shadow-xs">
+              {activeTab === "invoices" && (
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between border-b border-border/60 pb-4">
+                    <div>
+                      <h3 className="text-lg font-bold text-foreground">Executive Invoicing System</h3>
+                      <p className="text-xs text-muted-foreground">Deterministic single-page PDF rendering for corporate accounts.</p>
+                    </div>
+                    <span className="px-2.5 py-1 rounded bg-[#c82020]/10 text-[#c82020] font-semibold text-xs border border-[#c82020]/20">
+                      React-PDF 4.9 Core
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                    <div className="p-4 rounded-lg border border-border/70 bg-muted/20 space-y-2">
+                      <span className="font-bold text-foreground block">Real-time Calculation Engine</span>
+                      <p className="text-muted-foreground leading-relaxed">
+                        Line item quantities, unit rates, flat/percentage discounts, and custom tax percentages automatically sum up in live client memory with zero rounding errors.
+                      </p>
+                    </div>
+                    <div className="p-4 rounded-lg border border-border/70 bg-muted/20 space-y-2">
+                      <span className="font-bold text-foreground block">Zero-Spillover Architecture</span>
+                      <p className="text-muted-foreground leading-relaxed">
+                        Compact table layouts, measured typography, and padding guards ensure your invoices never split into a 2-page mess when sending to VIP clients.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="pt-2 flex justify-end">
+                    <Link href="/dashboard/invoices/new">
+                      <Button size="sm" className="bg-[#c82020] hover:bg-[#a81a1a] text-white text-xs font-semibold">
+                        Try Invoice Generator
+                        <ChevronRight className="h-4 w-4 ml-1" />
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === "quotations" && (
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between border-b border-border/60 pb-4">
+                    <div>
+                      <h3 className="text-lg font-bold text-foreground">Commercial Quotations & Proposals</h3>
+                      <p className="text-xs text-muted-foreground">Draft and submit structured bids with automated deal conversion.</p>
+                    </div>
+                    <span className="px-2.5 py-1 rounded bg-indigo-50 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300 font-semibold text-xs border border-indigo-200">
+                      1-Click Pipeline
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                    <div className="p-4 rounded-lg border border-border/70 bg-muted/20 space-y-2">
+                      <span className="font-bold text-foreground block">Proposal Deal Flow</span>
+                      <p className="text-muted-foreground leading-relaxed">
+                        Send formal quotations with validity periods (e.g. 30 days) and explicit payment terms (50% upfront, 50% milestone).
+                      </p>
+                    </div>
+                    <div className="p-4 rounded-lg border border-border/70 bg-muted/20 space-y-2">
+                      <span className="font-bold text-foreground block">Lossless Conversion</span>
+                      <p className="text-muted-foreground leading-relaxed">
+                        Click "Convert to Invoice" on any approved quote to copy all line items, client details, and tax configs instantly into an active invoice.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="pt-2 flex justify-end">
+                    <Link href="/dashboard/quotations/new">
+                      <Button size="sm" className="bg-[#c82020] hover:bg-[#a81a1a] text-white text-xs font-semibold">
+                        Draft a Quotation
+                        <ChevronRight className="h-4 w-4 ml-1" />
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === "agreements" && (
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between border-b border-border/60 pb-4">
+                    <div>
+                      <h3 className="text-lg font-bold text-foreground">Bilateral Legal Contracts & MSAs</h3>
+                      <p className="text-xs text-muted-foreground">Binding service agreements and NDAs configured for single-page signing.</p>
+                    </div>
+                    <span className="px-2.5 py-1 rounded bg-rose-50 text-rose-700 dark:bg-rose-950 dark:text-rose-300 font-semibold text-xs border border-rose-200">
+                      Enterprise Legal
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                    <div className="p-4 rounded-lg border border-border/70 bg-muted/20 space-y-2">
+                      <span className="font-bold text-foreground block">7 Core Legal Provisions</span>
+                      <p className="text-muted-foreground leading-relaxed">
+                        Pre-loaded clauses covering Scope of Work, Term, Payment Terms, Intellectual Property, Confidentiality, Termination, and Governing Law.
+                      </p>
+                    </div>
+                    <div className="p-4 rounded-lg border border-border/70 bg-muted/20 space-y-2">
+                      <span className="font-bold text-foreground block">Dual Signature Protocol</span>
+                      <p className="text-muted-foreground leading-relaxed">
+                        Dual columns for Authorized Representative execution (Service Provider and Counterparty Client) with dates and corporate stamps.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="pt-2 flex justify-end">
+                    <Link href="/dashboard/agreements/new">
+                      <Button size="sm" className="bg-[#c82020] hover:bg-[#a81a1a] text-white text-xs font-semibold">
+                        Create Legal Agreement
+                        <ChevronRight className="h-4 w-4 ml-1" />
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === "ledger" && (
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between border-b border-border/60 pb-4">
+                    <div>
+                      <h3 className="text-lg font-bold text-foreground">Corporate Operating Ledger</h3>
+                      <p className="text-xs text-muted-foreground">Unified cash flow balance, expense tracking, and P&L accounting.</p>
+                    </div>
+                    <span className="px-2.5 py-1 rounded bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300 font-semibold text-xs border border-emerald-200">
+                      Real-time Accounting
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                    <div className="p-4 rounded-lg border border-border/70 bg-muted/20 space-y-2">
+                      <span className="font-bold text-foreground block">Operating Margin Calculation</span>
+                      <p className="text-muted-foreground leading-relaxed">
+                        Matches collected invoice payments against operational overheads (salaries, software, travel, office) to yield your exact net margin.
+                      </p>
+                    </div>
+                    <div className="p-4 rounded-lg border border-border/70 bg-muted/20 space-y-2">
+                      <span className="font-bold text-foreground block">Tax Season Preparation</span>
+                      <p className="text-muted-foreground leading-relaxed">
+                        Categorized expenditures with vendor notes and receipt attachments ready for 1-click CSV spreadsheet export.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="pt-2 flex justify-end">
+                    <Link href="/dashboard/expenses">
+                      <Button size="sm" className="bg-[#c82020] hover:bg-[#a81a1a] text-white text-xs font-semibold">
+                        Open Ledger
+                        <ChevronRight className="h-4 w-4 ml-1" />
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === "security" && (
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between border-b border-border/60 pb-4">
+                    <div>
+                      <h3 className="text-lg font-bold text-foreground">Anti-Counterfeit Protection System</h3>
+                      <p className="text-xs text-muted-foreground">Tamper-evident watermark tiling and verification hashes.</p>
+                    </div>
+                    <span className="px-2.5 py-1 rounded bg-purple-50 text-purple-700 dark:bg-purple-950 dark:text-purple-300 font-semibold text-xs border border-purple-200">
+                      Fraud Prevention
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                    <div className="p-4 rounded-lg border border-border/70 bg-muted/20 space-y-2">
+                      <span className="font-bold text-foreground block">Dense Watermark Grid</span>
+                      <p className="text-muted-foreground leading-relaxed">
+                        Watermarks are mathematically tiled behind text and tables, preventing unauthorized modifications and PDF screenshot manipulation.
+                      </p>
+                    </div>
+                    <div className="p-4 rounded-lg border border-border/70 bg-muted/20 space-y-2">
+                      <span className="font-bold text-foreground block">Custom Brand Calibration</span>
+                      <p className="text-muted-foreground leading-relaxed">
+                        Fine-tune opacity (from faint 5% watermark to 18% bold brand mark) and rotation angle in your Company Workspace Settings.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="pt-2 flex justify-end">
+                    <Link href="/dashboard/settings">
+                      <Button size="sm" className="bg-[#c82020] hover:bg-[#a81a1a] text-white text-xs font-semibold">
+                        Configure Security Settings
+                        <ChevronRight className="h-4 w-4 ml-1" />
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* 4. TECHNICAL SPECIFICATIONS (MICROSOFT AZURE STYLE SPECS MATRIX) */}
+        <section className="py-20 md:py-28 border-b border-border/80 bg-background">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+            <div className="space-y-2">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#c82020]">Technical Architecture</span>
+              <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
+                Platform Specifications & Operational Standards
+              </h2>
+            </div>
+
+            <div className="rounded-xl border border-border/80 overflow-hidden shadow-2xs">
+              <table className="w-full text-xs text-left">
+                <thead className="bg-muted/50 border-b border-border/80 text-[11px] font-semibold text-muted-foreground uppercase">
+                  <tr>
+                    <th className="py-3 px-4 w-1/3">Capability Subsystem</th>
+                    <th className="py-3 px-4 w-1/3">Times Works Implementation</th>
+                    <th className="py-3 px-4 w-1/3">Operational Benefit</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border/60">
+                  <tr>
+                    <td className="py-3 px-4 font-semibold text-foreground">PDF Rendering Engine</td>
+                    <td className="py-3 px-4 text-muted-foreground">@react-pdf/renderer 4.9.0 with fixed A4 dimensions</td>
+                    <td className="py-3 px-4 text-emerald-600 dark:text-emerald-400 font-medium">Deterministic single-page guarantee without text split</td>
+                  </tr>
+                  <tr>
+                    <td className="py-3 px-4 font-semibold text-foreground">Cloud Database Architecture</td>
+                    <td className="py-3 px-4 text-muted-foreground">Neon Serverless PostgreSQL with Prisma ORM</td>
+                    <td className="py-3 px-4 text-emerald-600 dark:text-emerald-400 font-medium">Auto-scaling, instant schema branching, zero data loss</td>
+                  </tr>
+                  <tr>
+                    <td className="py-3 px-4 font-semibold text-foreground">Document Pipeline</td>
+                    <td className="py-3 px-4 text-muted-foreground">1-Click Quotation to Invoice Conversion Action</td>
+                    <td className="py-3 px-4 text-emerald-600 dark:text-emerald-400 font-medium">Eliminates re-keying line items upon contract closing</td>
+                  </tr>
+                  <tr>
+                    <td className="py-3 px-4 font-semibold text-foreground">Accounting Architecture</td>
+                    <td className="py-3 px-4 text-muted-foreground">Inflow (Invoice Payments) vs. Outflow (Operating Expenses)</td>
+                    <td className="py-3 px-4 text-emerald-600 dark:text-emerald-400 font-medium">Live P&L statement, Net Margin %, and Cash Balance</td>
+                  </tr>
+                  <tr>
+                    <td className="py-3 px-4 font-semibold text-foreground">Security & Watermarking</td>
+                    <td className="py-3 px-4 text-muted-foreground">4x4 SVG & PNG Canvas Tiling with Dynamic Opacity</td>
+                    <td className="py-3 px-4 text-emerald-600 dark:text-emerald-400 font-medium">Prevents client tampering, forgery, and invoice fraud</td>
+                  </tr>
+                  <tr>
+                    <td className="py-3 px-4 font-semibold text-foreground">Multi-Tenant Governance</td>
+                    <td className="py-3 px-4 text-muted-foreground">Scoped Company Foreign Keys with NextAuth Role Guard</td>
+                    <td className="py-3 px-4 text-emerald-600 dark:text-emerald-400 font-medium">Strict tenant boundary isolation between companies</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        {/* 5. ENTERPRISE CTA BANNER (MICROSOFT STYLE) */}
+        <section className="py-16 md:py-24 bg-gradient-to-r from-[#c82020] via-[#a81a1a] to-[#880e0e] text-white">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-6">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white leading-tight">
+              Bring Commercial Precision to Your Business Documents.
             </h2>
-            <p className="text-lg md:text-xl text-white/90 font-medium max-w-xl mx-auto leading-relaxed">
-              Join thousands of businesses managing their documents with Times Works today.
+            <p className="text-sm sm:text-base text-white/90 max-w-xl mx-auto leading-relaxed">
+              Start creating institutional-grade invoices, quotations, and bilateral agreements today with zero artificial limits.
             </p>
-            <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Button size="lg" className="w-full sm:w-auto bg-white hover:bg-white/95 text-[#c82020] rounded-full px-10 h-14 text-lg font-bold shadow-2xl transition-transform hover:scale-105">
-                Start Building Free
-              </Button>
+            <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+              <Link href="/register">
+                <Button className="h-11 px-8 bg-white hover:bg-white/95 text-[#c82020] text-xs font-bold rounded-md shadow-md transition-all">
+                  Create Workspace Account
+                </Button>
+              </Link>
+              <Link href="/dashboard">
+                <Button variant="outline" className="h-11 px-6 text-xs font-semibold border-white/30 text-white hover:bg-white/10">
+                  Open Live Dashboard
+                </Button>
+              </Link>
             </div>
           </div>
         </section>
-
       </main>
-      
+
       <Footer />
     </div>
   )
