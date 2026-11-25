@@ -11,6 +11,7 @@ import {
   ShieldCheck,
   Building2,
   Wallet,
+  Settings,
 } from "lucide-react"
 
 export interface SidebarItem {
@@ -89,6 +90,11 @@ export const SIDEBAR_SECTIONS: SidebarSection[] = [
   {
     group: "Administration",
     items: [
+      {
+        title: "Workspace Settings",
+        href: "/dashboard/settings",
+        icon: Settings,
+      },
       {
         title: "Admin Portal",
         href: "/admin",

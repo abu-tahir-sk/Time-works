@@ -48,10 +48,10 @@ export function Navbar() {
   const navLinks = [
     { href: "/", label: "Home" },
     { href: "/features", label: "Features" },
-    { href: "/dashboard/invoices", label: "Invoices" },
-    { href: "/dashboard/quotations", label: "Quotations" },
-    { href: "/dashboard/expenses", label: "Ledger" },
-    { href: "/dashboard/agreements", label: "Agreements" },
+    { href: "/pricing", label: "Pricing" },
+    { href: "/templates", label: "Templates" },
+    { href: "/faq", label: "FAQ" },
+    { href: "/contact", label: "Contact" },
     ...(isSuperAdmin ? [{ href: "/admin", label: "Admin" }] : []),
   ]
 

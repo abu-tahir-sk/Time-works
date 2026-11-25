@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Plus, FileSignature, Clock, CheckCircle2, Search, ExternalLink } from "lucide-react"
 import { format } from "date-fns"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { ConvertQuotationButton } from "@/components/quotations/convert-quotation-button"
 
 export const metadata = {
   title: "Quotations | Times Works",
@@ -160,11 +161,18 @@ export default async function QuotationsPage() {
                       </span>
                     </td>
                     <td className="py-3 px-4 text-right">
-                      <Link href={`/quote/${quote.id}`} target="_blank">
-                        <Button variant="ghost" size="sm" className="h-7 text-[11px] px-2 text-[#c82020] hover:bg-rose-50 dark:hover:bg-rose-950/40">
-                          Client View <ExternalLink className="h-3 w-3 ml-1" />
-                        </Button>
-                      </Link>
+                      <div className="flex items-center justify-end gap-1.5">
+                        <ConvertQuotationButton
+                          quotationId={quote.id}
+                          quotationNumber={quote.quotationNumber}
+                          status={quote.status}
+                        />
+                        <Link href={`/quote/${quote.id}`} target="_blank">
+                          <Button variant="ghost" size="sm" className="h-7 text-[11px] px-2 text-[#c82020] hover:bg-rose-50 dark:hover:bg-rose-950/40">
+                            Client View <ExternalLink className="h-3 w-3 ml-1" />
+                          </Button>
+                        </Link>
+                      </div>
                     </td>
                   </tr>
                 ))}
