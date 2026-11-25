@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic"
 
 export const metadata = {
   title: "Admin Portal | DocuFlow Enterprise",
-  description: "Enterprise Super Admin Control Center: User management, subscription tiers, and platform telemetry.",
+  description: "Enterprise Super Admin Control Center: User governance, platform telemetry, and financial metrics.",
 }
 
 export default async function AdminPage() {

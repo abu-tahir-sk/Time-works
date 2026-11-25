@@ -6,7 +6,7 @@ import { requireSuperAdmin } from "@/lib/auth/utils"
 
 export async function getAdminOverview() {
   try {
-    const user = await requireSuperAdmin()
+    await requireSuperAdmin()
 
     // Fetch system-wide counts
     const [
@@ -41,17 +41,6 @@ export async function getAdminOverview() {
       }),
     ])
 
-    // Subscription metrics
-    const proUsersCount = await prisma.user.count({
-      where: { plan: "PRO" },
-    })
-    const enterpriseUsersCount = await prisma.user.count({
-      where: { plan: "ENTERPRISE" },
-    })
-    const freeUsersCount = await prisma.user.count({
-      where: { plan: "FREE" },
-    })
-
     // Invoices financial total
     const invoiceSums = await prisma.invoice.aggregate({
       _sum: {
@@ -63,9 +52,6 @@ export async function getAdminOverview() {
     const totalSystemInvoiced = invoiceSums._sum.total || 0
     const totalSystemCollected = invoiceSums._sum.amountPaid || 0
 
-    // Estimated Platform MRR ($29 for Pro, $99 for Enterprise)
-    const estimatedMRR = proUsersCount * 29 + enterpriseUsersCount * 99
-
     return {
       success: true,
       stats: {
@@ -75,11 +61,6 @@ export async function getAdminOverview() {
         totalQuotations,
         totalAgreements,
         totalExpenses,
-        proUsersCount,
-        enterpriseUsersCount,
-        freeUsersCount,
-        premiumSubscribers: proUsersCount + enterpriseUsersCount,
-        estimatedMRR,
         totalSystemInvoiced,
         totalSystemCollected,
       },
@@ -97,11 +78,6 @@ export async function getAdminOverview() {
         totalQuotations: 0,
         totalAgreements: 0,
         totalExpenses: 0,
-        proUsersCount: 0,
-        enterpriseUsersCount: 0,
-        freeUsersCount: 0,
-        premiumSubscribers: 0,
-        estimatedMRR: 0,
         totalSystemInvoiced: 0,
         totalSystemCollected: 0,
       },
@@ -110,9 +86,9 @@ export async function getAdminOverview() {
   }
 }
 
-export async function getAdminUsersList(searchQuery?: string, planFilter?: string) {
+export async function getAdminUsersList(searchQuery?: string, roleFilter?: string) {
   try {
-    const user = await requireSuperAdmin()
+    await requireSuperAdmin()
 
     const whereClause: any = {}
 
@@ -123,8 +99,8 @@ export async function getAdminUsersList(searchQuery?: string, planFilter?: strin
       ]
     }
 
-    if (planFilter && planFilter !== "ALL") {
-      whereClause.plan = planFilter
+    if (roleFilter && roleFilter !== "ALL") {
+      whereClause.role = roleFilter
     }
 
     const users = await prisma.user.findMany({
@@ -137,7 +113,6 @@ export async function getAdminUsersList(searchQuery?: string, planFilter?: strin
         image: true,
         role: true,
         plan: true,
-        planExpiresAt: true,
         createdAt: true,
         emailVerified: true,
         _count: {
@@ -158,33 +133,27 @@ export async function getAdminUsersList(searchQuery?: string, planFilter?: strin
   }
 }
 
-export async function updateUserPlan(userId: string, newPlan: "FREE" | "PRO" | "ENTERPRISE", newRole?: "USER" | "ADMIN") {
+export async function updateUserRole(userId: string, newRole: "USER" | "ADMIN") {
   try {
-    const user = await requireSuperAdmin()
-
-    const data: any = { plan: newPlan }
-    if (newRole) {
-      data.role = newRole
-    }
-
-    // Set expiry to 1 year from now if upgrading
-    if (newPlan !== "FREE") {
-      const expiry = new Date()
-      expiry.setFullYear(expiry.getFullYear() + 1)
-      data.planExpiresAt = expiry
-    } else {
-      data.planExpiresAt = null
-    }
+    await requireSuperAdmin()
 
     const updatedUser = await prisma.user.update({
       where: { id: userId },
-      data,
+      data: { role: newRole },
     })
 
     revalidatePath("/dashboard/admin")
     return { success: true, user: updatedUser }
   } catch (error: any) {
-    console.error("updateUserPlan error:", error)
-    return { success: false, error: error.message || "Failed to update user plan" }
+    console.error("updateUserRole error:", error)
+    return { success: false, error: error.message || "Failed to update user role" }
   }
+}
+
+// Retained for backward compatibility
+export async function updateUserPlan(userId: string, newPlan?: string, newRole?: "USER" | "ADMIN") {
+  if (newRole) {
+    return updateUserRole(userId, newRole)
+  }
+  return { success: true }
 }

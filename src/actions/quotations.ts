@@ -4,7 +4,6 @@ import { requireUser, getUserCompany } from "@/lib/auth/utils"
 import { prisma } from "@/lib/prisma"
 import { quotationSchema, QuotationFormValues } from "@/lib/quotations/schema"
 import { revalidatePath } from "next/cache"
-import { checkUserCanCreateDocument } from "@/lib/subscriptions/limits"
 import { calculateInvoiceTotals, InvoiceItemData } from "@/lib/invoices/calculations"
 
 export async function createOrUpdateQuotation(data: QuotationFormValues) {
@@ -45,13 +44,6 @@ export async function createOrUpdateQuotation(data: QuotationFormValues) {
                     logoUrl: validatedData.companyDetails.logoUrl,
                 }
             })
-        }
-
-        if (!validatedData.id) {
-            const limitCheck = await checkUserCanCreateDocument(user.id)
-            if (!limitCheck.allowed) {
-                return { success: false, error: limitCheck.message }
-            }
         }
 
         if (validatedData.id) {
@@ -114,11 +106,6 @@ export async function convertQuotationToInvoice(quotationId: string) {
 
         if (!quotation) {
             return { success: false, error: "Quotation not found" }
-        }
-
-        const limitCheck = await checkUserCanCreateDocument(user.id)
-        if (!limitCheck.allowed) {
-            return { success: false, error: limitCheck.message }
         }
 
         // Calculate totals

@@ -69,7 +69,7 @@ export default function AdminPortalLayout({ children }: { children: React.ReactN
             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-white/70" />
             <input
               type="text"
-              placeholder="Search users, subscriptions, tenants, audit logs..."
+              placeholder="Search users, tenants, audit logs..."
               className="w-full h-7.5 rounded bg-white/15 focus:bg-white text-white focus:text-foreground placeholder:text-white/70 text-xs pl-8 pr-3 border border-transparent focus:border-white/30 focus:outline-none transition-all"
             />
           </div>
@@ -145,7 +145,7 @@ export default function AdminPortalLayout({ children }: { children: React.ReactN
               className="flex items-center gap-2.5 px-3 py-2 rounded-md text-muted-foreground hover:bg-muted/70 hover:text-foreground transition-colors"
             >
               <CreditCard className="h-4 w-4" />
-              <span>Subscriptions & MRR</span>
+              <span>Financial Telemetry</span>
             </Link>
 
             <Link

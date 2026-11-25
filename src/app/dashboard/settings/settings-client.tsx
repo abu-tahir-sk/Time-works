@@ -375,9 +375,9 @@ export function SettingsClient({ initialCompany, user }: SettingsClientProps) {
         {activeTab === "security" && (
           <Card className="border border-border/80 shadow-xs rounded-xl">
             <CardHeader className="pb-4">
-              <CardTitle className="text-sm font-bold text-foreground">Security & Subscription</CardTitle>
+              <CardTitle className="text-sm font-bold text-foreground">Security & Workspace Governance</CardTitle>
               <CardDescription className="text-xs">
-                User access privileges, plan quotas, and multi-tenant isolation.
+                User access privileges, authentication telemetry, and multi-tenant isolation.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -388,10 +388,10 @@ export function SettingsClient({ initialCompany, user }: SettingsClientProps) {
                   <span className="block text-muted-foreground text-[11px]">{user?.email}</span>
                 </div>
                 <div>
-                  <span className="text-[10px] uppercase font-bold text-muted-foreground block">Subscription Tier</span>
+                  <span className="text-[10px] uppercase font-bold text-muted-foreground block">Workspace Access</span>
                   <span className="inline-flex items-center gap-1 font-bold text-emerald-600 dark:text-emerald-400">
                     <Sparkles className="w-3.5 h-3.5" />
-                    {user?.plan || "PRO"} Plan
+                    Unlimited Full Access
                   </span>
                 </div>
                 <div>

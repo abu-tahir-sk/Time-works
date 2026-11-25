@@ -4,7 +4,6 @@ import { requireUser } from "@/lib/auth/utils"
 import { prisma } from "@/lib/prisma"
 import { agreementSchema, AgreementFormValues } from "@/lib/agreements/schema"
 import { revalidatePath } from "next/cache"
-import { checkUserCanCreateDocument } from "@/lib/subscriptions/limits"
 
 export async function createOrUpdateAgreement(data: AgreementFormValues) {
     try {
@@ -51,13 +50,6 @@ export async function createOrUpdateAgreement(data: AgreementFormValues) {
             },
             select: { id: true },
         })
-
-        if (!existing) {
-            const limitCheck = await checkUserCanCreateDocument(user.id)
-            if (!limitCheck.allowed) {
-                return { success: false, error: limitCheck.message }
-            }
-        }
 
         if (existing) {
             await prisma.agreement.update({

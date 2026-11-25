@@ -382,7 +382,7 @@ export default function HomePage() {
                 </div>
                 <h3 className="text-sm font-bold text-foreground">Dedicated Admin Center</h3>
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  Centralized control to monitor registered accounts, manage Pro and Enterprise subscriptions, and track platform MRR.
+                  Centralized control to monitor registered accounts, multi-tenant company organizations, and platform financial telemetry.
                 </p>
               </div>
 
@@ -412,7 +412,7 @@ export default function HomePage() {
                 Predictable Pricing for High-Performance Workspaces.
               </h2>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                All users receive immediate access to the workspace and ledger tools. Choose Free to get started with up to 20 documents, or unlock Pro for unlimited PDF generation.
+                All users receive immediate access to the workspace and ledger tools. Enjoy unlimited PDF generation, full company ledger, and high-performance accounting.
               </p>
             </div>
 
