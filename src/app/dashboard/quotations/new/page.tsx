@@ -15,7 +15,7 @@ export default async function NewQuotationPage() {
     const company = companyRes.success && companyRes.company ? companyRes.company : null
 
     return (
-        <div className="-m-4 md:-m-6 lg:-m-8 h-[calc(100vh-60px)]">
+        <div className="w-full max-w-full overflow-x-hidden">
             <QuotationBuilder clients={clients} company={company} />
         </div>
     )
