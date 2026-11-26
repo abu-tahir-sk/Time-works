@@ -2,13 +2,7 @@ import { NextResponse } from "next/server"
 import bcrypt from "bcryptjs"
 import { prisma } from "@/lib/prisma"
 import { sendVerificationEmail } from "@/lib/email"
-import { v2 as cloudinary } from "cloudinary"
-
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-})
+import { uploadToImgBB } from "@/lib/imgbb"
 
 export async function POST(req: Request) {
   try {
@@ -23,14 +17,7 @@ export async function POST(req: Request) {
 
     let imageUrl = null
     if (image) {
-      try {
-        const uploadResponse = await cloudinary.uploader.upload(image, {
-          folder: "docuflow_avatars",
-        })
-        imageUrl = uploadResponse.secure_url
-      } catch (uploadError) {
-        console.error("Cloudinary upload error:", uploadError)
-      }
+      imageUrl = await uploadToImgBB(image, `${name.replace(/\s+/g, "_")}_avatar`)
     }
 
     // Check if user already exists

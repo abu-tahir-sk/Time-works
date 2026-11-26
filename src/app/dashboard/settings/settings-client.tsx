@@ -15,6 +15,7 @@ import {
   Mail,
   Phone,
   Check,
+  Loader2,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -35,6 +36,42 @@ export function SettingsClient({ initialCompany, user }: SettingsClientProps) {
   const router = useRouter()
   const [activeTab, setActiveTab] = useState<TabType>("profile")
   const [isPending, startTransition] = useTransition()
+  const [isUploadingLogo, setIsUploadingLogo] = useState(false)
+
+  const handleLogoFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image file size must be less than 5MB")
+      return
+    }
+
+    setIsUploadingLogo(true)
+    try {
+      const reader = new FileReader()
+      reader.onloadend = async () => {
+        const base64 = reader.result as string
+        const res = await fetch("/api/upload", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ image: base64, name: file.name }),
+        })
+        const data = await res.json()
+        if (data.success && data.url) {
+          setLogoUrl(data.url)
+          toast.success("Logo uploaded to ImgBB successfully!")
+        } else {
+          toast.error(data.error || "Failed to upload image to ImgBB")
+        }
+        setIsUploadingLogo(false)
+      }
+      reader.readAsDataURL(file)
+    } catch {
+      toast.error("Error reading image file")
+      setIsUploadingLogo(false)
+    }
+  }
 
   // Company Profile fields
   const [name, setName] = useState(initialCompany?.name || "Times Works")
@@ -204,7 +241,27 @@ export function SettingsClient({ initialCompany, user }: SettingsClientProps) {
                   />
                 </div>
                 <div className="space-y-1">
-                  <Label className="text-xs font-semibold">Logo Image URL</Label>
+                  <div className="flex items-center justify-between">
+                    <Label className="text-xs font-semibold">Logo Image URL</Label>
+                    <label className="text-[11px] font-medium text-[#c82020] hover:text-[#a81a1a] cursor-pointer flex items-center gap-1">
+                      {isUploadingLogo ? (
+                        <>
+                          <Loader2 className="w-3 h-3 animate-spin" /> Uploading to ImgBB...
+                        </>
+                      ) : (
+                        <>
+                          <Upload className="w-3 h-3" /> Upload Logo (ImgBB)
+                        </>
+                      )}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleLogoFileUpload}
+                        disabled={isUploadingLogo}
+                      />
+                    </label>
+                  </div>
                   <Input
                     value={logoUrl}
                     onChange={(e) => setLogoUrl(e.target.value)}
