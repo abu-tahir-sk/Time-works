@@ -1,4 +1,5 @@
 import { getServerSession } from "next-auth"
+import { redirect } from "next/navigation"
 import { authOptions } from "@/lib/auth/config"
 import { prisma } from "@/lib/prisma"
 import { ensureWorkspaceDefaults } from "@/lib/workspace-defaults"
@@ -18,7 +19,7 @@ export async function getCurrentUser() {
 export async function requireUser() {
   const user = await getCurrentUser()
   if (!user || !user.email) {
-    throw new Error("Unauthorized")
+    redirect("/login")
   }
   
   const dbUser = await prisma.user.findUnique({
@@ -26,7 +27,7 @@ export async function requireUser() {
   })
   
   if (!dbUser) {
-    throw new Error("User not found")
+    redirect("/login")
   }
   
   return dbUser
