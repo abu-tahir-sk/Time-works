@@ -12,11 +12,10 @@ import {
   Search,
   User,
   Plus,
-  FileSpreadsheet,
-  FileSignature,
-  Handshake,
+  FolderKanban,
+  Users,
+  CreditCard,
   Receipt,
-  ShieldCheck,
   Sparkles,
   ChevronLeft,
 } from "lucide-react"
@@ -104,17 +103,17 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                     Quick Action
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem className="cursor-pointer" render={<Link href="/dashboard/invoices/new" />}>
-                    <FileSpreadsheet className="h-3.5 w-3.5 mr-2 text-[#c82020]" />
-                    <span>Create Invoice</span>
+                  <DropdownMenuItem className="cursor-pointer" render={<Link href="/dashboard/projects/new" />}>
+                    <FolderKanban className="h-3.5 w-3.5 mr-2 text-[#c82020]" />
+                    <span>New Project</span>
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="cursor-pointer" render={<Link href="/dashboard/quotations/new" />}>
-                    <FileSignature className="h-3.5 w-3.5 mr-2 text-indigo-500" />
-                    <span>Create Quotation</span>
+                  <DropdownMenuItem className="cursor-pointer" render={<Link href="/dashboard/payments" />}>
+                    <CreditCard className="h-3.5 w-3.5 mr-2 text-emerald-600" />
+                    <span>Record Payment / Pay Link</span>
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="cursor-pointer" render={<Link href="/dashboard/agreements/new" />}>
-                    <Handshake className="h-3.5 w-3.5 mr-2 text-emerald-500" />
-                    <span>New Agreement</span>
+                  <DropdownMenuItem className="cursor-pointer" render={<Link href="/dashboard/clients" />}>
+                    <Users className="h-3.5 w-3.5 mr-2 text-indigo-500" />
+                    <span>Add Client</span>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem className="cursor-pointer" render={<Link href="/dashboard/expenses" />}>

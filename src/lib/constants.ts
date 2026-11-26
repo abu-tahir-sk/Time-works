@@ -1,16 +1,10 @@
 import {
   LayoutDashboard,
-  FileText,
-  FileSpreadsheet,
-  FileSignature,
-  Handshake,
+  FolderKanban,
   Users,
   CreditCard,
   BarChart3,
   Receipt,
-  ShieldCheck,
-  Building2,
-  Wallet,
   Settings,
 } from "lucide-react"
 
@@ -35,40 +29,20 @@ export const SIDEBAR_SECTIONS: SidebarSection[] = [
         href: "/dashboard",
         icon: LayoutDashboard,
       },
-      {
-        title: "Document Hub",
-        href: "/dashboard/documents",
-        icon: FileText,
-      },
     ],
   },
   {
-    group: "Sales & Billing",
+    group: "Projects & Clients",
     items: [
       {
-        title: "Invoices",
-        href: "/dashboard/invoices",
-        icon: FileSpreadsheet,
-      },
-      {
-        title: "Quotations",
-        href: "/dashboard/quotations",
-        icon: FileSignature,
-      },
-      {
-        title: "Agreements",
-        href: "/dashboard/agreements",
-        icon: Handshake,
+        title: "Projects",
+        href: "/dashboard/projects",
+        icon: FolderKanban,
       },
       {
         title: "Clients",
         href: "/dashboard/clients",
         icon: Users,
-      },
-      {
-        title: "Payments",
-        href: "/dashboard/payments",
-        icon: CreditCard,
       },
     ],
   },
@@ -76,7 +50,12 @@ export const SIDEBAR_SECTIONS: SidebarSection[] = [
     group: "Finance & Accounts",
     items: [
       {
-        title: "Company Ledger",
+        title: "Payments & Links",
+        href: "/dashboard/payments",
+        icon: CreditCard,
+      },
+      {
+        title: "Office Expenses",
         href: "/dashboard/expenses",
         icon: Receipt,
       },
@@ -99,5 +78,5 @@ export const SIDEBAR_SECTIONS: SidebarSection[] = [
   },
 ]
 
-export const SIDEBAR_ITEMS = SIDEBAR_SECTIONS.flatMap((section) => section.items)
+export const SIDEBAR_ITEMS: SidebarItem[] = SIDEBAR_SECTIONS.flatMap((s) => s.items)
 

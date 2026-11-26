@@ -8,15 +8,17 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import Link from "next/link"
 import { toast } from "sonner"
-import { Loader2, Upload } from "lucide-react"
+import { Camera, CheckCircle2, Loader2, Lock, Mail, ShieldCheck, User, UserPlus } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { cn } from "@/lib/utils"
+import { AuthCardHeader } from "./auth-card-header"
+import { AuthDivider } from "./auth-divider"
+import { GoogleButton } from "./google-button"
 import { PasswordInput } from "./password-input"
 import { PasswordStrength } from "./password-strength"
-import { GoogleButton } from "./google-button"
-import { AuthDivider } from "./auth-divider"
 
 const registerSchema = z.object({
   name: z.string().min(1, "Full name is required"),
@@ -39,7 +41,7 @@ export function RegisterForm() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
-  
+
   // OTP States
   const [isOtpMode, setIsOtpMode] = useState(false)
   const [otp, setOtp] = useState("")
@@ -105,7 +107,7 @@ export function RegisterForm() {
         setRegisteredEmail(data.email)
         setRegisteredPassword(data.password)
         setIsOtpMode(true)
-        
+
         if (responseData.otp) {
           console.log("=========================================")
           console.log(`DEV MODE OTP: ${responseData.otp}`)
@@ -114,7 +116,7 @@ export function RegisterForm() {
         } else {
           toast.success("OTP sent to your email (check console)")
         }
-        
+
         setIsLoading(false)
         return
       }
@@ -122,8 +124,10 @@ export function RegisterForm() {
       // Legacy fallback if no OTP required
       await signInWithCredentials(data.email, data.password)
 
-    } catch (error: any) {
-      toast.error(error.message || "Something went wrong. Please try again.")
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Something went wrong. Please try again."
+      )
       setIsLoading(false)
     }
   }
@@ -153,8 +157,8 @@ export function RegisterForm() {
 
       toast.success("Email verified successfully!")
       await signInWithCredentials(registeredEmail, registeredPassword)
-    } catch (error: any) {
-      toast.error(error.message || "Invalid or expired OTP")
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Invalid or expired OTP")
       setIsLoading(false)
     }
   }
@@ -171,7 +175,7 @@ export function RegisterForm() {
       router.push("/login")
     } else {
       setIsSuccess(true)
-      
+
       // Wait a moment so user can see success state before redirect
       setTimeout(() => {
         router.push("/dashboard")
@@ -182,17 +186,15 @@ export function RegisterForm() {
 
   if (isSuccess) {
     return (
-      <div className="w-full text-center py-12">
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-green-600 mb-6">
-          <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-          </svg>
+      <div className="w-full py-6 text-center">
+        <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500 text-white shadow-lg shadow-emerald-500/25">
+          <CheckCircle2 className="h-7 w-7" aria-hidden="true" />
         </div>
-        <h2 className="text-2xl font-semibold tracking-tight">Account Created!</h2>
-        <p className="text-sm text-muted-foreground mt-2 mb-8">
-          Welcome to DocuFlow. Redirecting you to the dashboard...
+        <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">Account Created</h1>
+        <p className="mt-1.5 text-sm text-muted-foreground">
+          Welcome to Times Works. Redirecting you to the dashboard...
         </p>
-        <Loader2 className="mx-auto h-6 w-6 animate-spin text-primary" />
+        <Loader2 className="mx-auto mt-6 h-5 w-5 animate-spin text-[#c82020] dark:text-rose-400" />
       </div>
     )
   }
@@ -200,28 +202,39 @@ export function RegisterForm() {
   if (isOtpMode) {
     return (
       <div className="w-full">
-        <div className="mb-8">
-          <h2 className="text-2xl font-semibold tracking-tight">Verify your email</h2>
-          <p className="text-sm text-muted-foreground mt-2">
-            We've sent a 6-digit code to <span className="font-medium text-foreground">{registeredEmail}</span>
-          </p>
-        </div>
-        
-        <form onSubmit={handleVerifyOtp} className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="otp">One-Time Password (OTP)</Label>
+        <AuthCardHeader
+          icon={ShieldCheck}
+          title="Verify your email"
+          description={
+            <>
+              We sent a 6-digit code to{" "}
+              <span className="font-medium text-foreground">{registeredEmail}</span>.
+            </>
+          }
+        />
+
+        <form onSubmit={handleVerifyOtp} className="space-y-4">
+          <div className="space-y-1.5">
+            <Label htmlFor="otp" className="sr-only">
+              One-time password
+            </Label>
             <Input
               id="otp"
+              inputMode="numeric"
               placeholder="123456"
               maxLength={6}
               value={otp}
               onChange={(e) => setOtp(e.target.value.replace(/[^0-9]/g, ""))}
               disabled={isLoading}
-              className="text-center text-2xl tracking-widest h-14"
+              className="h-12 rounded-lg text-center text-lg tracking-[0.35em]"
             />
           </div>
-          
-          <Button type="submit" className="w-full" disabled={isLoading || otp.length !== 6}>
+
+          <Button
+            type="submit"
+            disabled={isLoading || otp.length !== 6}
+            className="h-10 w-full rounded-lg bg-[#c82020] text-sm font-semibold text-white shadow-sm shadow-[#c82020]/25 hover:bg-[#a81a1a]"
+          >
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -231,12 +244,12 @@ export function RegisterForm() {
               "Verify Email"
             )}
           </Button>
-          
+
           <div className="text-center text-sm">
-            <button 
-              type="button" 
+            <button
+              type="button"
               onClick={() => setIsOtpMode(false)}
-              className="text-muted-foreground hover:text-foreground transition-colors"
+              className="text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
             >
               Back to registration
             </button>
@@ -248,110 +261,159 @@ export function RegisterForm() {
 
   return (
     <div className="w-full">
-      <div className="mb-8">
-        <h2 className="text-2xl font-semibold tracking-tight">Create your account</h2>
-        <p className="text-sm text-muted-foreground mt-2">
-          Start managing your business documents with DocuFlow.
-        </p>
-      </div>
+      <AuthCardHeader
+        icon={UserPlus}
+        title="Create Account"
+        description="Start managing your business documents with Times Works."
+      />
 
       <GoogleButton mode="register" />
-      
+
       <AuthDivider />
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="name">Full name</Label>
-          <Input
-            id="name"
-            placeholder="John Doe"
-            disabled={isLoading}
-            {...register("name")}
-            className={errors.name ? "border-red-500 focus-visible:ring-red-500" : ""}
-          />
-          {errors.name && (
-            <p className="text-sm text-red-500">{errors.name.message}</p>
-          )}
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="photo">Profile Photo (Optional)</Label>
-          <div className="flex items-center gap-4">
-            {photoBase64 ? (
-              <img src={photoBase64} alt="Profile preview" className="w-12 h-12 rounded-full object-cover border" />
-            ) : (
-              <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center border">
-                <Upload className="w-4 h-4 text-muted-foreground" />
-              </div>
-            )}
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-3.5" noValidate>
+        <div className="space-y-1.5">
+          <Label htmlFor="name" className="sr-only">
+            Full name
+          </Label>
+          <div className="relative">
+            <User
+              className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+              aria-hidden="true"
+            />
             <Input
-              id="photo"
-              type="file"
-              accept="image/*"
-              onChange={handlePhotoChange}
+              id="name"
+              placeholder="Full name"
+              autoComplete="name"
               disabled={isLoading}
-              className="flex-1 cursor-pointer"
+              {...register("name")}
+              className={cn(
+                "h-10 rounded-lg pl-9",
+                errors.name && "border-red-500 focus-visible:ring-red-500"
+              )}
             />
           </div>
+          {errors.name && <p className="text-xs text-red-500">{errors.name.message}</p>}
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="email">Email address</Label>
+        {/* Optional profile photo */}
+        <div className="flex items-center gap-3 rounded-lg border border-dashed border-border/80 bg-muted/30 p-2.5">
+          <label
+            htmlFor="photo"
+            className="relative flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-full border border-border bg-background text-muted-foreground transition-colors hover:border-[#c82020]/50 hover:text-[#c82020]"
+          >
+            {photoBase64 ? (
+              <img src={photoBase64} alt="Profile preview" className="h-full w-full object-cover" />
+            ) : (
+              <Camera className="h-4 w-4" aria-hidden="true" />
+            )}
+          </label>
+          <div className="min-w-0 flex-1">
+            <Label htmlFor="photo" className="cursor-pointer text-xs font-medium">
+              Profile photo
+            </Label>
+            <p className="text-[11px] text-muted-foreground">Optional · JPG or PNG, max 2 MB</p>
+          </div>
           <Input
-            id="email"
-            type="email"
-            placeholder="Enter your email"
-            autoCapitalize="none"
-            autoComplete="email"
-            autoCorrect="off"
+            id="photo"
+            type="file"
+            accept="image/*"
+            onChange={handlePhotoChange}
             disabled={isLoading}
-            {...register("email")}
-            className={errors.email ? "border-red-500 focus-visible:ring-red-500" : ""}
+            className="sr-only"
           />
-          {errors.email && (
-            <p className="text-sm text-red-500">{errors.email.message}</p>
-          )}
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="password">Password</Label>
-          <PasswordInput
-            id="password"
-            placeholder="Create a strong password"
-            autoComplete="new-password"
-            disabled={isLoading}
-            {...register("password")}
-            className={errors.password ? "border-red-500 focus-visible:ring-red-500" : ""}
-          />
+        <div className="space-y-1.5">
+          <Label htmlFor="email" className="sr-only">
+            Email address
+          </Label>
+          <div className="relative">
+            <Mail
+              className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+              aria-hidden="true"
+            />
+            <Input
+              id="email"
+              type="email"
+              placeholder="Email address"
+              autoCapitalize="none"
+              autoComplete="email"
+              autoCorrect="off"
+              disabled={isLoading}
+              {...register("email")}
+              className={cn(
+                "h-10 rounded-lg pl-9",
+                errors.email && "border-red-500 focus-visible:ring-red-500"
+              )}
+            />
+          </div>
+          {errors.email && <p className="text-xs text-red-500">{errors.email.message}</p>}
+        </div>
+
+        <div className="space-y-1.5">
+          <Label htmlFor="password" className="sr-only">
+            Password
+          </Label>
+          <div className="relative">
+            <Lock
+              className="pointer-events-none absolute top-1/2 left-3 z-10 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+              aria-hidden="true"
+            />
+            <PasswordInput
+              id="password"
+              placeholder="Password"
+              autoComplete="new-password"
+              disabled={isLoading}
+              {...register("password")}
+              className={cn(
+                "h-10 rounded-lg pl-9",
+                errors.password && "border-red-500 focus-visible:ring-red-500"
+              )}
+            />
+          </div>
           <PasswordStrength password={passwordValue} />
-          {errors.password && (
-            <p className="text-sm text-red-500">{errors.password.message}</p>
-          )}
+          {errors.password && <p className="text-xs text-red-500">{errors.password.message}</p>}
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="confirmPassword">Confirm password</Label>
-          <PasswordInput
-            id="confirmPassword"
-            placeholder="Confirm your password"
-            autoComplete="new-password"
-            disabled={isLoading}
-            {...register("confirmPassword")}
-            className={errors.confirmPassword ? "border-red-500 focus-visible:ring-red-500" : ""}
-          />
+        <div className="space-y-1.5">
+          <Label htmlFor="confirmPassword" className="sr-only">
+            Confirm password
+          </Label>
+          <div className="relative">
+            <Lock
+              className="pointer-events-none absolute top-1/2 left-3 z-10 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+              aria-hidden="true"
+            />
+            <PasswordInput
+              id="confirmPassword"
+              placeholder="Confirm password"
+              autoComplete="new-password"
+              disabled={isLoading}
+              {...register("confirmPassword")}
+              className={cn(
+                "h-10 rounded-lg pl-9",
+                errors.confirmPassword && "border-red-500 focus-visible:ring-red-500"
+              )}
+            />
+          </div>
           {errors.confirmPassword && (
-            <p className="text-sm text-red-500">{errors.confirmPassword.message}</p>
+            <p className="text-xs text-red-500">{errors.confirmPassword.message}</p>
           )}
         </div>
 
-        <Button type="submit" className="w-full" disabled={isLoading}>
+        <Button
+          type="submit"
+          disabled={isLoading}
+          className="h-10 w-full rounded-lg bg-[#c82020] text-sm font-semibold text-white shadow-sm shadow-[#c82020]/25 hover:bg-[#a81a1a]"
+        >
           {isLoading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               Sending OTP...
             </>
           ) : (
-            "Create account"
+            "Create Account"
           )}
         </Button>
       </form>
@@ -360,7 +422,7 @@ export function RegisterForm() {
         <span className="text-muted-foreground">Already have an account? </span>
         <Link
           href="/login"
-          className="font-medium text-primary hover:underline"
+          className="font-semibold text-[#c82020] hover:underline dark:text-rose-400"
         >
           Sign in
         </Link>

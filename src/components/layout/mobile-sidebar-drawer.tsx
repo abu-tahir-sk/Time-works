@@ -11,14 +11,7 @@ import { signOut, useSession } from "next-auth/react"
 export function MobileSidebarContent() {
   const pathname = usePathname()
   const { data: session } = useSession()
-  const isSuperAdmin = session?.user?.email?.toLowerCase() === "abutahir2626@gmail.com"
-
-  const visibleSections = SIDEBAR_SECTIONS.filter((section) => {
-    if (section.group === "Administration" && !isSuperAdmin) {
-      return false
-    }
-    return true
-  })
+  const visibleSections = SIDEBAR_SECTIONS
 
   return (
     <div className="flex flex-col h-full">
@@ -111,21 +104,12 @@ export function MobileSidebarContent() {
                 {session?.user?.name || "Abu Sufian"}
               </span>
               <span className="text-[10px] text-muted-foreground truncate">
-                {isSuperAdmin ? "Managing Partner" : "Finance Director"}
+                Finance Director
               </span>
             </div>
           </Link>
 
           <div className="flex items-center gap-1 shrink-0">
-            {isSuperAdmin && (
-              <Link
-                href="/admin"
-                title="Admin Portal"
-                className="p-1.5 rounded-lg text-muted-foreground hover:text-[#c82020] hover:bg-muted transition-colors"
-              >
-                <Sparkles className="h-4 w-4" />
-              </Link>
-            )}
             <Link
               href="/dashboard/settings"
               title="Settings"

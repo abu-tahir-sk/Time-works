@@ -380,6 +380,164 @@ export async function ensureWorkspaceDefaults(userId: string, companyId: string)
         await prisma.expense.create({ data: exp })
       }
     }
+
+    // 7. Ensure Projects & Payment Links
+    const projectCount = await prisma.project.count({
+      where: { companyId },
+    })
+
+    if (projectCount === 0 && primaryClient) {
+      const now = new Date()
+
+      // Project 1: Cloud Architecture (In progress, partially paid)
+      const project1 = await prisma.project.create({
+        data: {
+          companyId,
+          clientId: primaryClient.id,
+          name: "Cloud Dynamics 365 Architecture & Workflow Transformation",
+          code: "PRJ-2026-001",
+          description: "Enterprise multi-tenant document generation engine, cryptographic audit trail, and cloud workflow infrastructure.",
+          status: "IN_PROGRESS",
+          budget: 45000,
+          paidAmount: 15000,
+          currency: "USD",
+          startDate: new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000),
+          deadline: new Date(now.getTime() + 45 * 24 * 60 * 60 * 1000),
+          featureBreakdown: [
+            {
+              feature: "Authentication, Multi-Tenant Roles & Security",
+              description: "Secure JWT/OAuth session management, role-based authorization, and profile controls.",
+              cost: 6500,
+            },
+            {
+              feature: "Interactive Executive Dashboard & Analytics",
+              description: "Responsive desktop and mobile frontend interfaces with high-density data tables and filters.",
+              cost: 9500,
+            },
+            {
+              feature: "Digital Payment Links & QR Remittance Engine",
+              description: "Digital payment links, QR remittance generation, automated receipting, and transaction ledger.",
+              cost: 12000,
+            },
+            {
+              feature: "Cloud Database, API Microservices & Integrations",
+              description: "PostgreSQL schema, optimized queries, indexing, and REST/Webhook service endpoints.",
+              cost: 11000,
+            },
+            {
+              feature: "Automated Testing, CI/CD Deployment & SLA Launch",
+              description: "End-to-end regression validation, automated build pipelines, production SSL, and domain wiring.",
+              cost: 6000,
+            },
+          ],
+        },
+      })
+
+      // Payment 1 for Project 1 (with mandatory Remark)
+      await prisma.projectPayment.create({
+        data: {
+          companyId,
+          projectId: project1.id,
+          clientId: primaryClient.id,
+          amount: 15000,
+          currency: "USD",
+          method: "BANK_TRANSFER",
+          status: "COMPLETED",
+          remark: "Milestone 1 Advance: Cloud Architecture & Security Provisioning Authorized.",
+          transactionId: "TXN-ACH-893021",
+          paidAt: new Date(now.getTime() - 10 * 24 * 60 * 60 * 1000),
+        },
+      })
+
+      // Fixed Payment Link for Project 1
+      await prisma.paymentLink.create({
+        data: {
+          token: "pay_acme_m2_settlement",
+          companyId,
+          projectId: project1.id,
+          clientId: primaryClient.id,
+          title: "Milestone 2 Intermediate Settlement",
+          type: "FIXED",
+          amount: 15000,
+          currency: "USD",
+          description: "Second milestone remittance for Times Works Cloud Dynamics architecture delivery.",
+          status: "ACTIVE",
+        },
+      })
+
+      // Open Amount Payment Link for Client
+      await prisma.paymentLink.create({
+        data: {
+          token: "pay_acme_flexible_retainer",
+          companyId,
+          projectId: project1.id,
+          clientId: primaryClient.id,
+          title: "Open Client Remittance & Ad-hoc Retainer",
+          type: "OPEN",
+          amount: null,
+          currency: "USD",
+          description: "Flexible remittance link allowing the client to remit any authorized amount via bank transfer or card.",
+          status: "ACTIVE",
+        },
+      })
+
+      // Project 2: Mobile Portal (Completed, fully paid)
+      if (secondaryClient) {
+        const project2 = await prisma.project.create({
+          data: {
+            companyId,
+            clientId: secondaryClient.id,
+            name: "Enterprise Mobile Portal & Real-Time Financial Hub",
+            code: "PRJ-2026-002",
+            description: "Cross-platform financial application with real-time push alerts, offline syncing, and cryptographic audit records.",
+            status: "COMPLETED",
+            budget: 32000,
+            paidAmount: 32000,
+            currency: "USD",
+            startDate: new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000),
+            deadline: new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000),
+            featureBreakdown: [
+              {
+                feature: "Mobile Portal UI & Gesture Framework",
+                description: "Touch-optimized dashboard, dynamic gesture controls, and responsive cards.",
+                cost: 8000,
+              },
+              {
+                feature: "Real-Time Ledger & Financial Aggregator",
+                description: "Instant synchronization with backend accounting engines and webhook triggers.",
+                cost: 12000,
+              },
+              {
+                feature: "Push Notifications & SMS Remittance Alert",
+                description: "Automated client payment reminders and transaction verification messages.",
+                cost: 4000,
+              },
+              {
+                feature: "Security Audit & Penetration Testing",
+                description: "Full OWASP security audit, vulnerability scanning, and third-party signing.",
+                cost: 8000,
+              },
+            ],
+          },
+        })
+
+        // Payment for Project 2
+        await prisma.projectPayment.create({
+          data: {
+            companyId,
+            projectId: project2.id,
+            clientId: secondaryClient.id,
+            amount: 32000,
+            currency: "USD",
+            method: "BANK_TRANSFER",
+            status: "COMPLETED",
+            remark: "Full Contract Settlement: Final deliverable acceptance signed.",
+            transactionId: "TXN-WIRE-774910",
+            paidAt: new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000),
+          },
+        })
+      }
+    }
   } catch (error) {
     console.error("ensureWorkspaceDefaults error:", error)
   }

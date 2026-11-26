@@ -1,8 +1,8 @@
 import Link from "next/link"
 import {
-  FileSpreadsheet,
-  FileSignature,
-  Handshake,
+  FolderKanban,
+  Users,
+  CreditCard,
   Receipt,
   ArrowUpRight,
   ArrowDownRight,
@@ -12,9 +12,11 @@ import {
   Building2,
   Calendar,
   Sparkles,
-  ShieldCheck,
   ChevronRight,
   BarChart3,
+  CheckCircle2,
+  Clock,
+  Link2,
 } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -26,7 +28,7 @@ export const dynamic = "force-dynamic"
 
 export const metadata = {
   title: "Executive Dashboard | Times Works",
-  description: "Company Financial Overview, Ledger, Invoices, and Business Analytics.",
+  description: "Company Financial Overview, Projects, Payments, and Ledger.",
 }
 
 export default async function DashboardPage() {
@@ -36,7 +38,7 @@ export default async function DashboardPage() {
     getCompanyFinancialOverview(),
   ])
 
-  const { summary, currency, recentInvoices, recentExpenses, categoryTotals } = financialData
+  const { summary, currency, recentProjects, recentPayments, recentExpenses } = financialData
 
   return (
     <div className="space-y-6">
@@ -52,28 +54,28 @@ export default async function DashboardPage() {
             </span>
           </div>
           <p className="text-xs text-muted-foreground mt-1">
-            Enterprise Financial Hub: Real-time company accounting, invoices, profit & loss, and document workflows.
+            Enterprise Financial Hub: Real-time project tracking, client payment gateway, and office ledger.
           </p>
         </div>
 
         {/* Quick Action Bar */}
-        <div className="flex items-center gap-2">
-          <Link href="/dashboard/invoices/new">
+        <div className="flex items-center gap-2 flex-wrap">
+          <Link href="/dashboard/projects/new">
             <Button size="sm" className="h-8.5 text-xs bg-[#c82020] hover:bg-[#a81a1a] text-white shadow-xs font-semibold">
               <Plus className="h-3.5 w-3.5 mr-1" />
-              New Invoice
+              New Project
+            </Button>
+          </Link>
+          <Link href="/dashboard/payments">
+            <Button size="sm" variant="outline" className="h-8.5 text-xs border-border/80 shadow-2xs hover:bg-muted font-medium">
+              <CreditCard className="h-3.5 w-3.5 mr-1 text-emerald-600" />
+              Record Payment
             </Button>
           </Link>
           <Link href="/dashboard/expenses">
             <Button size="sm" variant="outline" className="h-8.5 text-xs border-border/80 shadow-2xs hover:bg-muted font-medium">
               <Receipt className="h-3.5 w-3.5 mr-1 text-amber-500" />
-              Record Expense
-            </Button>
-          </Link>
-          <Link href="/dashboard/quotations/new">
-            <Button size="sm" variant="outline" className="h-8.5 text-xs border-border/80 shadow-2xs hover:bg-muted font-medium">
-              <FileSignature className="h-3.5 w-3.5 mr-1 text-indigo-500" />
-              Quotation
+              Office Expense
             </Button>
           </Link>
           <Link href="/dashboard/analytics">
@@ -87,6 +89,27 @@ export default async function DashboardPage() {
 
       {/* Primary Financial Metric Cards (Microsoft Fluent 2) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Total Project Contracted Value */}
+        <Card className="border border-border/80 shadow-[0_1.6px_3.6px_0_rgba(0,0,0,0.06)] bg-card rounded-lg">
+          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0 pt-4 px-4">
+            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              Project Contracts
+            </span>
+            <div className="h-7 w-7 rounded-md bg-blue-50 dark:bg-blue-950/50 flex items-center justify-center text-blue-600 dark:text-blue-400">
+              <FolderKanban className="h-4 w-4" />
+            </div>
+          </CardHeader>
+          <CardContent className="px-4 pb-4">
+            <div className="text-2xl font-bold font-mono tracking-tight text-foreground">
+              {formatMoney(summary.totalProjectBudgets, currency)}
+            </div>
+            <p className="text-[11px] text-muted-foreground mt-1 flex items-center justify-between">
+              <span>{summary.projectCount} active projects</span>
+              <span className="text-blue-600 font-semibold">Total Value</span>
+            </p>
+          </CardContent>
+        </Card>
+
         {/* Total Collected Revenue */}
         <Card className="border border-border/80 shadow-[0_1.6px_3.6px_0_rgba(0,0,0,0.06)] bg-card rounded-lg">
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0 pt-4 px-4">
@@ -98,12 +121,12 @@ export default async function DashboardPage() {
             </div>
           </CardHeader>
           <CardContent className="px-4 pb-4">
-            <div className="text-2xl font-bold font-mono tracking-tight text-foreground">
+            <div className="text-2xl font-bold font-mono tracking-tight text-emerald-600 dark:text-emerald-400">
               {formatMoney(summary.totalCollected, currency)}
             </div>
             <p className="text-[11px] text-muted-foreground mt-1 flex items-center justify-between">
-              <span>{summary.invoiceCount} invoices issued</span>
-              <span className="text-emerald-600 font-semibold">Active Inflow</span>
+              <span>{summary.paymentCount} payments received</span>
+              <span className="text-emerald-600 font-semibold">Collected</span>
             </p>
           </CardContent>
         </Card>
@@ -112,7 +135,7 @@ export default async function DashboardPage() {
         <Card className="border border-border/80 shadow-[0_1.6px_3.6px_0_rgba(0,0,0,0.06)] bg-card rounded-lg">
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0 pt-4 px-4">
             <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              Total Outflow (Expenses)
+              Office Outflow (Expenses)
             </span>
             <div className="h-7 w-7 rounded-md bg-rose-50 dark:bg-rose-950/50 flex items-center justify-center text-rose-600 dark:text-rose-400">
               <ArrowUpRight className="h-4 w-4" />
@@ -124,40 +147,7 @@ export default async function DashboardPage() {
             </div>
             <p className="text-[11px] text-muted-foreground mt-1 flex items-center justify-between">
               <span>{summary.expenseCount} expenses recorded</span>
-              <span className="text-rose-600 font-semibold">Operational Costs</span>
-            </p>
-          </CardContent>
-        </Card>
-
-        {/* Net Profit & Margin */}
-        <Card className="border border-border/80 shadow-[0_1.6px_3.6px_0_rgba(0,0,0,0.06)] bg-card rounded-lg">
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0 pt-4 px-4">
-            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              Net Profit / Margin
-            </span>
-            <div
-              className={`h-7 w-7 rounded-md flex items-center justify-center ${
-                summary.netProfit >= 0
-                  ? "bg-rose-50 text-[#c82020] dark:bg-rose-950/50"
-                  : "bg-red-50 text-red-600 dark:bg-red-950/50"
-              }`}
-            >
-              <TrendingUp className="h-4 w-4" />
-            </div>
-          </CardHeader>
-          <CardContent className="px-4 pb-4">
-            <div
-              className={`text-2xl font-bold font-mono tracking-tight ${
-                summary.netProfit >= 0
-                  ? "text-emerald-700 dark:text-emerald-400"
-                  : "text-rose-700 dark:text-rose-400"
-              }`}
-            >
-              {formatMoney(summary.netProfit, currency)}
-            </div>
-            <p className="text-[11px] text-muted-foreground mt-1 flex items-center justify-between">
-              <span>Operating Margin</span>
-              <span className="font-bold text-foreground">{summary.profitMargin}%</span>
+              <span className="text-rose-600 font-semibold">Domain & Ops</span>
             </p>
           </CardContent>
         </Card>
@@ -166,7 +156,7 @@ export default async function DashboardPage() {
         <Card className="border border-border/80 shadow-[0_1.6px_3.6px_0_rgba(0,0,0,0.06)] bg-card rounded-lg">
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0 pt-4 px-4">
             <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              Pending Receivables
+              Pending Due Balance
             </span>
             <div className="h-7 w-7 rounded-md bg-amber-50 dark:bg-amber-950/50 flex items-center justify-center text-amber-600 dark:text-amber-400">
               <AlertCircle className="h-4 w-4" />
@@ -177,8 +167,8 @@ export default async function DashboardPage() {
               {formatMoney(summary.pendingReceivables, currency)}
             </div>
             <p className="text-[11px] text-muted-foreground mt-1 flex items-center justify-between">
-              <span>Unpaid client invoices</span>
-              <span className="text-amber-600 font-semibold">Action Due</span>
+              <span>Unpaid project balance</span>
+              <span className="text-amber-600 font-semibold">Remaining Due</span>
             </p>
           </CardContent>
         </Card>
@@ -190,15 +180,24 @@ export default async function DashboardPage() {
           <div className="flex items-center justify-between">
             <div>
               <CardTitle className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Company Cash Flow Balance
+                Company Cash Flow & Net Profit Balance
               </CardTitle>
             </div>
-            <Link
-              href="/dashboard/expenses"
-              className="text-xs text-[#c82020] hover:underline font-semibold flex items-center gap-1"
-            >
-              Open Full Ledger <ChevronRight className="h-3 w-3" />
-            </Link>
+            <div className="flex items-center gap-3">
+              <span className="text-xs font-semibold">
+                Net Profit:{" "}
+                <span className={summary.netProfit >= 0 ? "text-emerald-600 font-bold" : "text-rose-600 font-bold"}>
+                  {formatMoney(summary.netProfit, currency)}
+                </span>
+                {" "}({summary.profitMargin}%)
+              </span>
+              <Link
+                href="/dashboard/expenses"
+                className="text-xs text-[#c82020] hover:underline font-semibold flex items-center gap-1"
+              >
+                Open Full Ledger <ChevronRight className="h-3 w-3" />
+              </Link>
+            </div>
           </div>
         </CardHeader>
         <CardContent className="p-4 space-y-3">
@@ -233,105 +232,125 @@ export default async function DashboardPage() {
         </CardContent>
       </Card>
 
-      {/* Split View: Recent Invoices & Recent Company Expenses */}
+      {/* Split View: Recent Projects & Recent Payments with Mandatory Remarks */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        {/* Recent Invoices Card */}
+        {/* Recent Projects Card */}
         <Card className="border border-border/80 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
           <CardHeader className="py-3 px-4 border-b border-border/60 flex flex-row items-center justify-between">
             <div>
               <CardTitle className="text-sm font-bold flex items-center gap-2">
-                <FileSpreadsheet className="h-4 w-4 text-[#c82020]" />
-                Recent Invoices
+                <FolderKanban className="h-4 w-4 text-[#c82020]" />
+                Recent Projects
               </CardTitle>
-              <CardDescription className="text-[11px]">Latest client billing and payment status</CardDescription>
+              <CardDescription className="text-[11px]">Latest client contracts, budgets, and balance</CardDescription>
             </div>
             <Link
-              href="/dashboard/invoices"
+              href="/dashboard/projects"
               className="text-xs font-semibold text-[#c82020] hover:underline"
             >
               View all
             </Link>
           </CardHeader>
           <CardContent className="p-0">
-            {recentInvoices.length === 0 ? (
+            {recentProjects.length === 0 ? (
               <div className="py-8 text-center text-xs text-muted-foreground">
-                No invoices created yet. Click "New Invoice" to create one.
+                No projects created yet. Click "New Project" to add your first client project.
               </div>
             ) : (
               <div className="divide-y divide-border/60">
-                {recentInvoices.map((inv: any) => (
-                  <div
-                    key={inv.id}
-                    className="flex items-center justify-between py-2.5 px-4 hover:bg-muted/30 transition-colors text-xs"
-                  >
-                    <div>
-                      <p className="font-semibold text-foreground">{inv.invoiceNumber}</p>
-                      <p className="text-[11px] text-muted-foreground">{inv.client?.name || "Client"}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-mono font-bold text-foreground">
-                        {formatMoney(inv.total, inv.currency || currency)}
-                      </p>
-                      <span
-                        className={`inline-block text-[10px] font-semibold px-1.5 py-0.2 rounded ${
-                          inv.status === "PAID"
-                            ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"
-                            : inv.status === "OVERDUE"
-                            ? "bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300"
-                            : "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300"
-                        }`}
-                      >
-                        {inv.status}
-                      </span>
-                    </div>
-                  </div>
-                ))}
+                {recentProjects.map((prj: any) => {
+                  const paid = prj.paidAmount || 0
+                  const due = Math.max(0, prj.budget - paid)
+                  const percent = prj.budget > 0 ? Math.min(100, Math.round((paid / prj.budget) * 100)) : 0
+
+                  return (
+                    <Link
+                      key={prj.id}
+                      href={`/dashboard/projects/${prj.id}`}
+                      className="flex items-center justify-between py-3 px-4 hover:bg-muted/30 transition-colors text-xs block group"
+                    >
+                      <div className="min-w-0 pr-3">
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono text-[10px] font-semibold text-[#c82020] bg-rose-50 dark:bg-rose-950/40 px-1.5 py-0.5 rounded">
+                            {prj.code}
+                          </span>
+                          <p className="font-semibold text-foreground truncate group-hover:text-[#c82020] transition-colors">
+                            {prj.name}
+                          </p>
+                        </div>
+                        <p className="text-[11px] text-muted-foreground mt-0.5">
+                          {prj.client?.name || "Unassigned"} • {percent}% paid
+                        </p>
+                      </div>
+                      <div className="text-right shrink-0">
+                        <p className="font-mono font-bold text-foreground">
+                          {formatMoney(prj.budget, prj.currency || currency)}
+                        </p>
+                        <p className={`text-[10px] font-semibold ${due > 0 ? "text-amber-600" : "text-emerald-600"}`}>
+                          {due > 0 ? `Due: ${formatMoney(due, prj.currency || currency)}` : "Fully Paid"}
+                        </p>
+                      </div>
+                    </Link>
+                  )
+                })}
               </div>
             )}
           </CardContent>
         </Card>
 
-        {/* Recent Company Expenses Card */}
+        {/* Recent Client Payments Card (Mandatory Remark) */}
         <Card className="border border-border/80 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
           <CardHeader className="py-3 px-4 border-b border-border/60 flex flex-row items-center justify-between">
             <div>
               <CardTitle className="text-sm font-bold flex items-center gap-2">
-                <Receipt className="h-4 w-4 text-amber-500" />
-                Recent Company Expenses
+                <CreditCard className="h-4 w-4 text-emerald-600" />
+                Recent Payments & Remittance
               </CardTitle>
-              <CardDescription className="text-[11px]">Latest operating costs and bills</CardDescription>
+              <CardDescription className="text-[11px]">Direct collections with mandatory remark notes</CardDescription>
             </div>
             <Link
-              href="/dashboard/expenses"
+              href="/dashboard/payments"
               className="text-xs font-semibold text-[#c82020] hover:underline"
             >
-              View ledger
+              View payments
             </Link>
           </CardHeader>
           <CardContent className="p-0">
-            {recentExpenses.length === 0 ? (
+            {recentPayments.length === 0 ? (
               <div className="py-8 text-center text-xs text-muted-foreground">
-                No company expenses recorded yet. Click "Record Expense" to add.
+                No payments recorded yet. Click "Record Payment" to log remittance.
               </div>
             ) : (
               <div className="divide-y divide-border/60">
-                {recentExpenses.map((exp: any) => (
+                {recentPayments.map((pmt: any) => (
                   <div
-                    key={exp.id}
-                    className="flex items-center justify-between py-2.5 px-4 hover:bg-muted/30 transition-colors text-xs"
+                    key={pmt.id}
+                    className="flex items-start justify-between py-2.5 px-4 hover:bg-muted/30 transition-colors text-xs"
                   >
-                    <div>
-                      <p className="font-semibold text-foreground">{exp.title}</p>
-                      <p className="text-[11px] text-muted-foreground capitalize">
-                        {exp.category.toLowerCase()} • {new Date(exp.expenseDate).toLocaleDateString()}
+                    <div className="min-w-0 pr-3">
+                      <div className="flex items-center gap-2">
+                        <p className="font-semibold text-foreground">
+                          {pmt.client?.name || "Client"}
+                        </p>
+                        {pmt.project && (
+                          <span className="text-[10px] text-muted-foreground font-mono">
+                            ({pmt.project.code})
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-[11px] text-foreground/80 italic mt-0.5 truncate max-w-xs">
+                        "{pmt.remarks}"
+                      </p>
+                      <p className="text-[10px] text-muted-foreground mt-0.5">
+                        {new Date(pmt.paidAt).toLocaleDateString()} • {pmt.paymentMethod?.replace(/_/g, " ")}
                       </p>
                     </div>
-                    <div className="text-right">
-                      <p className="font-mono font-bold text-rose-600 dark:text-rose-400">
-                        - {formatMoney(exp.amount, exp.currency || currency)}
+                    <div className="text-right shrink-0">
+                      <p className="font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                        + {formatMoney(pmt.amount, pmt.currency || currency)}
                       </p>
-                      <span className="text-[10px] text-muted-foreground capitalize">
-                        {exp.paymentMethod?.replace(/_/g, " ").toLowerCase() || "Bank"}
+                      <span className="inline-block text-[10px] font-semibold px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
+                        Completed
                       </span>
                     </div>
                   </div>
@@ -341,6 +360,51 @@ export default async function DashboardPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Office Expenses Row */}
+      <Card className="border border-border/80 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+        <CardHeader className="py-3 px-4 border-b border-border/60 flex flex-row items-center justify-between">
+          <div>
+            <CardTitle className="text-sm font-bold flex items-center gap-2">
+              <Receipt className="h-4 w-4 text-amber-500" />
+              Recent Office Expenses (Domains, Hosting & Operations)
+            </CardTitle>
+            <CardDescription className="text-[11px]">Track company outflows to measure net profit</CardDescription>
+          </div>
+          <Link
+            href="/dashboard/expenses"
+            className="text-xs font-semibold text-[#c82020] hover:underline"
+          >
+            Manage Expenses
+          </Link>
+        </CardHeader>
+        <CardContent className="p-0">
+          {recentExpenses.length === 0 ? (
+            <div className="py-6 text-center text-xs text-muted-foreground">
+              No office expenses recorded yet. Click "Office Expense" to log bills.
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border/60">
+              {recentExpenses.slice(0, 3).map((exp: any) => (
+                <div key={exp.id} className="p-4 space-y-1 text-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground px-1.5 py-0.5 rounded bg-muted">
+                      {exp.category}
+                    </span>
+                    <span className="font-mono font-bold text-rose-600 dark:text-rose-400">
+                      - {formatMoney(exp.amount, exp.currency || currency)}
+                    </span>
+                  </div>
+                  <p className="font-semibold text-foreground text-sm pt-1">{exp.title}</p>
+                  <p className="text-[11px] text-muted-foreground">
+                    {new Date(exp.expenseDate).toLocaleDateString()} • {exp.paymentMethod?.replace(/_/g, " ")}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   )
 }

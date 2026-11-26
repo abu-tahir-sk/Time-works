@@ -26,9 +26,9 @@ export function GoogleButton({ mode }: GoogleButtonProps) {
   }
 
   return (
-    <Button 
-      variant="outline" 
-      className="w-full relative" 
+    <Button
+      variant="outline"
+      className="h-10 w-full rounded-lg text-sm font-medium"
       onClick={handleGoogleSignIn}
       disabled={isLoading}
       type="button"

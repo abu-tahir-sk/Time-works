@@ -6,11 +6,13 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import Link from "next/link"
 import { toast } from "sonner"
-import { Loader2 } from "lucide-react"
+import { CheckCircle2, Loader2, Lock, Mail } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { cn } from "@/lib/utils"
+import { AuthCardHeader } from "./auth-card-header"
 
 const forgotPasswordSchema = z.object({
   email: z.string().min(1, "Email is required").email("Please enter a valid email address"),
@@ -40,7 +42,7 @@ export function ForgotPasswordForm() {
       const res = await fetch("/api/auth/forgot-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
       })
 
       if (res.ok) {
@@ -60,14 +62,17 @@ export function ForgotPasswordForm() {
   if (isSuccess) {
     return (
       <div className="w-full text-center">
-        <div className="mb-8">
-          <h2 className="text-2xl font-semibold tracking-tight">Check your email</h2>
-          <p className="text-sm text-muted-foreground mt-2">
-            We&apos;ve sent a password reset link to your email address.
-          </p>
+        <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500 text-white shadow-lg shadow-emerald-500/25">
+          <CheckCircle2 className="h-7 w-7" aria-hidden="true" />
         </div>
-        <Link href="/login">
-          <Button className="w-full">Back to login</Button>
+        <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">Check your email</h1>
+        <p className="mt-1.5 text-sm text-muted-foreground">
+          We&apos;ve sent a password reset link to your email address.
+        </p>
+        <Link href="/login" className="mt-6 block">
+          <Button className="h-10 w-full rounded-lg bg-[#c82020] text-sm font-semibold text-white shadow-sm shadow-[#c82020]/25 hover:bg-[#a81a1a]">
+            Back to login
+          </Button>
         </Link>
       </div>
     )
@@ -75,40 +80,52 @@ export function ForgotPasswordForm() {
 
   return (
     <div className="w-full">
-      <div className="mb-8">
-        <h2 className="text-2xl font-semibold tracking-tight">Reset Password</h2>
-        <p className="text-sm text-muted-foreground mt-2">
-          Enter your email address and we&apos;ll send you a link to reset your password.
-        </p>
-      </div>
+      <AuthCardHeader
+        icon={Lock}
+        title="Forgot password?"
+        description="Enter your email address and we'll send you a link to reset your password."
+      />
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="email">Email address</Label>
-          <Input
-            id="email"
-            type="email"
-            placeholder="Enter your email"
-            autoCapitalize="none"
-            autoComplete="email"
-            autoCorrect="off"
-            disabled={isLoading}
-            {...register("email")}
-            className={errors.email ? "border-red-500 focus-visible:ring-red-500" : ""}
-          />
-          {errors.email && (
-            <p className="text-sm text-red-500">{errors.email.message}</p>
-          )}
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
+        <div className="space-y-1.5">
+          <Label htmlFor="email" className="sr-only">
+            Email address
+          </Label>
+          <div className="relative">
+            <Mail
+              className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+              aria-hidden="true"
+            />
+            <Input
+              id="email"
+              type="email"
+              placeholder="Email address"
+              autoCapitalize="none"
+              autoComplete="email"
+              autoCorrect="off"
+              disabled={isLoading}
+              {...register("email")}
+              className={cn(
+                "h-10 rounded-lg pl-9",
+                errors.email && "border-red-500 focus-visible:ring-red-500"
+              )}
+            />
+          </div>
+          {errors.email && <p className="text-xs text-red-500">{errors.email.message}</p>}
         </div>
 
-        <Button type="submit" className="w-full" disabled={isLoading}>
+        <Button
+          type="submit"
+          disabled={isLoading}
+          className="h-10 w-full rounded-lg bg-[#c82020] text-sm font-semibold text-white shadow-sm shadow-[#c82020]/25 hover:bg-[#a81a1a]"
+        >
           {isLoading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               Sending link...
             </>
           ) : (
-            "Send reset link"
+            "Send Reset Link"
           )}
         </Button>
       </form>
@@ -117,7 +134,7 @@ export function ForgotPasswordForm() {
         <span className="text-muted-foreground">Remember your password? </span>
         <Link
           href="/login"
-          className="font-medium text-primary hover:underline"
+          className="font-semibold text-[#c82020] hover:underline dark:text-rose-400"
         >
           Back to login
         </Link>

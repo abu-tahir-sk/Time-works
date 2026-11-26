@@ -115,42 +115,62 @@ export async function getCompanyFinancialOverview() {
   try {
     const company = await getUserCompany()
 
-    // 1. Fetch Invoices for Income & Receivables
-    const invoices = await prisma.invoice.findMany({
+    // 1. Fetch Projects for Total Budget & Receivables
+    const projects = await prisma.project.findMany({
       where: { companyId: company.id },
-      select: {
-        id: true,
-        invoiceNumber: true,
-        total: true,
-        amountPaid: true,
-        status: true,
-        currency: true,
-        createdAt: true,
-        client: {
-          select: { name: true },
-        },
+      include: {
+        client: { select: { name: true } },
       },
       orderBy: { createdAt: "desc" },
     })
 
-    // 2. Fetch Expenses for Costs
+    // 2. Fetch Project Payments
+    const projectPayments = await prisma.projectPayment.findMany({
+      where: { companyId: company.id, status: "COMPLETED" },
+      include: {
+        project: { select: { name: true, code: true } },
+        client: { select: { name: true } },
+      },
+      orderBy: { paidAt: "desc" },
+    })
+
+    // 3. Fetch Expenses for Costs (Domains, Hosting, Operations)
     const expenses = await prisma.expense.findMany({
       where: { companyId: company.id },
       orderBy: { expenseDate: "desc" },
     })
 
-    // Calculate Invoiced & Collected
-    let totalInvoiced = 0
+    // Calculate Projects & Collections
+    let totalProjectBudgets = 0
     let totalCollected = 0
     let pendingReceivables = 0
 
-    invoices.forEach((inv) => {
-      totalInvoiced += inv.total || 0
-      totalCollected += inv.amountPaid || 0
-      if (inv.status !== "PAID" && inv.status !== "CANCELLED" && inv.status !== "REFUNDED") {
-        pendingReceivables += (inv.total || 0) - (inv.amountPaid || 0)
+    projects.forEach((prj) => {
+      totalProjectBudgets += prj.budget || 0
+      const paid = prj.paidAmount || 0
+      if (prj.budget > paid) {
+        pendingReceivables += prj.budget - paid
       }
     })
+
+    projectPayments.forEach((p) => {
+      totalCollected += p.amount || 0
+    })
+
+    // If no projects yet, check fallback invoices
+    if (projects.length === 0) {
+      const invoices = await prisma.invoice.findMany({
+        where: { companyId: company.id },
+        select: { total: true, amountPaid: true, status: true },
+      })
+      invoices.forEach((inv) => {
+        totalProjectBudgets += inv.total || 0
+        totalCollected += inv.amountPaid || 0
+        if (inv.status !== "PAID") {
+          pendingReceivables += (inv.total || 0) - (inv.amountPaid || 0)
+        }
+      })
+    }
 
     // Calculate Expenses
     let totalExpenses = 0
@@ -168,19 +188,22 @@ export async function getCompanyFinancialOverview() {
 
     return {
       success: true,
-      currency: invoices[0]?.currency || "USD",
+      currency: projects[0]?.currency || "USD",
       summary: {
-        totalInvoiced,
+        totalInvoiced: totalProjectBudgets, // mapped for compatibility
+        totalProjectBudgets,
         totalCollected,
         pendingReceivables,
         totalExpenses,
         netProfit,
         profitMargin: Math.round(profitMargin * 10) / 10,
-        invoiceCount: invoices.length,
+        projectCount: projects.length,
+        paymentCount: projectPayments.length,
         expenseCount: expenses.length,
       },
       categoryTotals,
-      recentInvoices: invoices.slice(0, 5),
+      recentProjects: projects.slice(0, 5),
+      recentPayments: projectPayments.slice(0, 5),
       recentExpenses: expenses.slice(0, 5),
     }
   } catch (error: any) {
@@ -191,16 +214,19 @@ export async function getCompanyFinancialOverview() {
       currency: "USD",
       summary: {
         totalInvoiced: 0,
+        totalProjectBudgets: 0,
         totalCollected: 0,
         pendingReceivables: 0,
         totalExpenses: 0,
         netProfit: 0,
         profitMargin: 0,
-        invoiceCount: 0,
+        projectCount: 0,
+        paymentCount: 0,
         expenseCount: 0,
       },
       categoryTotals: {},
-      recentInvoices: [],
+      recentProjects: [],
+      recentPayments: [],
       recentExpenses: [],
     }
   }

@@ -3,8 +3,8 @@ import { AuthLayout } from "@/components/auth/auth-layout"
 import { ForgotPasswordForm } from "@/components/auth/forgot-password-form"
 
 export const metadata: Metadata = {
-  title: "Forgot Password | DocuFlow",
-  description: "Reset your DocuFlow password.",
+  title: "Forgot Password | Times Works",
+  description: "Reset your Times Works password.",
 }
 
 export default function ForgotPasswordPage() {

@@ -9,8 +9,8 @@ export function AuthBrandPanel() {
     <div className="flex h-full flex-col justify-between p-12 lg:p-16 xl:p-20 relative overflow-hidden">
       {/* Background Gradients */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
-        <div className="absolute -top-[20%] -left-[10%] w-[70%] h-[70%] rounded-full bg-blue-500/10 blur-3xl opacity-50 dark:opacity-20" />
-        <div className="absolute bottom-[10%] -right-[10%] w-[60%] h-[60%] rounded-full bg-indigo-500/10 blur-3xl opacity-50 dark:opacity-20" />
+        <div className="absolute -top-[20%] -left-[10%] w-[70%] h-[70%] rounded-full bg-[#c82020]/10 blur-3xl opacity-50 dark:opacity-20" />
+        <div className="absolute bottom-[10%] -right-[10%] w-[60%] h-[60%] rounded-full bg-[#c82020]/5 blur-3xl opacity-50 dark:opacity-20" />
       </div>
 
       <div className="z-10">
@@ -24,7 +24,7 @@ export function AuthBrandPanel() {
               <polyline points="10 9 9 9 8 9" />
             </svg>
           </div>
-          <span className="text-xl font-bold tracking-tight">DocuFlow</span>
+          <span className="text-xl font-bold tracking-tight">Times Works</span>
         </Link>
         <div className="max-w-md">
           <h1 className="text-3xl font-bold tracking-tight mb-4 sm:text-4xl text-foreground">

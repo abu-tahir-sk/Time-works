@@ -130,6 +130,9 @@ model Company {
   clients           Client[]
   agreements        Agreement[]
   expenses          Expense[]
+  projects          Project[]
+  projectPayments   ProjectPayment[]
+  paymentLinks      PaymentLink[]
   
   // A company is owned/managed by a user (simplified for now, can add team roles later)
   ownerId           String
@@ -154,6 +157,9 @@ model Client {
   invoices          Invoice[]
   quotations        Quotation[]
   agreements        Agreement[]
+  projects          Project[]
+  projectPayments   ProjectPayment[]
+  paymentLinks      PaymentLink[]
 }
 
 model Invoice {
@@ -340,3 +346,94 @@ model Expense {
   @@index([companyId])
   @@index([userId])
 }
+
+// -----------------------------------------------------------------------------
+// PROJECT & PAYMENT LINK MANAGEMENT MODULE
+// -----------------------------------------------------------------------------
+
+model Project {
+  id              String           @id @default(cuid())
+  companyId       String
+  company         Company          @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  clientId        String
+  client          Client           @relation(fields: [clientId], references: [id], onDelete: Restrict)
+
+  name            String
+  code            String?          // e.g. PRJ-2026-001
+  description     String?          @db.Text
+  status          String           @default("IN_PROGRESS") // PLANNING, IN_PROGRESS, REVIEW, COMPLETED, ON_HOLD
+
+  budget          Float            @default(0)
+  paidAmount      Float            @default(0)
+  currency        String           @default("USD")
+
+  startDate       DateTime?
+  deadline        DateTime?
+
+  // AI-generated feature-by-feature cost breakdown: [{ feature: string, description: string, cost: number }]
+  featureBreakdown Json?
+  notes           String?          @db.Text
+
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  payments        ProjectPayment[]
+  paymentLinks    PaymentLink[]
+
+  @@index([companyId])
+  @@index([clientId])
+}
+
+model ProjectPayment {
+  id              String       @id @default(cuid())
+  companyId       String
+  company         Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  projectId       String?
+  project         Project?     @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  clientId        String?
+  client          Client?      @relation(fields: [clientId], references: [id], onDelete: SetNull)
+
+  amount          Float
+  currency        String       @default("USD")
+  method          String       @default("BANK_TRANSFER") // BANK_TRANSFER, BKASH, NAGAD, CARD, CASH, ONLINE
+  status          String       @default("COMPLETED")
+  transactionId   String?
+  paidAt          DateTime     @default(now())
+  remark          String       @db.Text // রিমার্ক আবশ্যক
+
+  paymentLinkId   String?
+  paymentLink     PaymentLink? @relation(fields: [paymentLinkId], references: [id], onDelete: SetNull)
+
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  @@index([companyId])
+  @@index([projectId])
+}
+
+model PaymentLink {
+  id              String           @id @default(cuid())
+  token           String           @unique @default(cuid())
+  companyId       String
+  company         Company          @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  projectId       String?
+  project         Project?         @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  clientId        String?
+  client          Client?          @relation(fields: [clientId], references: [id], onDelete: SetNull)
+
+  title           String           // e.g. "Milestone 1 Payment" or "Project Advance"
+  type            String           @default("FIXED") // "FIXED" or "OPEN"
+  amount          Float?           // If FIXED, e.g. 50000; if OPEN, null
+  currency        String           @default("USD")
+  description     String?          @db.Text
+  status          String           @default("ACTIVE") // ACTIVE, PAID, EXPIRED, CANCELLED
+
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  payments        ProjectPayment[]
+
+  @@index([companyId])
+  @@index([token])
+}
+

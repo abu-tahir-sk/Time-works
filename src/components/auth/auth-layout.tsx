@@ -1,34 +1,73 @@
-import { ReactNode } from "react"
-import { AuthBrandPanel } from "./auth-brand-panel"
+import type { ReactNode } from "react"
+import Image from "next/image"
+import Link from "next/link"
+import { ShieldCheck } from "lucide-react"
+
+import { ThemeToggle } from "@/components/theme/theme-toggle"
 
 interface AuthLayoutProps {
   children: ReactNode
 }
 
+/**
+ * Centered auth shell in the Times Works palette:
+ * warm paper background + crimson glow in light mode,
+ * deep charcoal + crimson glow in dark mode.
+ */
 export function AuthLayout({ children }: AuthLayoutProps) {
   return (
-    <div className="flex min-h-screen w-full flex-col lg:flex-row bg-background/95 dark:bg-background relative overflow-hidden">
-      {/* Background gradients for the main container */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
-        <div className="absolute top-[-10%] right-[-5%] w-[50%] h-[50%] rounded-full bg-blue-500/10 blur-[120px]" />
-        <div className="absolute bottom-[-10%] left-[-5%] w-[50%] h-[50%] rounded-full bg-indigo-500/10 blur-[120px]" />
+    <div className="relative flex min-h-screen flex-col overflow-hidden bg-[#faf9f8] text-foreground dark:bg-[#111318]">
+      {/* Backdrop: subtle grid + brand glow */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div
+          className="absolute inset-0 opacity-[0.035] dark:opacity-[0.06]"
+          style={{
+            backgroundImage:
+              "linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)",
+            backgroundSize: "44px 44px",
+          }}
+        />
+        <div className="absolute -top-48 left-1/2 h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-[#c82020]/10 blur-[130px] dark:bg-[#c82020]/20" />
+        <div className="absolute -right-24 -bottom-56 h-[420px] w-[520px] rounded-full bg-[#c82020]/5 blur-[130px] dark:bg-[#c82020]/10" />
       </div>
 
-      {/* Left Marketing Panel - Hidden on mobile, visible on lg screens */}
-      <div className="hidden lg:flex lg:w-1/2 lg:flex-col relative border-r border-border/50 bg-muted/20 backdrop-blur-3xl shadow-2xl">
-        <AuthBrandPanel />
-      </div>
-      
-      {/* Right Auth Panel */}
-      <div className="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:w-1/2 lg:flex-none lg:px-20 xl:px-24">
-        <div className="mx-auto w-full max-w-md">
-          {/* Glassmorphic Card Wrapper */}
-          <div className="relative group rounded-3xl border border-white/20 dark:border-white/10 bg-white/60 dark:bg-black/40 px-8 py-10 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)]">
-            <div className="absolute inset-0 rounded-3xl bg-gradient-to-tr from-white/40 to-white/10 dark:from-white/5 dark:to-transparent opacity-50 pointer-events-none -z-10" />
+      {/* Brand bar */}
+      <header className="relative z-10 mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-5 sm:px-6">
+        <Link href="/" className="group flex items-center gap-2.5">
+          <span className="relative h-9 w-9 overflow-hidden rounded-lg border border-border/60 bg-background shadow-2xs transition-transform group-hover:scale-105">
+            <Image
+              src="/logo-v3.jpg"
+              alt="Times Works"
+              fill
+              sizes="36px"
+              className="object-cover"
+              priority
+            />
+          </span>
+          <span className="flex flex-col leading-none">
+            <span className="text-base font-bold tracking-tight">Times Works</span>
+            <span className="mt-1 hidden text-[10px] font-medium tracking-[0.16em] text-muted-foreground uppercase sm:block">
+              Business Suite
+            </span>
+          </span>
+        </Link>
+
+        <ThemeToggle />
+      </header>
+
+      {/* Auth card */}
+      <main className="relative z-10 flex flex-1 items-center justify-center px-4 pt-4 pb-10 sm:px-6">
+        <div className="w-full max-w-[420px]">
+          <div className="rounded-2xl border border-border/70 bg-card p-6 shadow-[0_18px_60px_-20px_rgba(0,0,0,0.18)] sm:p-8 dark:border-white/10 dark:bg-[#171a21] dark:shadow-[0_18px_60px_-20px_rgba(0,0,0,0.75)]">
             {children}
           </div>
+
+          <p className="mt-6 flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground">
+            <ShieldCheck className="h-3.5 w-3.5 text-[#c82020] dark:text-rose-400" aria-hidden="true" />
+            <span>Secured with 2FA · © {new Date().getFullYear()} Times Works</span>
+          </p>
         </div>
-      </div>
+      </main>
     </div>
   )
 }

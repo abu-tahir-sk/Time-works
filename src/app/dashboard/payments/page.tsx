@@ -1,30 +1,35 @@
 import { Metadata } from "next"
-import { getPayments, getInvoicesForPayment } from "@/actions/payments"
-import { getUserCompany } from "@/lib/auth/utils"
-import { PaymentsClient } from "./payments-client"
+import { getCompanyPayments } from "@/actions/project-payments"
+import { getProjects } from "@/actions/projects"
+import { getUserCompany, requireUser } from "@/lib/auth/utils"
+import { PaymentsHubClient } from "./payments-hub-client"
 
 export const metadata: Metadata = {
-  title: "Payments & Collections | Times Works",
-  description: "Track received payments, client remittances, and transaction ledgers.",
+  title: "Payments & Gateway Links | Times Works",
+  description: "Track received payments, client remittances, and generate Fixed or Open amount payment links.",
 }
 
 export const dynamic = "force-dynamic"
 
 export default async function PaymentsPage() {
-  const [paymentsRes, invoicesRes, company] = await Promise.all([
-    getPayments(),
-    getInvoicesForPayment(),
+  await requireUser()
+
+  const [payRes, projRes, company] = await Promise.all([
+    getCompanyPayments(),
+    getProjects(),
     getUserCompany(),
   ])
 
-  const payments = paymentsRes.success && paymentsRes.payments ? paymentsRes.payments : []
-  const invoices = invoicesRes.success && invoicesRes.invoices ? invoicesRes.invoices : []
+  const payments = payRes.success && payRes.payments ? payRes.payments : []
+  const paymentLinks = payRes.success && payRes.paymentLinks ? payRes.paymentLinks : []
+  const projects = projRes.success && projRes.projects ? projRes.projects : []
 
   return (
     <div className="w-full max-w-full overflow-x-hidden space-y-6">
-      <PaymentsClient
+      <PaymentsHubClient
         initialPayments={payments}
-        invoices={invoices}
+        initialPaymentLinks={paymentLinks}
+        projects={projects}
         company={company}
       />
     </div>

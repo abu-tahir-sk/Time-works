@@ -3,8 +3,8 @@ import { AuthLayout } from "@/components/auth/auth-layout"
 import { LoginForm } from "@/components/auth/login-form"
 
 export const metadata: Metadata = {
-  title: "Login | DocuFlow",
-  description: "Sign in to your DocuFlow account.",
+  title: "Sign In | Times Works",
+  description: "Sign in to your Times Works workspace.",
 }
 
 export default function LoginPage() {
