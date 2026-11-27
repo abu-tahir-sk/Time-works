@@ -293,9 +293,16 @@ export async function updateInvoiceStatus(id: string, status: string) {
     })
     if (!invoice) throw new Error("Invoice not found")
     
+    const updateData: any = { status }
+    if (status === "PAID") {
+      updateData.amountPaid = invoice.total
+    } else if (status === "PENDING" || status === "DRAFT") {
+      updateData.amountPaid = 0
+    }
+
     await prisma.invoice.update({
       where: { id },
-      data: { status }
+      data: updateData
     })
     revalidatePath("/dashboard/invoices")
     revalidatePath(`/dashboard/invoices/${id}`)

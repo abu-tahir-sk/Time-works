@@ -142,8 +142,10 @@ export async function getClientsWithLedger() {
       let totalPaid = 0
 
       c.invoices.forEach((inv) => {
-        totalInvoiced += inv.total || 0
-        totalPaid += inv.amountPaid || 0
+        const invTotal = inv.total || 0
+        const invPaid = inv.status === "PAID" && (!inv.amountPaid || inv.amountPaid === 0) ? invTotal : (inv.amountPaid || 0)
+        totalInvoiced += invTotal
+        totalPaid += invPaid
       })
 
       const balanceDue = Math.max(0, totalInvoiced - totalPaid)

@@ -574,7 +574,7 @@ export function ClientsClient({ initialClients, company }: ClientsClientProps) {
       {/* 6. Customer Statement / Ledger Modal */}
       {selectedStatementClient && (
         <Dialog open={!!selectedStatementClient} onOpenChange={(open) => !open && setSelectedStatementClient(null)}>
-          <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto p-6">
+          <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto overflow-x-hidden p-6">
             <DialogHeader className="border-b border-border/60 pb-3">
               <DialogTitle className="text-base font-bold flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -589,9 +589,9 @@ export function ClientsClient({ initialClients, company }: ClientsClientProps) {
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 rounded-xl bg-muted/30 border border-border/60 text-xs">
                 <div>
                   <span className="text-[10px] uppercase font-bold text-muted-foreground block">Customer</span>
-                  <span className="font-semibold text-foreground">{selectedStatementClient.name}</span>
+                  <span className="font-semibold text-foreground truncate block">{selectedStatementClient.name}</span>
                   {selectedStatementClient.clientCompany && (
-                    <span className="block text-muted-foreground text-[11px]">{selectedStatementClient.clientCompany}</span>
+                    <span className="block text-muted-foreground text-[11px] truncate">{selectedStatementClient.clientCompany}</span>
                   )}
                 </div>
                 <div>
@@ -602,13 +602,13 @@ export function ClientsClient({ initialClients, company }: ClientsClientProps) {
                 </div>
                 <div>
                   <span className="text-[10px] uppercase font-bold text-muted-foreground block">Total Paid</span>
-                  <span className="font-mono font-bold text-emerald-600">
+                  <span className="font-mono font-bold text-emerald-500">
                     {formatMoney(selectedStatementClient.totalPaid || 0, "USD")}
                   </span>
                 </div>
                 <div>
                   <span className="text-[10px] uppercase font-bold text-muted-foreground block">Current Due</span>
-                  <span className="font-mono font-bold text-[#c82020]">
+                  <span className={`font-mono font-bold ${(selectedStatementClient.balanceDue || 0) > 0 ? "text-[#c82020]" : "text-emerald-500"}`}>
                     {formatMoney(selectedStatementClient.balanceDue || 0, "USD")}
                   </span>
                 </div>
@@ -629,41 +629,56 @@ export function ClientsClient({ initialClients, company }: ClientsClientProps) {
                     <table className="w-full text-xs text-left">
                       <thead className="bg-muted/40 border-b border-border/60 text-[10px] font-bold uppercase text-muted-foreground">
                         <tr>
-                          <th className="py-2 px-3">Invoice #</th>
-                          <th className="py-2 px-3">Issue Date</th>
-                          <th className="py-2 px-3">Due Date</th>
-                          <th className="py-2 px-3 text-right">Total</th>
-                          <th className="py-2 px-3 text-right">Paid</th>
-                          <th className="py-2 px-3 text-center">Status</th>
+                          <th className="py-2.5 px-3">Invoice #</th>
+                          <th className="py-2.5 px-3">Issue Date</th>
+                          <th className="py-2.5 px-3">Due Date</th>
+                          <th className="py-2.5 px-3 text-right">Total</th>
+                          <th className="py-2.5 px-3 text-right">Paid</th>
+                          <th className="py-2.5 px-3 text-center">Status</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-border/40">
-                        {selectedStatementClient.invoices.map((inv: any) => (
-                          <tr key={inv.id} className="hover:bg-muted/20">
-                            <td className="py-2.5 px-3 font-bold">
-                              <Link href={`/dashboard/invoices/${inv.id}`} className="text-[#c82020] hover:underline">
-                                {inv.invoiceNumber}
-                              </Link>
-                            </td>
-                            <td className="py-2.5 px-3 text-muted-foreground">
-                              {format(new Date(inv.issueDate), "MMM dd, yyyy")}
-                            </td>
-                            <td className="py-2.5 px-3 text-muted-foreground">
-                              {format(new Date(inv.dueDate), "MMM dd, yyyy")}
-                            </td>
-                            <td className="py-2.5 px-3 text-right font-mono font-semibold">
-                              {formatMoney(inv.total, inv.currency || "USD")}
-                            </td>
-                            <td className="py-2.5 px-3 text-right font-mono text-emerald-600 font-semibold">
-                              {formatMoney(inv.amountPaid || 0, inv.currency || "USD")}
-                            </td>
-                            <td className="py-2.5 px-3 text-center">
-                              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-muted">
-                                {inv.status}
-                              </span>
-                            </td>
-                          </tr>
-                        ))}
+                        {selectedStatementClient.invoices.map((inv: any) => {
+                          const isFullyPaid = inv.status === "PAID";
+                          const displayPaid = isFullyPaid && (!inv.amountPaid || inv.amountPaid === 0)
+                            ? inv.total
+                            : (inv.amountPaid || 0);
+
+                          return (
+                            <tr key={inv.id} className="hover:bg-muted/20">
+                              <td className="py-2.5 px-3 font-bold whitespace-nowrap">
+                                <Link href={`/dashboard/invoices/${inv.id}`} className="text-[#c82020] hover:underline">
+                                  {inv.invoiceNumber}
+                                </Link>
+                              </td>
+                              <td className="py-2.5 px-3 text-muted-foreground whitespace-nowrap">
+                                {format(new Date(inv.issueDate), "MMM dd, yyyy")}
+                              </td>
+                              <td className="py-2.5 px-3 text-muted-foreground whitespace-nowrap">
+                                {format(new Date(inv.dueDate), "MMM dd, yyyy")}
+                              </td>
+                              <td className="py-2.5 px-3 text-right font-mono font-semibold whitespace-nowrap">
+                                {formatMoney(inv.total, inv.currency || "USD")}
+                              </td>
+                              <td className="py-2.5 px-3 text-right font-mono text-emerald-500 font-semibold whitespace-nowrap">
+                                {formatMoney(displayPaid, inv.currency || "USD")}
+                              </td>
+                              <td className="py-2.5 px-3 text-center whitespace-nowrap">
+                                <span
+                                  className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${
+                                    isFullyPaid
+                                      ? "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20"
+                                      : inv.status === "PENDING"
+                                      ? "bg-amber-500/10 text-amber-500 border border-amber-500/20"
+                                      : "bg-muted text-muted-foreground"
+                                  }`}
+                                >
+                                  {inv.status}
+                                </span>
+                              </td>
+                            </tr>
+                          );
+                        })}
                       </tbody>
                     </table>
                   </div>
