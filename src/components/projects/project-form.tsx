@@ -288,11 +288,11 @@ export function ProjectForm({ clients, initialData }: ProjectFormProps) {
                     onChange={(e) => setStatus(e.target.value)}
                     className="flex h-9 w-full rounded-xl border border-border/80 bg-background px-3 py-1 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-[#c82020]"
                   >
-                    <option value="IN_PROGRESS">In Progress (চলমান)</option>
-                    <option value="PLANNING">Planning (পরিকল্পনা)</option>
-                    <option value="REVIEW">Review / Testing (রিভিউ)</option>
-                    <option value="COMPLETED">Completed (সম্পন্ন)</option>
-                    <option value="ON_HOLD">On Hold (স্থগিত)</option>
+                    <option value="IN_PROGRESS">In Progress</option>
+                    <option value="PLANNING">Planning</option>
+                    <option value="REVIEW">Review / Testing</option>
+                    <option value="COMPLETED">Completed</option>
+                    <option value="ON_HOLD">On Hold</option>
                   </select>
                 </div>
               </div>
@@ -448,7 +448,7 @@ export function ProjectForm({ clients, initialData }: ProjectFormProps) {
                   >
                     <option value="USD">USD ($)</option>
                     <option value="INR">INR (₹)</option>
-                    <option value="BDT">BDT (৳)</option>
+                    <option value="BDT">BDT</option>
                     <option value="EUR">EUR (€)</option>
                     <option value="GBP">GBP (£)</option>
                   </select>

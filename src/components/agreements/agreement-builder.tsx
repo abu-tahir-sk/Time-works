@@ -629,7 +629,7 @@ export function AgreementBuilder({ clients, company }: AgreementBuilderProps) {
                           <SelectItem value="EUR">€ EUR</SelectItem>
                           <SelectItem value="GBP">£ GBP</SelectItem>
                           <SelectItem value="INR">₹ INR</SelectItem>
-                          <SelectItem value="BDT">৳ BDT</SelectItem>
+                          <SelectItem value="BDT">BDT</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>

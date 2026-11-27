@@ -156,10 +156,10 @@ export function ReceiptPrintableSheet({
             </div>
           </div>
 
-          {/* Mandatory Remark Callout (রিমার্ক) */}
+          {/* Mandatory Remark Callout */}
           <div className="bg-slate-50 border-l-4 border-[#c82020] rounded-r-lg p-4 mb-6 text-xs">
             <p className="text-[10px] font-bold uppercase tracking-wider text-[#c82020] mb-1">
-              Official Payment Remark / Purpose (রিমার্ক):
+              Official Payment Remark / Purpose:
             </p>
             <p className="text-slate-900 font-medium italic text-sm">
               "{payment.remarks || payment.remark || "Payment credited against agreed project milestones and deliverables."}"

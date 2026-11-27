@@ -489,7 +489,7 @@ export function InvoiceEditor({ form, clients, onAddClient, onCreateInvoice, isS
                             <SelectItem value="AUD">A$ AUD - Australian Dollar</SelectItem>
                             <SelectItem value="SGD">S$ SGD - Singapore Dollar</SelectItem>
                             <SelectItem value="AED">AED - UAE Dirham</SelectItem>
-                            <SelectItem value="BDT">৳ BDT - Bangladeshi Taka</SelectItem>
+                            <SelectItem value="BDT">BDT - Bangladeshi Taka</SelectItem>
                             <SelectItem value="JPY">¥ JPY - Japanese Yen</SelectItem>
                           </SelectContent>
                         </Select>
@@ -1067,7 +1067,7 @@ export function InvoiceEditor({ form, clients, onAddClient, onCreateInvoice, isS
             <DialogHeader>
               <DialogTitle className="text-base font-bold flex items-center gap-2 text-foreground">
                 <Sparkles className="h-4 w-4 text-indigo-600" />
-                Gemini AI Feature Division (ডিভাইডেশন)
+                Gemini AI Feature Division
               </DialogTitle>
               <DialogDescription className="text-xs">
                 Enter your project or service scope. Gemini AI will automatically divide it into granular, itemized features with realistic pricing and specifications.

@@ -183,7 +183,7 @@ export function ProjectListClient({ initialProjects }: ProjectListClientProps) {
         <Card className="border border-border/80 rounded-xl shadow-xs">
           <CardContent className="p-4 space-y-1">
             <p className="text-[11px] font-semibold uppercase tracking-wider text-[#c82020]">
-              Pending Due Balance (বকেয়া)
+              Pending Due Balance
             </p>
             <div className="text-2xl font-bold font-mono tracking-tight text-[#c82020]">
               ${stats.totalDue.toLocaleString()}

@@ -306,7 +306,7 @@ export async function ensureWorkspaceDefaults(userId: string, companyId: string)
       }
     }
 
-    // 6. Ensure Company Expenses / Ledger (হিসাব-পাতি)
+    // 6. Ensure Company Expenses / Ledger
     const expenseCount = await prisma.expense.count({
       where: { companyId },
     })

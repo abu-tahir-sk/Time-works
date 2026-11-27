@@ -10,7 +10,7 @@ export function formatMoney(amount: number, currency = "USD"): string {
     AUD: "A$",
     SGD: "S$",
     AED: "AED ",
-    BDT: "৳",
+    BDT: "BDT ",
     JPY: "¥",
   }
   const symbol = symbolMap[currency] || `${currency} `

@@ -10,7 +10,7 @@ export interface RecordPaymentInput {
   amount: number
   currency?: string
   method?: string
-  remark: string // রিমার্ক আবশ্যক (MANDATORY from audio)
+  remark: string // Mandatory Remark
   transactionId?: string
   paidAt?: string
 }
@@ -90,7 +90,7 @@ export async function recordProjectPayment(data: RecordPaymentInput) {
     }
 
     if (!data.remark || !data.remark.trim()) {
-      return { success: false, error: "Payment Remark (রিমার্ক) is strictly required." }
+      return { success: false, error: "Payment Remark is strictly required." }
     }
 
     // Auto-resolve client from project if not directly provided
@@ -317,7 +317,7 @@ export async function submitClientPayment(
       },
     })
 
-    // Deduct from project balance automatically! (From audio: "অটোমেটিক ওখান থেকে মাইনাস আসবে এবং হিস্ট্রিটা একবারে পাই টু পাই সেভ থাকবে")
+    // Deduct from project balance automatically
     if (link.projectId) {
       const allProjectPayments = await prisma.projectPayment.findMany({
         where: { projectId: link.projectId, status: "COMPLETED" },

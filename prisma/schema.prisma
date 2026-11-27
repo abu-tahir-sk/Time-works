@@ -320,7 +320,7 @@ model Agreement {
 }
 
 // -----------------------------------------------------------------------------
-// DOCUFLOW EXPENSES & COMPANY LEDGER (হিসাব-পাতি) MODULE SCHEMA
+// DOCUFLOW EXPENSES & COMPANY LEDGER MODULE SCHEMA
 // -----------------------------------------------------------------------------
 
 model Expense {
@@ -399,7 +399,7 @@ model ProjectPayment {
   status          String       @default("COMPLETED")
   transactionId   String?
   paidAt          DateTime     @default(now())
-  remark          String       @db.Text // রিমার্ক আবশ্যক
+  remark          String       @db.Text // Mandatory Remark
 
   paymentLinkId   String?
   paymentLink     PaymentLink? @relation(fields: [paymentLinkId], references: [id], onDelete: SetNull)

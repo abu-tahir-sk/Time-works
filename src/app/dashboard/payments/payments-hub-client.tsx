@@ -133,7 +133,7 @@ export function PaymentsHubClient({
       return
     }
     if (!payRemark.trim()) {
-      toast.error("Payment Remark (রিমার্ক) is strictly required")
+      toast.error("Payment Remark is strictly required")
       return
     }
 
@@ -263,7 +263,7 @@ export function PaymentsHubClient({
         <Card className="border border-border/80 rounded-xl shadow-xs">
           <CardContent className="p-4 space-y-1">
             <span className="text-[11px] font-semibold uppercase tracking-wider text-[#c82020]">
-              Pending Due Balance (বকেয়া)
+              Pending Due Balance
             </span>
             <div className="text-2xl font-bold font-mono tracking-tight text-[#c82020]">
               ${stats.totalDue.toLocaleString()}
@@ -561,7 +561,7 @@ export function PaymentsHubClient({
 
               <div className="space-y-1">
                 <Label className="text-xs font-semibold">
-                  Mandatory Remark (রিমার্ক আবশ্যক) *
+                  Mandatory Remark / Reference *
                 </Label>
                 <Textarea
                   required

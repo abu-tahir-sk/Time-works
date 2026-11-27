@@ -88,7 +88,7 @@ export function ProjectDetailClient({ project: initialProject }: ProjectDetailCl
       return
     }
     if (!payRemark.trim()) {
-      toast.error("Remark (রিমার্ক) is strictly required")
+      toast.error("Remark is strictly required")
       return
     }
 
@@ -307,7 +307,7 @@ export function ProjectDetailClient({ project: initialProject }: ProjectDetailCl
         <Card className="border border-border/80 rounded-xl shadow-xs">
           <CardContent className="p-4 space-y-1">
             <span className="text-[11px] font-semibold uppercase tracking-wider text-[#c82020]">
-              Remaining Due Balance (বকেয়া)
+              Remaining Due Balance
             </span>
             <div className="text-2xl font-bold font-mono tracking-tight text-[#c82020]">
               ${due.toLocaleString()}
@@ -629,7 +629,7 @@ export function ProjectDetailClient({ project: initialProject }: ProjectDetailCl
 
               <div className="space-y-1">
                 <Label className="text-xs font-semibold">
-                  Mandatory Remark (রিমার্ক আবশ্যক) *
+                  Mandatory Remark / Reference *
                 </Label>
                 <Textarea
                   required

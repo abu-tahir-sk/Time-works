@@ -285,9 +285,9 @@ export function ReceiptPdf({ payment, project, client, company }: ReceiptPdfProp
             </View>
           </View>
 
-          {/* Mandatory Remark Note (রিমার্ক) */}
+          {/* Mandatory Remark Note */}
           <View style={styles.remarkBox}>
-            <Text style={styles.remarkLabel}>Official Payment Remark / Purpose (রিমার্ক):</Text>
+            <Text style={styles.remarkLabel}>Official Payment Remark / Purpose:</Text>
             <Text style={styles.remarkText}>
               "{payment.remarks || payment.remark || "Payment credited against agreed project milestones and deliverables."}"
             </Text>

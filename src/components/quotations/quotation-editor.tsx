@@ -420,7 +420,7 @@ export function QuotationEditor({
                             <SelectItem value="INR">₹ INR - Indian Rupee</SelectItem>
                             <SelectItem value="CAD">CA$ CAD - Canadian Dollar</SelectItem>
                             <SelectItem value="AUD">A$ AUD - Australian Dollar</SelectItem>
-                            <SelectItem value="BDT">৳ BDT - Bangladeshi Taka</SelectItem>
+                            <SelectItem value="BDT">BDT - Bangladeshi Taka</SelectItem>
                           </SelectContent>
                         </Select>
                       </FormItem>
