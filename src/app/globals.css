@@ -218,7 +218,7 @@
       display: none !important;
     }
 
-    /* Expand main area */
+    /* Expand main area & document cards across full A4 width */
     main {
       display: block !important;
       background: #ffffff !important;
@@ -228,6 +228,18 @@
       padding: 0 !important;
       width: 100% !important;
       max-width: 100% !important;
+    }
+
+    .grid {
+      display: block !important;
+    }
+
+    .xl\:col-span-8,
+    .lg\:col-span-8,
+    .md\:col-span-2 {
+      width: 100% !important;
+      max-width: 100% !important;
+      display: block !important;
     }
 
     /* Print tables */

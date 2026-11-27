@@ -23,6 +23,8 @@ import {
   ChevronDown,
   ChevronRight,
   FileText,
+  Loader2,
+  Wand2,
 } from "lucide-react"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Calendar } from "@/components/ui/calendar"
@@ -30,6 +32,9 @@ import { format } from "date-fns"
 import { cn, formatMoney } from "@/lib/utils"
 import { AddClientModal } from "./add-client-modal"
 import { WatermarkSettings } from "./watermark-settings"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog"
+import { getAiFeatureBreakdown } from "@/actions/projects"
+import { toast } from "sonner"
 
 interface InvoiceEditorProps {
   form: any
@@ -50,6 +55,50 @@ export function InvoiceEditor({ form, clients, onAddClient, onCreateInvoice, isS
   const [shippingFee, setShippingFee] = useState<number>(0)
   type SectionKey = "details" | "client" | "items" | "notes" | "security"
   const [activeSection, setActiveSection] = useState<SectionKey>("details")
+
+  // Gemini AI Feature Division state
+  const [isAiModalOpen, setIsAiModalOpen] = useState(false)
+  const [aiScope, setAiScope] = useState("")
+  const [aiTargetBudget, setAiTargetBudget] = useState("45000")
+  const [isGeneratingAi, setIsGeneratingAi] = useState(false)
+
+  const handleGenerateAiFeatures = async () => {
+    if (!aiScope.trim()) {
+      toast.error("Please enter a project or invoice scope")
+      return
+    }
+
+    setIsGeneratingAi(true)
+    try {
+      const res = await getAiFeatureBreakdown(aiScope, "", Number(aiTargetBudget) || 45000, currency)
+      if (res.success && res.data && res.data.features) {
+        // If current items only have 1 empty item, clear it
+        if (watchedItems.length === 1 && !watchedItems[0].description) {
+          remove(0)
+        }
+
+        res.data.features.forEach((f: any) => {
+          append({
+            description: `${f.feature} — ${f.description || "Scope deliverable"}`,
+            quantity: 1,
+            unit: "Module",
+            unitPrice: f.cost || 5000,
+            taxRate: 0,
+          })
+        })
+
+        toast.success(`Generated ${res.data.features.length} granular features with Gemini AI!`)
+        setIsAiModalOpen(false)
+        setAiScope("")
+      } else {
+        toast.error(res.error || "Failed to generate AI division")
+      }
+    } catch (err: any) {
+      toast.error(err.message || "An error occurred with Gemini AI")
+    } finally {
+      setIsGeneratingAi(false)
+    }
+  }
 
   // Watch fields for live summary calculation
   const watchedItems = form.watch("items") || []
@@ -523,16 +572,29 @@ export function InvoiceEditor({ form, clients, onAddClient, onCreateInvoice, isS
                 <div>
                   <span className="text-xs font-medium text-muted-foreground">Add products, professional services, or retainer deliverables.</span>
                 </div>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => append({ description: "", quantity: 1, unit: "Hour", unitPrice: 0, taxRate: 0 })}
-                  className="h-8 text-xs font-semibold rounded-lg border-border/80 hover:bg-muted self-start sm:self-auto"
-                >
-                  <Plus className="h-3.5 w-3.5 mr-1 text-[#c82020]" />
-                  Add Line Item
-                </Button>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setIsAiModalOpen(true)}
+                    className="h-8 text-xs font-semibold rounded-lg border-indigo-200 dark:border-indigo-900 bg-indigo-50/60 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 shadow-2xs"
+                  >
+                    <Sparkles className="h-3.5 w-3.5 mr-1.5 text-indigo-600 dark:text-indigo-400" />
+                    AI Feature Division (Gemini)
+                  </Button>
+
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => append({ description: "", quantity: 1, unit: "Hour", unitPrice: 0, taxRate: 0 })}
+                    className="h-8 text-xs font-semibold rounded-lg border-border/80 hover:bg-muted self-start sm:self-auto shadow-2xs"
+                  >
+                    <Plus className="h-3.5 w-3.5 mr-1 text-[#c82020]" />
+                    Add Line Item
+                  </Button>
+                </div>
               </div>
 
               {/* Quick Preset Services (Wave & Invoice Generator Speed) */}
@@ -997,6 +1059,95 @@ export function InvoiceEditor({ form, clients, onAddClient, onCreateInvoice, isS
 
         </div>
       </form>
+
+      {/* Gemini AI Granular Feature Division Modal */}
+      {isAiModalOpen && (
+        <Dialog open={isAiModalOpen} onOpenChange={setIsAiModalOpen}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle className="text-base font-bold flex items-center gap-2 text-foreground">
+                <Sparkles className="h-4 w-4 text-indigo-600" />
+                Gemini AI Feature Division (ডিভাইডেশন)
+              </DialogTitle>
+              <DialogDescription className="text-xs">
+                Enter your project or service scope. Gemini AI will automatically divide it into granular, itemized features with realistic pricing and specifications.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-3.5 py-2">
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-foreground">Project / Service Scope Title</label>
+                <Input
+                  placeholder="e.g. E-Commerce Website & Mobile App, Custom ERP, Healthcare Portal..."
+                  value={aiScope}
+                  onChange={(e) => setAiScope(e.target.value)}
+                  className="h-8.5 text-xs rounded-lg"
+                />
+              </div>
+
+              {/* Quick Presets */}
+              <div className="flex flex-wrap gap-1.5 pt-1">
+                <span className="text-[10px] font-bold text-muted-foreground uppercase mr-1">Presets:</span>
+                {[
+                  "E-Commerce Store & Payments",
+                  "Custom SaaS & Web App",
+                  "Mobile App (iOS & Android)",
+                  "Corporate ERP & CRM System",
+                ].map((preset, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => setAiScope(preset)}
+                    className="text-[10px] px-2 py-0.5 rounded bg-muted hover:bg-muted/80 text-foreground border border-border/60 transition-colors"
+                  >
+                    {preset}
+                  </button>
+                ))}
+              </div>
+
+              <div className="space-y-1.5 pt-1">
+                <label className="text-xs font-semibold text-foreground">Target Total Budget ({currency})</label>
+                <Input
+                  type="number"
+                  placeholder="45000"
+                  value={aiTargetBudget}
+                  onChange={(e) => setAiTargetBudget(e.target.value)}
+                  className="h-8.5 text-xs font-mono font-bold rounded-lg"
+                />
+              </div>
+            </div>
+
+            <DialogFooter className="gap-2 sm:gap-0">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsAiModalOpen(false)}
+                className="text-xs"
+              >
+                Cancel
+              </Button>
+              <Button
+                size="sm"
+                disabled={isGeneratingAi || !aiScope.trim()}
+                onClick={handleGenerateAiFeatures}
+                className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold gap-1.5 shadow-sm"
+              >
+                {isGeneratingAi ? (
+                  <>
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    Dividing with Gemini...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="h-3.5 w-3.5" />
+                    Generate Feature Division
+                  </>
+                )}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
     </Form>
   )
 }
