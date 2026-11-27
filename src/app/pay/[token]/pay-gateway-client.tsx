@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState } from "react"
+import dynamic from "next/dynamic"
 import {
   CreditCard,
   Building2,
@@ -23,6 +24,13 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { toast } from "sonner"
 import { submitClientPayment } from "@/actions/project-payments"
+import { ReceiptPdf } from "@/components/payments/receipt-pdf"
+import { ReceiptPrintableSheet } from "@/components/payments/receipt-printable-sheet"
+
+const PDFDownloadLink = dynamic(
+  () => import("@react-pdf/renderer").then((mod) => mod.PDFDownloadLink),
+  { ssr: false }
+)
 
 interface PayGatewayClientProps {
   linkData: any
@@ -39,6 +47,7 @@ export function PayGatewayClient({ linkData }: PayGatewayClientProps) {
   const [clientNote, setClientNote] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [paymentSuccess, setPaymentSuccess] = useState<any | null>(null)
+  const [isReceiptSheetOpen, setIsReceiptSheetOpen] = useState(false)
 
   const copyToClipboard = (text: string, label: string) => {
     navigator.clipboard.writeText(text)
@@ -160,16 +169,48 @@ export function PayGatewayClient({ linkData }: PayGatewayClientProps) {
               )}
             </div>
 
-            <div className="flex justify-center gap-3">
+            <div className="flex flex-wrap justify-center gap-3">
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => window.print()}
-                className="text-xs gap-1.5"
+                onClick={() => setIsReceiptSheetOpen(true)}
+                className="text-xs font-semibold gap-1.5 shadow-2xs hover:bg-muted"
               >
                 <Printer className="h-3.5 w-3.5" />
-                Print Receipt
+                Print Money Receipt (A4)
               </Button>
+
+              <PDFDownloadLink
+                document={
+                  <ReceiptPdf
+                    payment={{
+                      amount: paymentSuccess.amount,
+                      currency: linkData.currency,
+                      method: paymentSuccess.method,
+                      transactionId: paymentSuccess.transactionId,
+                      remarks: clientNote || `Remittance via payment link "${linkData.title}"`,
+                      paidAt: new Date().toISOString(),
+                    }}
+                    project={project}
+                    client={client || { name: paymentSuccess.payerName }}
+                    company={company}
+                  />
+                }
+                fileName={`Receipt-${paymentSuccess.transactionId || "Remittance"}.pdf`}
+              >
+                {({ loading }) => (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={loading}
+                    className="text-xs font-semibold gap-1.5 shadow-2xs hover:bg-muted"
+                  >
+                    <Download className="h-3.5 w-3.5 text-emerald-600" />
+                    {loading ? "Generating Receipt..." : "Download Receipt PDF"}
+                  </Button>
+                )}
+              </PDFDownloadLink>
+
               <Button
                 size="sm"
                 onClick={() => window.location.reload()}
@@ -409,6 +450,24 @@ export function PayGatewayClient({ linkData }: PayGatewayClientProps) {
           </div>
         )}
       </div>
+
+      {/* Official Printable Money Receipt Voucher Sheet */}
+      {isReceiptSheetOpen && paymentSuccess && (
+        <ReceiptPrintableSheet
+          payment={{
+            amount: paymentSuccess.amount,
+            currency: linkData.currency,
+            method: paymentSuccess.method,
+            transactionId: paymentSuccess.transactionId,
+            remarks: clientNote || `Remittance via payment link "${linkData.title}"`,
+            paidAt: new Date().toISOString(),
+          }}
+          project={project}
+          client={client || { name: paymentSuccess.payerName }}
+          company={company}
+          onClose={() => setIsReceiptSheetOpen(false)}
+        />
+      )}
     </div>
   )
 }

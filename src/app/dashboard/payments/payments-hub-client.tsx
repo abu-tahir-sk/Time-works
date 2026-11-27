@@ -18,6 +18,7 @@ import {
   Clock,
   ArrowUpRight,
   Sparkles,
+  Printer,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -28,6 +29,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogD
 import { toast } from "sonner"
 import { recordProjectPayment, createPaymentLink } from "@/actions/project-payments"
 import { useRouter } from "next/navigation"
+import { ReceiptPrintableSheet } from "@/components/payments/receipt-printable-sheet"
 
 interface PaymentsHubClientProps {
   initialPayments: any[]
@@ -68,6 +70,9 @@ export function PaymentsHubClient({
 
   // QR Modal
   const [activeQrLink, setActiveQrLink] = useState<any | null>(null)
+
+  // Receipt Voucher Sheet
+  const [activeReceiptPayment, setActiveReceiptPayment] = useState<any | null>(null)
 
   // Stats
   const stats = useMemo(() => {
@@ -361,11 +366,23 @@ export function PaymentsHubClient({
                     )}
                   </div>
 
-                  <div className="text-right text-xs text-muted-foreground shrink-0">
-                    <div className="flex items-center gap-1 font-mono">
-                      <Calendar className="h-3 w-3" />
-                      {new Date(pm.paidAt).toLocaleDateString()}
+                  <div className="flex items-center gap-2 shrink-0">
+                    <div className="text-right text-xs text-muted-foreground hidden sm:block">
+                      <div className="flex items-center gap-1 font-mono">
+                        <Calendar className="h-3 w-3" />
+                        {new Date(pm.paidAt).toLocaleDateString()}
+                      </div>
                     </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setActiveReceiptPayment(pm)}
+                      className="h-8 text-xs font-semibold gap-1.5 shadow-2xs hover:bg-muted"
+                      title="Print or view official payment voucher"
+                    >
+                      <Printer className="h-3.5 w-3.5 text-muted-foreground" />
+                      Receipt Voucher
+                    </Button>
                   </div>
                 </div>
               ))}
@@ -745,6 +762,17 @@ export function PaymentsHubClient({
             </DialogFooter>
           </DialogContent>
         </Dialog>
+      )}
+
+      {/* Official Printable Money Receipt Voucher Sheet */}
+      {activeReceiptPayment && (
+        <ReceiptPrintableSheet
+          payment={activeReceiptPayment}
+          project={activeReceiptPayment.project}
+          client={activeReceiptPayment.client}
+          company={company}
+          onClose={() => setActiveReceiptPayment(null)}
+        />
       )}
     </div>
   )

@@ -182,23 +182,39 @@
 
   /* ================= PRINT MEDIA ================= */
   @media print {
-    /* Page setup */
+    /* Page setup for crisp original A4 document printing */
     @page {
-      size: A4;
-      margin: 12mm 10mm 14mm 10mm;
+      size: A4 portrait;
+      margin: 8mm 10mm;
+    }
+
+    *, *:before, *:after {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
     }
 
     html, body {
       background: #ffffff !important;
-      color: #000000 !important;
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
+      color: #0f172a !important;
+      font-size: 11pt !important;
+      margin: 0 !important;
+      padding: 0 !important;
     }
 
-    /* Hide standard UI shells during browser print */
+    /* Strictly hide website shells, navigation, toolbars, buttons, dialogs during print */
     aside,
     header,
-    nav {
+    nav,
+    footer:not(.printable-footer),
+    .sidebar,
+    [data-sidebar],
+    .print\:hidden,
+    button:not(.print\:inline-block),
+    input,
+    textarea,
+    select,
+    [role="dialog"] > div:first-child,
+    .no-print {
       display: none !important;
     }
 
@@ -221,9 +237,9 @@
     }
 
     th, td {
-      border: 0.5px solid #cccccc !important;
-      padding: 4px 6px !important;
-      font-size: 0.8rem !important;
+      border: 0.5px solid #cbd5e1 !important;
+      padding: 6px 8px !important;
+      font-size: 8.5pt !important;
     }
 
     tr {

@@ -2,6 +2,7 @@
 
 import React, { useState } from "react"
 import Link from "next/link"
+import dynamic from "next/dynamic"
 import { useRouter } from "next/navigation"
 import {
   ArrowLeft,
@@ -22,6 +23,8 @@ import {
   Edit,
   Trash2,
   AlertCircle,
+  Printer,
+  Download,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -32,6 +35,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogD
 import { toast } from "sonner"
 import { recordProjectPayment, createPaymentLink } from "@/actions/project-payments"
 import { deleteProject } from "@/actions/projects"
+import { ProjectPdf } from "@/components/projects/project-pdf"
+import { ProjectPrintableSheet } from "@/components/projects/project-printable-sheet"
+
+const PDFDownloadLink = dynamic(
+  () => import("@react-pdf/renderer").then((mod) => mod.PDFDownloadLink),
+  { ssr: false }
+)
 
 interface ProjectDetailClientProps {
   project: any
@@ -60,6 +70,9 @@ export function ProjectDetailClient({ project: initialProject }: ProjectDetailCl
 
   // QR Code Preview Dialog
   const [activeQrLink, setActiveQrLink] = useState<any | null>(null)
+
+  // Official Printable Sheet Dialog
+  const [isPrintSheetOpen, setIsPrintSheetOpen] = useState(false)
 
   // Calculations
   const budget = project.budget || 0
@@ -198,6 +211,36 @@ export function ProjectDetailClient({ project: initialProject }: ProjectDetailCl
 
         {/* Action Buttons */}
         <div className="flex items-center gap-2 flex-wrap">
+          {/* Official Document Print / Download Buttons */}
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => setIsPrintSheetOpen(true)}
+            className="text-xs font-semibold gap-1.5 shadow-2xs hover:bg-muted"
+            title="Print Official Scope & Specifications Document"
+          >
+            <Printer className="h-3.5 w-3.5 text-muted-foreground" />
+            Print Scope (A4)
+          </Button>
+
+          <PDFDownloadLink
+            document={<ProjectPdf project={project} />}
+            fileName={`${project.code || "Project"}-Scope-Proposal.pdf`}
+          >
+            {({ loading }) => (
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={loading}
+                className="text-xs font-semibold gap-1.5 shadow-2xs hover:bg-muted"
+                title="Download Official PDF Document"
+              >
+                <Download className="h-3.5 w-3.5 text-[#c82020]" />
+                {loading ? "Generating PDF..." : "Download Scope PDF"}
+              </Button>
+            )}
+          </PDFDownloadLink>
+
           <Button
             size="sm"
             variant="outline"
@@ -763,6 +806,14 @@ export function ProjectDetailClient({ project: initialProject }: ProjectDetailCl
             </DialogFooter>
           </DialogContent>
         </Dialog>
+      )}
+
+      {/* Printable Sheet View */}
+      {isPrintSheetOpen && (
+        <ProjectPrintableSheet
+          project={project}
+          onClose={() => setIsPrintSheetOpen(false)}
+        />
       )}
     </div>
   )

@@ -1,6 +1,8 @@
 import Link from "next/link"
 import {
   FolderKanban,
+  FileSpreadsheet,
+  FileSignature,
   Users,
   CreditCard,
   Receipt,
@@ -64,6 +66,18 @@ export default async function DashboardPage() {
             <Button size="sm" className="h-8.5 text-xs bg-[#c82020] hover:bg-[#a81a1a] text-white shadow-xs font-semibold">
               <Plus className="h-3.5 w-3.5 mr-1" />
               New Project
+            </Button>
+          </Link>
+          <Link href="/dashboard/invoices/new">
+            <Button size="sm" variant="outline" className="h-8.5 text-xs border-border/80 shadow-2xs hover:bg-muted font-medium">
+              <FileSpreadsheet className="h-3.5 w-3.5 mr-1 text-[#c82020]" />
+              New Invoice
+            </Button>
+          </Link>
+          <Link href="/dashboard/quotations/new">
+            <Button size="sm" variant="outline" className="h-8.5 text-xs border-border/80 shadow-2xs hover:bg-muted font-medium">
+              <FileSignature className="h-3.5 w-3.5 mr-1 text-indigo-500" />
+              Quotation
             </Button>
           </Link>
           <Link href="/dashboard/payments">

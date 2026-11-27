@@ -1,5 +1,9 @@
 import {
   LayoutDashboard,
+  FileText,
+  FileSpreadsheet,
+  FileSignature,
+  Handshake,
   FolderKanban,
   Users,
   CreditCard,
@@ -29,6 +33,11 @@ export const SIDEBAR_SECTIONS: SidebarSection[] = [
         href: "/dashboard",
         icon: LayoutDashboard,
       },
+      {
+        title: "Document Hub",
+        href: "/dashboard/documents",
+        icon: FileText,
+      },
     ],
   },
   {
@@ -47,6 +56,26 @@ export const SIDEBAR_SECTIONS: SidebarSection[] = [
     ],
   },
   {
+    group: "Sales & Documents",
+    items: [
+      {
+        title: "Invoices",
+        href: "/dashboard/invoices",
+        icon: FileSpreadsheet,
+      },
+      {
+        title: "Quotations",
+        href: "/dashboard/quotations",
+        icon: FileSignature,
+      },
+      {
+        title: "Agreements",
+        href: "/dashboard/agreements",
+        icon: Handshake,
+      },
+    ],
+  },
+  {
     group: "Finance & Accounts",
     items: [
       {
@@ -55,7 +84,7 @@ export const SIDEBAR_SECTIONS: SidebarSection[] = [
         icon: CreditCard,
       },
       {
-        title: "Office Expenses",
+        title: "Company Ledger",
         href: "/dashboard/expenses",
         icon: Receipt,
       },
@@ -79,4 +108,3 @@ export const SIDEBAR_SECTIONS: SidebarSection[] = [
 ]
 
 export const SIDEBAR_ITEMS: SidebarItem[] = SIDEBAR_SECTIONS.flatMap((s) => s.items)
-

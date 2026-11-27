@@ -43,6 +43,9 @@ export function MobileNav() {
           <MobileLink href="/" onOpenChange={setOpen}>Home</MobileLink>
           <MobileLink href="/features" onOpenChange={setOpen}>Features</MobileLink>
           <MobileLink href="/dashboard/projects" onOpenChange={setOpen}>Projects</MobileLink>
+          <MobileLink href="/dashboard/invoices" onOpenChange={setOpen}>Invoices</MobileLink>
+          <MobileLink href="/dashboard/quotations" onOpenChange={setOpen}>Quotations</MobileLink>
+          <MobileLink href="/dashboard/agreements" onOpenChange={setOpen}>Agreements</MobileLink>
           <MobileLink href="/dashboard/payments" onOpenChange={setOpen}>Payments</MobileLink>
           <MobileLink href="/dashboard/expenses" onOpenChange={setOpen}>Ledger & Expenses</MobileLink>
         </div>
