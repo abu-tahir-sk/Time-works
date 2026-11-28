@@ -97,7 +97,7 @@ export function PayGatewayClient({ linkData }: PayGatewayClientProps) {
 
   return (
     <div className="min-h-screen bg-[#faf9f8] dark:bg-[#121212] font-sans antialiased text-foreground py-10 px-4 sm:px-6">
-      <div className="max-w-3xl mx-auto space-y-6">
+      <div className={`max-w-3xl mx-auto space-y-6 ${isReceiptSheetOpen ? "print:hidden" : ""}`}>
         {/* 1. Header with Company Branding */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/70 pb-5">
           <div className="flex items-center gap-3">

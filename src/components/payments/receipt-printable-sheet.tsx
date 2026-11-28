@@ -91,8 +91,8 @@ export function ReceiptPrintableSheet({
       </div>
 
       {/* Printable Sheet Canvas: A4 Format */}
-      <div className="py-8 px-4 flex justify-center print:p-0 print:m-0">
-        <div className="w-full max-w-[800px] bg-white text-slate-900 rounded-xl shadow-2xl p-10 sm:p-12 border border-slate-200 print:border-none print:shadow-none print:p-6 print:w-full print:max-w-none print:rounded-none">
+      <div className="py-8 px-4 flex justify-center print:p-0 print:m-0 print:block">
+        <div className="w-full max-w-[800px] bg-white text-slate-900 rounded-xl shadow-2xl p-10 sm:p-12 border border-slate-200 print:border-none print:shadow-none print:p-0 print:w-full print:max-w-none print:rounded-none">
           {/* Header */}
           <div className="flex justify-between items-start border-b-2 border-emerald-600 pb-5 mb-6">
             <div>

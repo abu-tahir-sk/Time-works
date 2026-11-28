@@ -212,8 +212,9 @@ export function PaymentsHubClient({
   }
 
   return (
-    <div className="w-full max-w-full overflow-x-hidden font-sans space-y-6 pb-20">
-      {/* 1. Header Bar */}
+    <div className="w-full max-w-full overflow-x-hidden font-sans pb-20">
+      <div className={`space-y-6 ${activeReceiptPayment ? "print:hidden" : ""}`}>
+        {/* 1. Header Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/70 pb-4">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
@@ -763,6 +764,7 @@ export function PaymentsHubClient({
           </DialogContent>
         </Dialog>
       )}
+      </div>
 
       {/* Official Printable Money Receipt Voucher Sheet */}
       {activeReceiptPayment && (

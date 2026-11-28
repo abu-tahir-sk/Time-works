@@ -63,8 +63,8 @@ export function ProjectPrintableSheet({ project, company, onClose }: ProjectPrin
       </div>
 
       {/* Printable Sheet Canvas: 210mm x 297mm (Standard A4) */}
-      <div className="py-8 px-4 flex justify-center print:p-0 print:m-0">
-        <div className="w-full max-w-[850px] bg-white text-slate-900 rounded-xl shadow-2xl p-10 sm:p-14 border border-slate-200 print:border-none print:shadow-none print:p-8 print:w-full print:max-w-none print:rounded-none">
+      <div className="py-8 px-4 flex justify-center print:p-0 print:m-0 print:block">
+        <div className="w-full max-w-[850px] bg-white text-slate-900 rounded-xl shadow-2xl p-10 sm:p-14 border border-slate-200 print:border-none print:shadow-none print:p-0 print:w-full print:max-w-none print:rounded-none">
           {/* Header */}
           <div className="flex justify-between items-start border-b-2 border-[#c82020] pb-6 mb-6">
             <div>
